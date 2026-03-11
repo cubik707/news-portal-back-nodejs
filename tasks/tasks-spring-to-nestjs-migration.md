@@ -191,9 +191,9 @@ Update the file after completing each sub-task, not just after completing an ent
 ---
 
 - [ ] 2.0 Domain Layer
-  - [ ] 2.1 Create `src/core/shared/enums/user-role.enum.ts` — `UserRole` enum: `ADMIN`, `EDITOR`, `USER`
-  - [ ] 2.2 Create `src/core/shared/enums/news-status.enum.ts` — `NewsStatus` enum: `draft`, `published`, `archived`
-  - [ ] 2.3 Create `src/core/shared/enums/approval-status.enum.ts` — `ApprovalStatus` enum: `pending`, `approved`, `rejected`
+  - [x] 2.1 Create `src/core/shared/enums/user-role.enum.ts` — `UserRole` enum: `ADMIN`, `EDITOR`, `USER`
+  - [x] 2.2 Create `src/core/shared/enums/news-status.enum.ts` — `NewsStatus` enum: `draft`, `published`, `archived`
+  - [x] 2.3 Create `src/core/shared/enums/approval-status.enum.ts` — `ApprovalStatus` enum: `pending`, `approved`, `rejected`
   - [ ] 2.4 Create `src/core/shared/exceptions/business.exception.ts` — base `BusinessException` extending `Error` with `message` and `statusCode` (default 400)
   - [ ] 2.5 Create `src/core/domain/user/entities/user.domain.ts` — pure TS `UserDomain` class with all fields (id, username, email, passwordHash, isApproved, roles, createdAt, and optional profile fields) and a `hasRole(role)` method
   - [ ] 2.6 Create `src/core/domain/user/repositories/user.repository.interface.ts` — `IUserRepository` interface with methods: `findAll`, `findById`, `findByUsername`, `findByEmail`, `save`, `update`, `delete`, `approve`, `assignRole`, `removeRole`; export `USER_REPOSITORY` symbol
