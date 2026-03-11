@@ -190,7 +190,7 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ---
 
-- [ ] 2.0 Domain Layer
+- [x] 2.0 Domain Layer
   - [x] 2.1 Create `src/core/shared/enums/user-role.enum.ts` — `UserRole` enum: `ADMIN`, `EDITOR`, `USER`
   - [x] 2.2 Create `src/core/shared/enums/news-status.enum.ts` — `NewsStatus` enum: `draft`, `published`, `archived`
   - [x] 2.3 Create `src/core/shared/enums/approval-status.enum.ts` — `ApprovalStatus` enum: `pending`, `approved`, `rejected`
@@ -203,8 +203,8 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 2.10 Create `src/core/domain/news/exceptions/news-not-found.exception.ts`
   - [x] 2.11 Create `src/core/domain/category/repositories/category.repository.interface.ts` — `ICategoryRepository` with `findAll`, `findById`, `save`, `update`, `delete`; export `CATEGORY_REPOSITORY` symbol
   - [x] 2.12 Create `src/core/domain/category/exceptions/category-not-found.exception.ts`
-  - [ ] 2.13 Create `src/core/domain/tag/repositories/tag.repository.interface.ts` — `ITagRepository` with `findAll`, `findById`, `findLastThree`, `save`; export `TAG_REPOSITORY` symbol
-  - [ ] 2.14 Create `src/core/domain/tag/exceptions/tag-not-found.exception.ts`
+  - [x] 2.13 Create `src/core/domain/tag/repositories/tag.repository.interface.ts` — `ITagRepository` with `findAll`, `findById`, `findLastThree`, `save`; export `TAG_REPOSITORY` symbol
+  - [x] 2.14 Create `src/core/domain/tag/exceptions/tag-not-found.exception.ts`
 
 ---
 
