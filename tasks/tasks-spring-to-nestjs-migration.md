@@ -195,9 +195,9 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 2.2 Create `src/core/shared/enums/news-status.enum.ts` — `NewsStatus` enum: `draft`, `published`, `archived`
   - [x] 2.3 Create `src/core/shared/enums/approval-status.enum.ts` — `ApprovalStatus` enum: `pending`, `approved`, `rejected`
   - [x] 2.4 Create `src/core/shared/exceptions/business.exception.ts` — base `BusinessException` extending `Error` with `message` and `statusCode` (default 400)
-  - [ ] 2.5 Create `src/core/domain/user/entities/user.domain.ts` — pure TS `UserDomain` class with all fields (id, username, email, passwordHash, isApproved, roles, createdAt, and optional profile fields) and a `hasRole(role)` method
-  - [ ] 2.6 Create `src/core/domain/user/repositories/user.repository.interface.ts` — `IUserRepository` interface with methods: `findAll`, `findById`, `findByUsername`, `findByEmail`, `save`, `update`, `delete`, `approve`, `assignRole`, `removeRole`; export `USER_REPOSITORY` symbol
-  - [ ] 2.7 Create user domain exceptions: `user-not-found.exception.ts`, `user-already-exists.exception.ts`, `user-email-already-exists.exception.ts`, `user-not-approved.exception.ts` — all extend `BusinessException`
+  - [x] 2.5 Create `src/core/domain/user/entities/user.domain.ts` — pure TS `UserDomain` class with all fields (id, username, email, passwordHash, isApproved, roles, createdAt, and optional profile fields) and a `hasRole(role)` method
+  - [x] 2.6 Create `src/core/domain/user/repositories/user.repository.interface.ts` — `IUserRepository` interface with methods: `findAll`, `findById`, `findByUsername`, `findByEmail`, `save`, `update`, `delete`, `approve`, `assignRole`, `removeRole`; export `USER_REPOSITORY` symbol
+  - [x] 2.7 Create user domain exceptions: `user-not-found.exception.ts`, `user-already-exists.exception.ts`, `user-email-already-exists.exception.ts`, `user-not-approved.exception.ts` — all extend `BusinessException`
   - [ ] 2.8 Create `src/core/domain/news/entities/news.domain.ts` — pure TS `NewsDomain` class with all fields
   - [ ] 2.9 Create `src/core/domain/news/repositories/news.repository.interface.ts` — `INewsRepository` with methods: `findAll`, `findById`, `findByCategory`, `findByStatus`, `findByStatusAndAuthor`, `findByCategoryAndStatus`, `save`, `update`, `delete`; export `NEWS_REPOSITORY` symbol
   - [ ] 2.10 Create `src/core/domain/news/exceptions/news-not-found.exception.ts`
