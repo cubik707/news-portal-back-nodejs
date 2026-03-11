@@ -1,6 +1,5 @@
 import { UserDomain } from '../../../../core/domain/user/entities/user.domain';
 import { UserOrmEntity } from '../entities/user.orm-entity';
-import { UserRole } from '../../../../core/shared/enums/user-role.enum';
 import { Email } from '../../../../core/shared/value-objects/email.vo';
 import { PasswordHash } from '../../../../core/shared/value-objects/password-hash.vo';
 
@@ -12,7 +11,7 @@ export class UserMapper {
       email: new Email(orm.email),
       passwordHash: PasswordHash.fromHash(orm.passwordHash),
       isApproved: orm.isApproved,
-      roles: (orm.roles ?? []).map((r) => r.name as UserRole),
+      roles: (orm.roles ?? []).map((r) => r.name),
       createdAt: orm.createdAt,
       lastName: orm.userInfo?.lastName ?? '',
       firstName: orm.userInfo?.firstName ?? '',
