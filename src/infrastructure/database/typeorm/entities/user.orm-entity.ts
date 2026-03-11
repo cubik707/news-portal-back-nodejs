@@ -13,8 +13,8 @@ import { CategoryOrmEntity } from './category.orm-entity';
 
 @Entity('users')
 export class UserOrmEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column({ unique: true, length: 50, nullable: false })
   username!: string;

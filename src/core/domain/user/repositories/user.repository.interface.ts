@@ -1,17 +1,17 @@
 import { UserRole } from '../../../shared/enums/user-role.enum';
-import { UserDomain } from '../entities/user.domain';
+import { User } from '../entities/user.domain';
 
 export interface IUserRepository {
-  findAll(): Promise<UserDomain[]>;
-  findById(id: number): Promise<UserDomain | null>;
-  findByUsername(username: string): Promise<UserDomain | null>;
-  findByEmail(email: string): Promise<UserDomain | null>;
-  save(user: UserDomain): Promise<UserDomain>;
-  update(id: number, user: UserDomain): Promise<UserDomain>;
-  delete(id: number): Promise<void>;
-  approve(id: number): Promise<UserDomain>;
-  assignRole(id: number, role: UserRole): Promise<UserDomain>;
-  removeRole(id: number, role: UserRole): Promise<UserDomain>;
+  findAll(): Promise<User[]>;
+  findById(id: string): Promise<User | null>;
+  findByUsername(username: string): Promise<User | null>;
+  findByEmail(email: string): Promise<User | null>;
+  save(user: User): Promise<User>;
+  update(id: string, user: User): Promise<User>;
+  delete(id: string): Promise<void>;
+  approve(id: string): Promise<User>;
+  assignRole(id: string, role: UserRole): Promise<User>;
+  removeRole(id: string, role: UserRole): Promise<User>;
 }
 
 export const USER_REPOSITORY = Symbol('USER_REPOSITORY');

@@ -1,9 +1,10 @@
+import { randomUUID } from 'crypto';
 import { UserRole } from '../../../shared/enums/user-role.enum';
 import { Email } from '../../../shared/value-objects/email.vo';
 import { PasswordHash } from '../../../shared/value-objects/password-hash.vo';
 
 export interface UserProps {
-  id: number;
+  id: string;
   username: string;
   email: Email;
   passwordHash: PasswordHash;
@@ -30,41 +31,14 @@ export interface CreateUserProps {
   avatarUrl?: string;
 }
 
-export class UserDomain {
-  private readonly _id: number | undefined;
-  private _username: string;
-  private _email: Email;
-  private _passwordHash: PasswordHash;
-  private _isApproved: boolean;
-  private _roles: UserRole[];
-  private readonly _createdAt: Date;
-  private _lastName: string;
-  private _firstName: string;
-  private _surname?: string;
-  private _position?: string;
-  private _department?: string;
-  private _avatarUrl?: string;
-
-  private constructor(props: Omit<UserProps, 'id'> & { id?: number }) {
-    this._id = props.id;
-    this._username = props.username;
-    this._email = props.email;
-    this._passwordHash = props.passwordHash;
-    this._isApproved = props.isApproved;
-    this._roles = [...props.roles];
-    this._createdAt = props.createdAt;
-    this._lastName = props.lastName;
-    this._firstName = props.firstName;
-    this._surname = props.surname;
-    this._position = props.position;
-    this._department = props.department;
-    this._avatarUrl = props.avatarUrl;
-  }
+export class User {
+  private constructor(private readonly props: UserProps) {}
 
   /** Factory for creating a brand-new (not yet persisted) user. */
-  static create(props: CreateUserProps): UserDomain {
-    return new UserDomain({
+  static create(props: CreateUserProps): User {
+    return new User({
       ...props,
+      id: randomUUID(),
       isApproved: false,
       roles: [],
       createdAt: new Date(),
@@ -72,82 +46,82 @@ export class UserDomain {
   }
 
   /** Factory for reconstructing a user loaded from persistence. */
-  static reconstitute(props: UserProps): UserDomain {
-    return new UserDomain(props);
+  static reconstitute(props: UserProps): User {
+    return new User(props);
   }
 
   // ── Getters ────────────────────────────────────────────────────────────────
 
-  get id(): number | undefined {
-    return this._id;
+  get id(): string {
+    return this.props.id;
   }
 
   get username(): string {
-    return this._username;
+    return this.props.username;
   }
 
   get email(): Email {
-    return this._email;
+    return this.props.email;
   }
 
   get passwordHash(): PasswordHash {
-    return this._passwordHash;
+    return this.props.passwordHash;
   }
 
   get isApproved(): boolean {
-    return this._isApproved;
+    return this.props.isApproved;
   }
 
   get roles(): UserRole[] {
-    return [...this._roles];
+    return [...this.props.roles];
   }
 
   get createdAt(): Date {
-    return this._createdAt;
+    return new Date(this.props.createdAt.getTime());
   }
 
   get lastName(): string {
-    return this._lastName;
+    return this.props.lastName;
   }
 
   get firstName(): string {
-    return this._firstName;
+    return this.props.firstName;
   }
 
   get surname(): string | undefined {
-    return this._surname;
+    return this.props.surname;
   }
 
   get position(): string | undefined {
-    return this._position;
+    return this.props.position;
   }
 
   get department(): string | undefined {
-    return this._department;
+    return this.props.department;
   }
 
   get avatarUrl(): string | undefined {
-    return this._avatarUrl;
+    return this.props.avatarUrl;
   }
 
   // ── Business methods ───────────────────────────────────────────────────────
 
   approve(): void {
-    this._isApproved = true;
+    this.props.isApproved = true;
   }
 
   assignRole(role: UserRole): void {
-    if (!this._roles.includes(role)) {
-      this._roles.push(role);
+    if (!this.props.roles.includes(role)) {
+      this.props.roles.push(role);
     }
   }
 
   removeRole(role: UserRole): void {
-    this._roles = this._roles.filter((r) => r !== role);
+    this.props.roles = this.props.roles.filter((r) => r !== role);
   }
 
   changeEmail(email: Email): void {
-    this._email = email;
+    this.props.email = email;
   }
 
   updateProfile(data: {
@@ -159,16 +133,16 @@ export class UserDomain {
     department?: string;
     avatarUrl?: string;
   }): void {
-    if (data.username !== undefined) this._username = data.username;
-    if (data.lastName !== undefined) this._lastName = data.lastName;
-    if (data.firstName !== undefined) this._firstName = data.firstName;
-    if (data.surname !== undefined) this._surname = data.surname;
-    if (data.position !== undefined) this._position = data.position;
-    if (data.department !== undefined) this._department = data.department;
-    if (data.avatarUrl !== undefined) this._avatarUrl = data.avatarUrl;
+    if (data.username !== undefined) this.props.username = data.username;
+    if (data.lastName !== undefined) this.props.lastName = data.lastName;
+    if (data.firstName !== undefined) this.props.firstName = data.firstName;
+    if (data.surname !== undefined) this.props.surname = data.surname;
+    if (data.position !== undefined) this.props.position = data.position;
+    if (data.department !== undefined) this.props.department = data.department;
+    if (data.avatarUrl !== undefined) this.props.avatarUrl = data.avatarUrl;
   }
 
   hasRole(role: UserRole): boolean {
-    return this._roles.includes(role);
+    return this.props.roles.includes(role);
   }
 }

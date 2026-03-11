@@ -1,11 +1,11 @@
-import { UserDomain } from '../../../../core/domain/user/entities/user.domain';
+import { User } from '../../../../core/domain/user/entities/user.domain';
 import { UserOrmEntity } from '../entities/user.orm-entity';
 import { Email } from '../../../../core/shared/value-objects/email.vo';
 import { PasswordHash } from '../../../../core/shared/value-objects/password-hash.vo';
 
 export class UserMapper {
-  static toDomain(orm: UserOrmEntity): UserDomain {
-    return UserDomain.reconstitute({
+  static toDomain(orm: UserOrmEntity): User {
+    return User.reconstitute({
       id: orm.id,
       username: orm.username,
       email: new Email(orm.email),

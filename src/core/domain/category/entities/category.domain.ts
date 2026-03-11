@@ -1,29 +1,30 @@
-export class CategoryDomain {
-  private readonly _id: number | undefined;
-  private _name: string;
+import { randomUUID } from 'crypto';
 
-  private constructor(id: number | undefined, name: string) {
-    this._id = id;
-    this._name = name;
+export interface CategoryProps {
+  id: string;
+  name: string;
+}
+
+export class Category {
+  private constructor(private readonly props: CategoryProps) {}
+
+  static create(name: string): Category {
+    return new Category({ id: randomUUID(), name });
   }
 
-  static create(name: string): CategoryDomain {
-    return new CategoryDomain(undefined, name);
+  static reconstitute(props: CategoryProps): Category {
+    return new Category(props);
   }
 
-  static reconstitute(id: number, name: string): CategoryDomain {
-    return new CategoryDomain(id, name);
-  }
-
-  get id(): number | undefined {
-    return this._id;
+  get id(): string {
+    return this.props.id;
   }
 
   get name(): string {
-    return this._name;
+    return this.props.name;
   }
 
   updateName(name: string): void {
-    this._name = name;
+    this.props.name = name;
   }
 }

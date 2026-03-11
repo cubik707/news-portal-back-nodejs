@@ -1,68 +1,44 @@
-import { CategoryDomain } from '../../category/entities/category.domain';
-import { TagDomain } from '../../tag/entities/tag.domain';
-import { UserDomain } from '../../user/entities/user.domain';
+import { randomUUID } from 'crypto';
+import { Category } from '../../category/entities/category.domain';
+import { Tag } from '../../tag/entities/tag.domain';
+import { User } from '../../user/entities/user.domain';
 import { NewsStatus } from '../../../shared/enums/news-status.enum';
 
 export interface NewsProps {
-  id: number;
+  id: string;
   title: string;
   content: string;
   image?: string;
-  author: UserDomain;
-  category: CategoryDomain;
+  author: User;
+  category: Category;
   status: NewsStatus;
   publishedAt?: Date;
   scheduledAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-  tags: TagDomain[];
+  tags: Tag[];
 }
 
 export interface CreateNewsProps {
   title: string;
   content: string;
   image?: string;
-  author: UserDomain;
-  category: CategoryDomain;
+  author: User;
+  category: Category;
   status?: NewsStatus;
   scheduledAt?: Date;
-  tags: TagDomain[];
+  tags: Tag[];
 }
 
-export class NewsDomain {
-  private readonly _id: number | undefined;
-  private _title: string;
-  private _content: string;
-  private _image?: string;
-  private _author: UserDomain;
-  private _category: CategoryDomain;
-  private _status: NewsStatus;
-  private _publishedAt?: Date;
-  private _scheduledAt?: Date;
-  private readonly _createdAt: Date;
-  private _updatedAt: Date;
-  private _tags: TagDomain[];
-
-  private constructor(props: Omit<NewsProps, 'id'> & { id?: number }) {
-    this._id = props.id;
-    this._title = props.title;
-    this._content = props.content;
-    this._image = props.image;
-    this._author = props.author;
-    this._category = props.category;
-    this._status = props.status;
-    this._publishedAt = props.publishedAt;
-    this._scheduledAt = props.scheduledAt;
-    this._createdAt = props.createdAt;
-    this._updatedAt = props.updatedAt;
-    this._tags = [...props.tags];
-  }
+export class News {
+  private constructor(private readonly props: NewsProps) {}
 
   /** Factory for creating a brand-new (not yet persisted) news item. */
-  static create(props: CreateNewsProps): NewsDomain {
+  static create(props: CreateNewsProps): News {
     const now = new Date();
-    return new NewsDomain({
+    return new News({
       ...props,
+      id: randomUUID(),
       status: props.status ?? NewsStatus.draft,
       createdAt: now,
       updatedAt: now,
@@ -70,89 +46,89 @@ export class NewsDomain {
   }
 
   /** Factory for reconstructing a news item loaded from persistence. */
-  static reconstitute(props: NewsProps): NewsDomain {
-    return new NewsDomain(props);
+  static reconstitute(props: NewsProps): News {
+    return new News(props);
   }
 
   // ── Getters ────────────────────────────────────────────────────────────────
 
-  get id(): number | undefined {
-    return this._id;
+  get id(): string {
+    return this.props.id;
   }
 
   get title(): string {
-    return this._title;
+    return this.props.title;
   }
 
   get content(): string {
-    return this._content;
+    return this.props.content;
   }
 
   get image(): string | undefined {
-    return this._image;
+    return this.props.image;
   }
 
-  get author(): UserDomain {
-    return this._author;
+  get author(): User {
+    return this.props.author;
   }
 
-  get category(): CategoryDomain {
-    return this._category;
+  get category(): Category {
+    return this.props.category;
   }
 
   get status(): NewsStatus {
-    return this._status;
+    return this.props.status;
   }
 
   get publishedAt(): Date | undefined {
-    return this._publishedAt;
+    return this.props.publishedAt ? new Date(this.props.publishedAt.getTime()) : undefined;
   }
 
   get scheduledAt(): Date | undefined {
-    return this._scheduledAt;
+    return this.props.scheduledAt ? new Date(this.props.scheduledAt.getTime()) : undefined;
   }
 
   get createdAt(): Date {
-    return this._createdAt;
+    return new Date(this.props.createdAt.getTime());
   }
 
   get updatedAt(): Date {
-    return this._updatedAt;
+    return new Date(this.props.updatedAt.getTime());
   }
 
-  get tags(): TagDomain[] {
-    return [...this._tags];
+  get tags(): Tag[] {
+    return [...this.props.tags];
   }
 
   // ── Business methods ───────────────────────────────────────────────────────
 
   publish(): void {
-    this._status = NewsStatus.published;
-    this._publishedAt = new Date();
-    this._updatedAt = new Date();
+    this.props.status = NewsStatus.published;
+    this.props.publishedAt = new Date();
+    this.props.updatedAt = new Date();
   }
 
   archive(): void {
-    this._status = NewsStatus.archived;
-    this._updatedAt = new Date();
+    this.props.status = NewsStatus.archived;
+    this.props.updatedAt = new Date();
   }
 
   updateContent(data: {
     title?: string;
     content?: string;
     image?: string;
-    category?: CategoryDomain;
-    tags?: TagDomain[];
+    category?: Category;
+    tags?: Tag[];
     status?: NewsStatus;
     scheduledAt?: Date;
   }): void {
-    if (data.title !== undefined) this._title = data.title;
-    if (data.content !== undefined) this._content = data.content;
-    if (data.image !== undefined) this._image = data.image;
-    if (data.category !== undefined) this._category = data.category;
-    if (data.tags !== undefined) this._tags = [...data.tags];
-    if (data.status !== undefined) this._status = data.status;
-    if (data.scheduledAt !== undefined) this._scheduledAt = data.scheduledAt;
-    this._updatedAt = new Date();
+    if (data.title !== undefined) this.props.title = data.title;
+    if (data.content !== undefined) this.props.content = data.content;
+    if (data.image !== undefined) this.props.image = data.image;
+    if (data.category !== undefined) this.props.category = data.category;
+    if (data.tags !== undefined) this.props.tags = [...data.tags];
+    if (data.status !== undefined) this.props.status = data.status;
+    if (data.scheduledAt !== undefined) this.props.scheduledAt = data.scheduledAt;
+    this.props.updatedAt = new Date();
   }
 }

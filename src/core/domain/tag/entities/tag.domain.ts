@@ -1,25 +1,26 @@
-export class TagDomain {
-  private readonly _id: number | undefined;
-  private readonly _name: string;
+import { randomUUID } from 'crypto';
 
-  private constructor(id: number | undefined, name: string) {
-    this._id = id;
-    this._name = name;
+export interface TagProps {
+  id: string;
+  name: string;
+}
+
+export class Tag {
+  private constructor(private readonly props: TagProps) {}
+
+  static create(name: string): Tag {
+    return new Tag({ id: randomUUID(), name });
   }
 
-  static create(name: string): TagDomain {
-    return new TagDomain(undefined, name);
+  static reconstitute(props: TagProps): Tag {
+    return new Tag(props);
   }
 
-  static reconstitute(id: number, name: string): TagDomain {
-    return new TagDomain(id, name);
-  }
-
-  get id(): number | undefined {
-    return this._id;
+  get id(): string {
+    return this.props.id;
   }
 
   get name(): string {
-    return this._name;
+    return this.props.name;
   }
 }

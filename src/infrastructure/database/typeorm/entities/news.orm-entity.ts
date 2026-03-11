@@ -16,8 +16,8 @@ import { NewsStatus } from '../../../../core/shared/enums/news-status.enum';
 
 @Entity('news')
 export class NewsOrmEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column({ nullable: false })
   title!: string;

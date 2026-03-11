@@ -1,12 +1,12 @@
-import { NewsDomain } from '../../../../core/domain/news/entities/news.domain';
+import { News } from '../../../../core/domain/news/entities/news.domain';
 import { NewsOrmEntity } from '../entities/news.orm-entity';
 import { UserMapper } from './user.mapper';
 import { CategoryMapper } from './category.mapper';
 import { TagMapper } from './tag.mapper';
 
 export class NewsMapper {
-  static toDomain(orm: NewsOrmEntity): NewsDomain {
-    return NewsDomain.reconstitute({
+  static toDomain(orm: NewsOrmEntity): News {
+    return News.reconstitute({
       id: orm.id,
       title: orm.title,
       content: orm.content,

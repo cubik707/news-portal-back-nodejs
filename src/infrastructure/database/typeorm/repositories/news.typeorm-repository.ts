@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { NewsOrmEntity } from '../entities/news.orm-entity';
 import { INewsRepository } from '../../../../core/domain/news/repositories/news.repository.interface';
-import { NewsDomain } from '../../../../core/domain/news/entities/news.domain';
+import { News } from '../../../../core/domain/news/entities/news.domain';
 import { NewsStatus } from '../../../../core/shared/enums/news-status.enum';
 import { NewsMapper } from '../mappers/news.mapper';
 import { CategoryOrmEntity } from '../entities/category.orm-entity';
@@ -26,17 +26,17 @@ export class NewsTypeormRepository implements INewsRepository {
     return ['author', 'author.userInfo', 'author.roles', 'category', 'tags'];
   }
 
-  async findAll(): Promise<NewsDomain[]> {
+  async findAll(): Promise<News[]> {
     const entities = await this.repo.find({ relations: this.relations });
     return entities.map(NewsMapper.toDomain);
   }
 
-  async findById(id: number): Promise<NewsDomain | null> {
+  async findById(id: string): Promise<News | null> {
     const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     return entity ? NewsMapper.toDomain(entity) : null;
   }
 
-  async findByCategory(categoryId: number): Promise<NewsDomain[]> {
+  async findByCategory(categoryId: string): Promise<News[]> {
     const entities = await this.repo.find({
       where: { category: { id: categoryId } },
       relations: this.relations,
@@ -44,12 +44,12 @@ export class NewsTypeormRepository implements INewsRepository {
     return entities.map(NewsMapper.toDomain);
   }
 
-  async findByStatus(status: NewsStatus): Promise<NewsDomain[]> {
+  async findByStatus(status: NewsStatus): Promise<News[]> {
     const entities = await this.repo.find({ where: { status }, relations: this.relations });
     return entities.map(NewsMapper.toDomain);
   }
 
-  async findByStatusAndAuthor(status: NewsStatus, authorId: number): Promise<NewsDomain[]> {
+  async findByStatusAndAuthor(status: NewsStatus, authorId: string): Promise<News[]> {
     const entities = await this.repo.find({
       where: { status, author: { id: authorId } },
       relations: this.relations,
@@ -57,7 +57,7 @@ export class NewsTypeormRepository implements INewsRepository {
     return entities.map(NewsMapper.toDomain);
   }
 
-  async findByCategoryAndStatus(categoryId: number, status: NewsStatus): Promise<NewsDomain[]> {
+  async findByCategoryAndStatus(categoryId: string, status: NewsStatus): Promise<News[]> {
     const entities = await this.repo.find({
       where: { category: { id: categoryId }, status },
       relations: this.relations,
@@ -65,18 +65,19 @@ export class NewsTypeormRepository implements INewsRepository {
     return entities.map(NewsMapper.toDomain);
   }
 
-  async save(news: NewsDomain): Promise<NewsDomain> {
+  async save(news: News): Promise<News> {
     const author = await this.userRepo.findOne({
-      where: { id: news.author.id! },
+      where: { id: news.author.id },
       relations: ['roles', 'userInfo'],
     });
     const category = await this.categoryRepo.findOne({
-      where: { id: news.category.id! },
+      where: { id: news.category.id },
     });
-    const tagIds = news.tags.map((t) => t.id!).filter(Boolean);
+    const tagIds = news.tags.map((t) => t.id).filter(Boolean);
     const tags = tagIds.length > 0 ? await this.tagRepo.findBy({ id: In(tagIds) }) : [];
 
     const entity = new NewsOrmEntity();
+    entity.id = news.id;
     entity.title = news.title;
     entity.content = news.content;
     entity.image = news.image!;
@@ -92,7 +93,7 @@ export class NewsTypeormRepository implements INewsRepository {
     return NewsMapper.toDomain(found!);
   }
 
-  async update(id: number, news: NewsDomain): Promise<NewsDomain> {
+  async update(id: string, news: News): Promise<News> {
     const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     if (!entity) throw new Error(`News ${id} not found`);
 
@@ -103,10 +104,10 @@ export class NewsTypeormRepository implements INewsRepository {
     entity.publishedAt = news.publishedAt!;
     entity.scheduledAt = news.scheduledAt!;
 
-    const category = await this.categoryRepo.findOne({ where: { id: news.category.id! } });
+    const category = await this.categoryRepo.findOne({ where: { id: news.category.id } });
     if (category) entity.category = category;
 
-    const tagIds = news.tags.map((t) => t.id!).filter(Boolean);
+    const tagIds = news.tags.map((t) => t.id).filter(Boolean);
     entity.tags = tagIds.length > 0 ? await this.tagRepo.findBy({ id: In(tagIds) }) : [];
 
     await this.repo.save(entity);
@@ -114,7 +115,7 @@ export class NewsTypeormRepository implements INewsRepository {
     return NewsMapper.toDomain(updated!);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.repo.delete(id);
   }
 }

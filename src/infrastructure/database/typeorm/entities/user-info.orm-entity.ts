@@ -3,8 +3,8 @@ import { UserOrmEntity } from './user.orm-entity';
 
 @Entity('users_info')
 export class UserInfoOrmEntity {
-  @PrimaryColumn({ name: 'user_id' })
-  userId!: number;
+  @PrimaryColumn({ name: 'user_id', type: 'uuid' })
+  userId!: string;
 
   @OneToOne(() => UserOrmEntity, (user) => user.userInfo)
   @JoinColumn({ name: 'user_id' })

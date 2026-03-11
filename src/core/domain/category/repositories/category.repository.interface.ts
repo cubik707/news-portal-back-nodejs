@@ -1,11 +1,11 @@
-import { CategoryDomain } from '../entities/category.domain';
+import { Category } from '../entities/category.domain';
 
 export interface ICategoryRepository {
-  findAll(): Promise<CategoryDomain[]>;
-  findById(id: number): Promise<CategoryDomain | null>;
-  save(category: CategoryDomain): Promise<CategoryDomain>;
-  update(id: number, category: CategoryDomain): Promise<CategoryDomain>;
-  delete(id: number): Promise<void>;
+  findAll(): Promise<Category[]>;
+  findById(id: string): Promise<Category | null>;
+  save(category: Category): Promise<Category>;
+  update(id: string, category: Category): Promise<Category>;
+  delete(id: string): Promise<void>;
 }
 
 export const CATEGORY_REPOSITORY = Symbol('CATEGORY_REPOSITORY');

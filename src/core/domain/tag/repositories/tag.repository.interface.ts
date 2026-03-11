@@ -1,10 +1,10 @@
-import { TagDomain } from '../entities/tag.domain';
+import { Tag } from '../entities/tag.domain';
 
 export interface ITagRepository {
-  findAll(): Promise<TagDomain[]>;
-  findById(id: number): Promise<TagDomain | null>;
-  findLastThree(): Promise<TagDomain[]>;
-  save(tag: TagDomain): Promise<TagDomain>;
+  findAll(): Promise<Tag[]>;
+  findById(id: string): Promise<Tag | null>;
+  findLastThree(): Promise<Tag[]>;
+  save(tag: Tag): Promise<Tag>;
 }
 
 export const TAG_REPOSITORY = Symbol('TAG_REPOSITORY');

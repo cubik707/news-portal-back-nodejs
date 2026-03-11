@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserOrmEntity } from '../entities/user.orm-entity';
 import { IUserRepository } from '../../../../core/domain/user/repositories/user.repository.interface';
-import { UserDomain } from '../../../../core/domain/user/entities/user.domain';
+import { User } from '../../../../core/domain/user/entities/user.domain';
 import { UserRole } from '../../../../core/shared/enums/user-role.enum';
 import { UserMapper } from '../mappers/user.mapper';
 import { RoleOrmEntity } from '../entities/role.orm-entity';
@@ -21,28 +21,29 @@ export class UserTypeormRepository implements IUserRepository {
     return ['roles', 'userInfo'];
   }
 
-  async findAll(): Promise<UserDomain[]> {
+  async findAll(): Promise<User[]> {
     const entities = await this.repo.find({ relations: this.relations });
     return entities.map(UserMapper.toDomain);
   }
 
-  async findById(id: number): Promise<UserDomain | null> {
+  async findById(id: string): Promise<User | null> {
     const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
-  async findByUsername(username: string): Promise<UserDomain | null> {
+  async findByUsername(username: string): Promise<User | null> {
     const entity = await this.repo.findOne({ where: { username }, relations: this.relations });
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
-  async findByEmail(email: string): Promise<UserDomain | null> {
+  async findByEmail(email: string): Promise<User | null> {
     const entity = await this.repo.findOne({ where: { email }, relations: this.relations });
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
-  async save(user: UserDomain): Promise<UserDomain> {
+  async save(user: User): Promise<User> {
     const entity = new UserOrmEntity();
+    entity.id = user.id;
     entity.username = user.username;
     entity.email = user.email.getValue();
     entity.passwordHash = user.passwordHash.getValue();
@@ -70,7 +71,7 @@ export class UserTypeormRepository implements IUserRepository {
     return UserMapper.toDomain(found!);
   }
 
-  async update(id: number, user: UserDomain): Promise<UserDomain> {
+  async update(id: string, user: User): Promise<User> {
     const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     if (!entity) throw new Error(`User ${id} not found`);
 
@@ -93,17 +94,17 @@ export class UserTypeormRepository implements IUserRepository {
     return UserMapper.toDomain(updated!);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.repo.delete(id);
   }
 
-  async approve(id: number): Promise<UserDomain> {
+  async approve(id: string): Promise<User> {
     await this.repo.update(id, { isApproved: true });
     const approved = await this.repo.findOne({ where: { id }, relations: this.relations });
     return UserMapper.toDomain(approved!);
   }
 
-  async assignRole(id: number, role: UserRole): Promise<UserDomain> {
+  async assignRole(id: string, role: UserRole): Promise<User> {
     const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     if (!entity) throw new Error(`User ${id} not found`);
 
@@ -119,7 +120,7 @@ export class UserTypeormRepository implements IUserRepository {
     return UserMapper.toDomain(withRole!);
   }
 
-  async removeRole(id: number, role: UserRole): Promise<UserDomain> {
+  async removeRole(id: string, role: UserRole): Promise<User> {
     const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     if (!entity) throw new Error(`User ${id} not found`);
 
