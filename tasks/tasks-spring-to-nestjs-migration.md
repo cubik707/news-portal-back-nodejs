@@ -198,9 +198,9 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 2.5 Create `src/core/domain/user/entities/user.domain.ts` — pure TS `UserDomain` class with all fields (id, username, email, passwordHash, isApproved, roles, createdAt, and optional profile fields) and a `hasRole(role)` method
   - [x] 2.6 Create `src/core/domain/user/repositories/user.repository.interface.ts` — `IUserRepository` interface with methods: `findAll`, `findById`, `findByUsername`, `findByEmail`, `save`, `update`, `delete`, `approve`, `assignRole`, `removeRole`; export `USER_REPOSITORY` symbol
   - [x] 2.7 Create user domain exceptions: `user-not-found.exception.ts`, `user-already-exists.exception.ts`, `user-email-already-exists.exception.ts`, `user-not-approved.exception.ts` — all extend `BusinessException`
-  - [ ] 2.8 Create `src/core/domain/news/entities/news.domain.ts` — pure TS `NewsDomain` class with all fields
-  - [ ] 2.9 Create `src/core/domain/news/repositories/news.repository.interface.ts` — `INewsRepository` with methods: `findAll`, `findById`, `findByCategory`, `findByStatus`, `findByStatusAndAuthor`, `findByCategoryAndStatus`, `save`, `update`, `delete`; export `NEWS_REPOSITORY` symbol
-  - [ ] 2.10 Create `src/core/domain/news/exceptions/news-not-found.exception.ts`
+  - [x] 2.8 Create `src/core/domain/news/entities/news.domain.ts` — pure TS `NewsDomain` class with all fields
+  - [x] 2.9 Create `src/core/domain/news/repositories/news.repository.interface.ts` — `INewsRepository` with methods: `findAll`, `findById`, `findByCategory`, `findByStatus`, `findByStatusAndAuthor`, `findByCategoryAndStatus`, `save`, `update`, `delete`; export `NEWS_REPOSITORY` symbol
+  - [x] 2.10 Create `src/core/domain/news/exceptions/news-not-found.exception.ts`
   - [ ] 2.11 Create `src/core/domain/category/repositories/category.repository.interface.ts` — `ICategoryRepository` with `findAll`, `findById`, `save`, `update`, `delete`; export `CATEGORY_REPOSITORY` symbol
   - [ ] 2.12 Create `src/core/domain/category/exceptions/category-not-found.exception.ts`
   - [ ] 2.13 Create `src/core/domain/tag/repositories/tag.repository.interface.ts` — `ITagRepository` with `findAll`, `findById`, `findLastThree`, `save`; export `TAG_REPOSITORY` symbol
