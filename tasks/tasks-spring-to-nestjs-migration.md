@@ -175,18 +175,18 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ---
 
-- [ ] 1.0 Project Scaffold & Global Configuration
-  - [ ] 1.1 Remove the default NestJS scaffold boilerplate (`app.controller.ts`, `app.controller.spec.ts`, `app.service.ts`) and clean up `app.module.ts`
-  - [ ] 1.2 Update `tsconfig.json` to enable strict mode: `"strict": true`, `"strictNullChecks": true`, `"noImplicitAny": true`, `"experimentalDecorators": true`, `"emitDecoratorMetadata": true`
-  - [ ] 1.3 Install all required dependencies: `@nestjs/jwt`, `@nestjs/passport`, `passport`, `passport-jwt`, `@nestjs/typeorm`, `typeorm`, `pg`, `@nestjs/config`, `@nestjs/platform-express`, `multer`, `bcrypt`, `class-validator`, `class-transformer`, `nodemailer`
-  - [ ] 1.4 Install all required dev dependencies: `@types/passport-jwt`, `@types/bcrypt`, `@types/multer`, `@types/nodemailer`
-  - [ ] 1.5 Create `.env` file with all required variables: `DATABASE_URL`, `JWT_SECRET`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `UPLOAD_DIR`, `NODE_ENV`
-  - [ ] 1.6 Create `.env.example` with the same keys but empty values; add `.env` to `.gitignore`
-  - [ ] 1.7 Create `src/presentation/shared/response/success-response.dto.ts` — `SuccessResponseDto<T>` with `data`, `message`, `status` fields
-  - [ ] 1.8 Create `src/presentation/shared/response/error-response.dto.ts` — `ErrorResponseDto` with `error`, `message`, `status` fields
-  - [ ] 1.9 Create `src/presentation/shared/filters/global-exception.filter.ts` — catches `BusinessException` and `HttpException`, returns `{ error, message, status }` envelope
-  - [ ] 1.10 Update `src/main.ts`: set port to `8080`, enable CORS for `localhost:5173` and `localhost:5174` with `credentials: true`, apply global `ValidationPipe` (`whitelist: true, transform: true`), apply `GlobalExceptionFilter`
-  - [ ] 1.11 Update `src/app.module.ts` to import `ConfigModule.forRoot({ isGlobal: true })`
+- [x] 1.0 Project Scaffold & Global Configuration
+  - [x] 1.1 Remove the default NestJS scaffold boilerplate (`app.controller.ts`, `app.controller.spec.ts`, `app.service.ts`) and clean up `app.module.ts`
+  - [x] 1.2 Update `tsconfig.json` to enable strict mode: `"strict": true`, `"strictNullChecks": true`, `"noImplicitAny": true`, `"experimentalDecorators": true`, `"emitDecoratorMetadata": true`
+  - [x] 1.3 Install all required dependencies: `@nestjs/jwt`, `@nestjs/passport`, `passport`, `passport-jwt`, `@nestjs/typeorm`, `typeorm`, `pg`, `@nestjs/config`, `@nestjs/platform-express`, `multer`, `bcrypt`, `class-validator`, `class-transformer`, `nodemailer`
+  - [x] 1.4 Install all required dev dependencies: `@types/passport-jwt`, `@types/bcrypt`, `@types/multer`, `@types/nodemailer`
+  - [x] 1.5 Create `.env` file with all required variables: `DATABASE_URL`, `JWT_SECRET`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `UPLOAD_DIR`, `NODE_ENV`
+  - [x] 1.6 Create `.env.example` with the same keys but empty values; add `.env` to `.gitignore`
+  - [x] 1.7 Create `src/presentation/shared/response/success-response.dto.ts` — `SuccessResponseDto<T>` with `data`, `message`, `status` fields
+  - [x] 1.8 Create `src/presentation/shared/response/error-response.dto.ts` — `ErrorResponseDto` with `error`, `message`, `status` fields
+  - [x] 1.9 Create `src/presentation/shared/filters/global-exception.filter.ts` — catches `BusinessException` and `HttpException`, returns `{ error, message, status }` envelope
+  - [x] 1.10 Update `src/main.ts`: set port to `8080`, enable CORS for `localhost:5173` and `localhost:5174` with `credentials: true`, apply global `ValidationPipe` (`whitelist: true, transform: true`), apply `GlobalExceptionFilter`
+  - [x] 1.11 Update `src/app.module.ts` to import `ConfigModule.forRoot({ isGlobal: true })`
 
 ---
 
