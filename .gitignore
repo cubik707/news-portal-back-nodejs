@@ -1,7 +1,15 @@
 ### VS Code ###
 .vscode/
 
-.env
+.idea/
 
-ai-dev-tasks
-node_modules
+.env
+npm-debug.log
+yarn-error.log
+
+ai-dev-tasks/
+node_modules/
+dist/
+build/
+
+*.tsbuildinfo
