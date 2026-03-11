@@ -21,17 +21,14 @@ export class CategoryTypeormRepository implements ICategoryRepository {
     return entity ? CategoryMapper.toDomain(entity) : null;
   }
 
-  async save(category: Partial<CategoryDomain>): Promise<CategoryDomain> {
+  async save(category: CategoryDomain): Promise<CategoryDomain> {
     const entity = this.repo.create({ name: category.name });
     const saved = await this.repo.save(entity);
     return CategoryMapper.toDomain(saved);
   }
 
-  async update(
-    id: number,
-    data: Partial<CategoryDomain>,
-  ): Promise<CategoryDomain> {
-    await this.repo.update(id, { name: data.name });
+  async update(id: number, category: CategoryDomain): Promise<CategoryDomain> {
+    await this.repo.update(id, { name: category.name });
     const updated = await this.repo.findOne({ where: { id } });
     return CategoryMapper.toDomain(updated!);
   }

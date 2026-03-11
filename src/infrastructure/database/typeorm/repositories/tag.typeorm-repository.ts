@@ -22,14 +22,11 @@ export class TagTypeormRepository implements ITagRepository {
   }
 
   async findLastThree(): Promise<TagDomain[]> {
-    const entities = await this.repo.find({
-      order: { id: 'DESC' },
-      take: 3,
-    });
+    const entities = await this.repo.find({ order: { id: 'DESC' }, take: 3 });
     return entities.map(TagMapper.toDomain);
   }
 
-  async save(tag: Partial<TagDomain>): Promise<TagDomain> {
+  async save(tag: TagDomain): Promise<TagDomain> {
     const entity = this.repo.create({ name: tag.name });
     const saved = await this.repo.save(entity);
     return TagMapper.toDomain(saved);

@@ -3,9 +3,6 @@ import { TagOrmEntity } from '../entities/tag.orm-entity';
 
 export class TagMapper {
   static toDomain(orm: TagOrmEntity): TagDomain {
-    const domain = new TagDomain();
-    domain.id = orm.id;
-    domain.name = orm.name;
-    return domain;
+    return TagDomain.reconstitute(orm.id, orm.name);
   }
 }

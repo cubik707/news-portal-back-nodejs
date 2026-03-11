@@ -6,21 +6,19 @@ import { TagMapper } from './tag.mapper';
 
 export class NewsMapper {
   static toDomain(orm: NewsOrmEntity): NewsDomain {
-    const domain = new NewsDomain();
-    domain.id = orm.id;
-    domain.title = orm.title;
-    domain.content = orm.content;
-    domain.image = orm.image ?? undefined;
-    domain.status = orm.status;
-    domain.publishedAt = orm.publishedAt ?? undefined;
-    domain.scheduledAt = orm.scheduledAt ?? undefined;
-    domain.createdAt = orm.createdAt;
-    domain.updatedAt = orm.updatedAt;
-    domain.author = orm.author ? UserMapper.toDomain(orm.author) : undefined!;
-    domain.category = orm.category
-      ? CategoryMapper.toDomain(orm.category)
-      : undefined!;
-    domain.tags = (orm.tags ?? []).map(TagMapper.toDomain);
-    return domain;
+    return NewsDomain.reconstitute({
+      id: orm.id,
+      title: orm.title,
+      content: orm.content,
+      image: orm.image || undefined,
+      status: orm.status,
+      publishedAt: orm.publishedAt || undefined,
+      scheduledAt: orm.scheduledAt || undefined,
+      createdAt: orm.createdAt,
+      updatedAt: orm.updatedAt,
+      author: UserMapper.toDomain(orm.author),
+      category: CategoryMapper.toDomain(orm.category),
+      tags: (orm.tags ?? []).map(TagMapper.toDomain),
+    });
   }
 }

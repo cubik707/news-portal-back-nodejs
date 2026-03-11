@@ -27,45 +27,35 @@ export class UserTypeormRepository implements IUserRepository {
   }
 
   async findById(id: number): Promise<UserDomain | null> {
-    const entity = await this.repo.findOne({
-      where: { id },
-      relations: this.relations,
-    });
+    const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
   async findByUsername(username: string): Promise<UserDomain | null> {
-    const entity = await this.repo.findOne({
-      where: { username },
-      relations: this.relations,
-    });
+    const entity = await this.repo.findOne({ where: { username }, relations: this.relations });
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
   async findByEmail(email: string): Promise<UserDomain | null> {
-    const entity = await this.repo.findOne({
-      where: { email },
-      relations: this.relations,
-    });
+    const entity = await this.repo.findOne({ where: { email }, relations: this.relations });
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
-  async save(user: Partial<UserDomain>): Promise<UserDomain> {
-    const entity = this.repo.create({
-      username: user.username,
-      email: user.email,
-      passwordHash: user.passwordHash,
-      isApproved: user.isApproved ?? false,
-      roles: [],
-    });
+  async save(user: UserDomain): Promise<UserDomain> {
+    const entity = new UserOrmEntity();
+    entity.username = user.username;
+    entity.email = user.email.getValue();
+    entity.passwordHash = user.passwordHash.getValue();
+    entity.isApproved = user.isApproved;
+    entity.roles = [];
 
     const saved = await this.repo.save(entity);
 
     const userInfo = new UserInfoOrmEntity();
     userInfo.userId = saved.id;
     userInfo.user = saved;
-    userInfo.lastName = user.lastName ?? '';
-    userInfo.firstName = user.firstName ?? '';
+    userInfo.lastName = user.lastName;
+    userInfo.firstName = user.firstName;
     userInfo.surname = user.surname ?? '';
     userInfo.position = user.position ?? '';
     userInfo.department = user.department ?? '';
@@ -80,28 +70,22 @@ export class UserTypeormRepository implements IUserRepository {
     return UserMapper.toDomain(found!);
   }
 
-  async update(id: number, data: Partial<UserDomain>): Promise<UserDomain> {
-    const entity = await this.repo.findOne({
-      where: { id },
-      relations: this.relations,
-    });
+  async update(id: number, user: UserDomain): Promise<UserDomain> {
+    const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     if (!entity) throw new Error(`User ${id} not found`);
 
-    if (data.username !== undefined) entity.username = data.username;
-    if (data.email !== undefined) entity.email = data.email;
-    if (data.passwordHash !== undefined) entity.passwordHash = data.passwordHash;
-    if (data.isApproved !== undefined) entity.isApproved = data.isApproved;
+    entity.username = user.username;
+    entity.email = user.email.getValue();
+    entity.passwordHash = user.passwordHash.getValue();
+    entity.isApproved = user.isApproved;
 
     if (entity.userInfo) {
-      if (data.lastName !== undefined) entity.userInfo.lastName = data.lastName;
-      if (data.firstName !== undefined)
-        entity.userInfo.firstName = data.firstName;
-      if (data.surname !== undefined) entity.userInfo.surname = data.surname;
-      if (data.position !== undefined) entity.userInfo.position = data.position;
-      if (data.department !== undefined)
-        entity.userInfo.department = data.department;
-      if (data.avatarUrl !== undefined)
-        entity.userInfo.avatarUrl = data.avatarUrl;
+      entity.userInfo.lastName = user.lastName;
+      entity.userInfo.firstName = user.firstName;
+      entity.userInfo.surname = user.surname ?? '';
+      entity.userInfo.position = user.position ?? '';
+      entity.userInfo.department = user.department ?? '';
+      entity.userInfo.avatarUrl = user.avatarUrl ?? '';
     }
 
     await this.repo.save(entity);
@@ -120,17 +104,13 @@ export class UserTypeormRepository implements IUserRepository {
   }
 
   async assignRole(id: number, role: UserRole): Promise<UserDomain> {
-    const entity = await this.repo.findOne({
-      where: { id },
-      relations: this.relations,
-    });
+    const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     if (!entity) throw new Error(`User ${id} not found`);
 
     const roleEntity = await this.roleRepo.findOne({ where: { name: role } });
     if (!roleEntity) throw new Error(`Role ${role} not found`);
 
-    const alreadyHas = entity.roles.some((r) => r.name === role);
-    if (!alreadyHas) {
+    if (!entity.roles.some((r) => r.name === role)) {
       entity.roles.push(roleEntity);
       await this.repo.save(entity);
     }
@@ -140,10 +120,7 @@ export class UserTypeormRepository implements IUserRepository {
   }
 
   async removeRole(id: number, role: UserRole): Promise<UserDomain> {
-    const entity = await this.repo.findOne({
-      where: { id },
-      relations: this.relations,
-    });
+    const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     if (!entity) throw new Error(`User ${id} not found`);
 
     entity.roles = entity.roles.filter((r) => r.name !== role);

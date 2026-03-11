@@ -32,10 +32,7 @@ export class NewsTypeormRepository implements INewsRepository {
   }
 
   async findById(id: number): Promise<NewsDomain | null> {
-    const entity = await this.repo.findOne({
-      where: { id },
-      relations: this.relations,
-    });
+    const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     return entity ? NewsMapper.toDomain(entity) : null;
   }
 
@@ -48,17 +45,11 @@ export class NewsTypeormRepository implements INewsRepository {
   }
 
   async findByStatus(status: NewsStatus): Promise<NewsDomain[]> {
-    const entities = await this.repo.find({
-      where: { status },
-      relations: this.relations,
-    });
+    const entities = await this.repo.find({ where: { status }, relations: this.relations });
     return entities.map(NewsMapper.toDomain);
   }
 
-  async findByStatusAndAuthor(
-    status: NewsStatus,
-    authorId: number,
-  ): Promise<NewsDomain[]> {
+  async findByStatusAndAuthor(status: NewsStatus, authorId: number): Promise<NewsDomain[]> {
     const entities = await this.repo.find({
       where: { status, author: { id: authorId } },
       relations: this.relations,
@@ -66,10 +57,7 @@ export class NewsTypeormRepository implements INewsRepository {
     return entities.map(NewsMapper.toDomain);
   }
 
-  async findByCategoryAndStatus(
-    categoryId: number,
-    status: NewsStatus,
-  ): Promise<NewsDomain[]> {
+  async findByCategoryAndStatus(categoryId: number, status: NewsStatus): Promise<NewsDomain[]> {
     const entities = await this.repo.find({
       where: { category: { id: categoryId }, status },
       relations: this.relations,
@@ -77,24 +65,22 @@ export class NewsTypeormRepository implements INewsRepository {
     return entities.map(NewsMapper.toDomain);
   }
 
-  async save(news: Partial<NewsDomain>): Promise<NewsDomain> {
+  async save(news: NewsDomain): Promise<NewsDomain> {
     const author = await this.userRepo.findOne({
-      where: { id: news.author?.id },
+      where: { id: news.author.id! },
       relations: ['roles', 'userInfo'],
     });
     const category = await this.categoryRepo.findOne({
-      where: { id: news.category?.id },
+      where: { id: news.category.id! },
     });
-    const tags =
-      news.tags && news.tags.length > 0
-        ? await this.tagRepo.findBy({ id: In(news.tags.map((t) => t.id)) })
-        : [];
+    const tagIds = news.tags.map((t) => t.id!).filter(Boolean);
+    const tags = tagIds.length > 0 ? await this.tagRepo.findBy({ id: In(tagIds) }) : [];
 
     const entity = new NewsOrmEntity();
-    entity.title = news.title!;
-    entity.content = news.content!;
+    entity.title = news.title;
+    entity.content = news.content;
     entity.image = news.image!;
-    entity.status = news.status!;
+    entity.status = news.status;
     entity.publishedAt = news.publishedAt!;
     entity.scheduledAt = news.scheduledAt!;
     entity.author = author!;
@@ -102,40 +88,26 @@ export class NewsTypeormRepository implements INewsRepository {
     entity.tags = tags;
 
     const saved = await this.repo.save(entity);
-    const found = await this.repo.findOne({
-      where: { id: saved.id },
-      relations: this.relations,
-    });
+    const found = await this.repo.findOne({ where: { id: saved.id }, relations: this.relations });
     return NewsMapper.toDomain(found!);
   }
 
-  async update(id: number, data: Partial<NewsDomain>): Promise<NewsDomain> {
-    const entity = await this.repo.findOne({
-      where: { id },
-      relations: this.relations,
-    });
+  async update(id: number, news: NewsDomain): Promise<NewsDomain> {
+    const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     if (!entity) throw new Error(`News ${id} not found`);
 
-    if (data.title !== undefined) entity.title = data.title;
-    if (data.content !== undefined) entity.content = data.content;
-    if (data.image !== undefined) entity.image = data.image;
-    if (data.status !== undefined) entity.status = data.status;
-    if (data.publishedAt !== undefined) entity.publishedAt = data.publishedAt;
-    if (data.scheduledAt !== undefined) entity.scheduledAt = data.scheduledAt;
+    entity.title = news.title;
+    entity.content = news.content;
+    entity.image = news.image!;
+    entity.status = news.status;
+    entity.publishedAt = news.publishedAt!;
+    entity.scheduledAt = news.scheduledAt!;
 
-    if (data.category?.id !== undefined) {
-      const cat = await this.categoryRepo.findOne({
-        where: { id: data.category.id },
-      });
-      if (cat) entity.category = cat;
-    }
+    const category = await this.categoryRepo.findOne({ where: { id: news.category.id! } });
+    if (category) entity.category = category;
 
-    if (data.tags !== undefined) {
-      entity.tags =
-        data.tags.length > 0
-          ? await this.tagRepo.findBy({ id: In(data.tags.map((t) => t.id)) })
-          : [];
-    }
+    const tagIds = news.tags.map((t) => t.id!).filter(Boolean);
+    entity.tags = tagIds.length > 0 ? await this.tagRepo.findBy({ id: In(tagIds) }) : [];
 
     await this.repo.save(entity);
     const updated = await this.repo.findOne({ where: { id }, relations: this.relations });
