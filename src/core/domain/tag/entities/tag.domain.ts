@@ -1,4 +1,4 @@
 export class TagDomain {
-  id: number;
-  name: string;
+  id!: number;
+  name!: string;
 }

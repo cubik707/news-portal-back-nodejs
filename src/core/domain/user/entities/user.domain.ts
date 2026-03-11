@@ -1,17 +1,17 @@
 import { UserRole } from '../../../shared/enums/user-role.enum';
 
 export class UserDomain {
-  id: number;
-  username: string;
-  email: string;
-  passwordHash: string;
-  isApproved: boolean;
-  roles: UserRole[];
-  createdAt: Date;
+  id!: number;
+  username!: string;
+  email!: string;
+  passwordHash!: string;
+  isApproved!: boolean;
+  roles!: UserRole[];
+  createdAt!: Date;
 
   // Profile fields (from UserInfo)
-  lastName: string;
-  firstName: string;
+  lastName!: string;
+  firstName!: string;
   surname?: string;
   position?: string;
   department?: string;

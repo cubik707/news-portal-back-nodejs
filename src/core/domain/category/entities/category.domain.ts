@@ -1,4 +1,4 @@
 export class CategoryDomain {
-  id: number;
-  name: string;
+  id!: number;
+  name!: string;
 }

@@ -208,32 +208,32 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ---
 
-- [ ] 3.0 Infrastructure Layer
-  - [ ] 3.1 Create `src/infrastructure/database/typeorm/entities/role.orm-entity.ts` — `roles` table with `id` and `name` columns
-  - [ ] 3.2 Create `src/infrastructure/database/typeorm/entities/user-info.orm-entity.ts` — `user_info` table with profile fields (`firstName`, `lastName`, `surname`, `position`, `department`, `avatarUrl`)
-  - [ ] 3.3 Create `src/infrastructure/database/typeorm/entities/user.orm-entity.ts` — `users` table; `@ManyToMany` to `RoleOrmEntity` via `user_roles` join table; `@OneToOne` to `UserInfoOrmEntity`; `@ManyToMany` to `NewsCategoryOrmEntity` via `user_subscriptions`
-  - [ ] 3.4 Create `src/infrastructure/database/typeorm/entities/category.orm-entity.ts` — `news_categories` table with `id` and `name`
-  - [ ] 3.5 Create `src/infrastructure/database/typeorm/entities/tag.orm-entity.ts` — `tags` table with `id` and `name`
-  - [ ] 3.6 Create `src/infrastructure/database/typeorm/entities/news.orm-entity.ts` — `news` table; `@ManyToOne` to `UserOrmEntity` (author) and `NewsCategoryOrmEntity`; `@ManyToMany` to `TagOrmEntity` via `news_tags`; `status`, `publishedAt`, `createdAt`, `updatedAt` columns
-  - [ ] 3.7 Create `src/infrastructure/database/typeorm/entities/comment.orm-entity.ts` — `comments` table with content, `@ManyToOne` to `UserOrmEntity` and `NewsOrmEntity`, `createdAt`
-  - [ ] 3.8 Create `src/infrastructure/database/typeorm/entities/like.orm-entity.ts` — `likes` table with `@ManyToOne` to `UserOrmEntity` and `NewsOrmEntity`
-  - [ ] 3.9 Create `src/infrastructure/database/typeorm/entities/notification.orm-entity.ts` — `notifications` table with `type`, `message`, `createdAt`
-  - [ ] 3.10 Create `src/infrastructure/database/typeorm/entities/user-notification.orm-entity.ts` — `user_notifications` join table linking `UserOrmEntity` to `NotificationOrmEntity` with `isRead` flag
-  - [ ] 3.11 Create `src/infrastructure/database/typeorm/entities/news-approval.orm-entity.ts` — `news_approvals` table with status, `@ManyToOne` to `NewsOrmEntity` and reviewer `UserOrmEntity`
-  - [ ] 3.12 Create `src/infrastructure/database/typeorm/mappers/user.mapper.ts` — static `toDomain(orm: UserOrmEntity): UserDomain`
-  - [ ] 3.13 Create `src/infrastructure/database/typeorm/mappers/news.mapper.ts` — static `toDomain(orm: NewsOrmEntity): NewsDomain`
-  - [ ] 3.14 Create `src/infrastructure/database/typeorm/mappers/category.mapper.ts` and `tag.mapper.ts`
-  - [ ] 3.15 Create `src/infrastructure/database/typeorm/repositories/user.typeorm-repository.ts` — implements `IUserRepository`; all methods use `this.repo` with relations `['roles', 'userInfo']`
-  - [ ] 3.16 Create `src/infrastructure/database/typeorm/repositories/news.typeorm-repository.ts` — implements `INewsRepository`; load relations `['author', 'category', 'tags']`
-  - [ ] 3.17 Create `src/infrastructure/database/typeorm/repositories/category.typeorm-repository.ts` — implements `ICategoryRepository`
-  - [ ] 3.18 Create `src/infrastructure/database/typeorm/repositories/tag.typeorm-repository.ts` — implements `ITagRepository`; `findLastThree` orders by `id DESC` and limits to 3
-  - [ ] 3.19 Create `src/infrastructure/database/database.module.ts` — `TypeOrmModule.forRootAsync` using `ConfigService`; `synchronize: false`; `migrationsRun: true`
-  - [ ] 3.20 Create `src/infrastructure/database/data-source.ts` — standalone `DataSource` for TypeORM CLI (reads from `process.env.DATABASE_URL`)
-  - [ ] 3.21 Generate the initial TypeORM migration: `npx typeorm migration:generate src/infrastructure/database/typeorm/migrations/InitSchema -d src/infrastructure/database/data-source.ts`
-  - [ ] 3.22 Create `src/infrastructure/email/email.service.ts` — `EmailService` with `sendHtmlMessage(to, subject, html)` using Nodemailer transporter configured from `ConfigService`
-  - [ ] 3.23 Create `src/infrastructure/email/email.module.ts` — exports `EmailService`
-  - [ ] 3.24 Create `src/infrastructure/file-storage/file-storage.service.ts` — `saveFile(file, category): string` (saves to `UPLOAD_DIR/category/`) and `deleteFile(category, fileName): void`
-  - [ ] 3.25 Create `src/infrastructure/file-storage/file-storage.module.ts` — exports `FileStorageService`
+- [x] 3.0 Infrastructure Layer
+  - [x] 3.1 Create `src/infrastructure/database/typeorm/entities/role.orm-entity.ts` — `roles` table with `id` and `name` columns
+  - [x] 3.2 Create `src/infrastructure/database/typeorm/entities/user-info.orm-entity.ts` — `user_info` table with profile fields (`firstName`, `lastName`, `surname`, `position`, `department`, `avatarUrl`)
+  - [x] 3.3 Create `src/infrastructure/database/typeorm/entities/user.orm-entity.ts` — `users` table; `@ManyToMany` to `RoleOrmEntity` via `user_roles` join table; `@OneToOne` to `UserInfoOrmEntity`; `@ManyToMany` to `NewsCategoryOrmEntity` via `user_subscriptions`
+  - [x] 3.4 Create `src/infrastructure/database/typeorm/entities/category.orm-entity.ts` — `news_categories` table with `id` and `name`
+  - [x] 3.5 Create `src/infrastructure/database/typeorm/entities/tag.orm-entity.ts` — `tags` table with `id` and `name`
+  - [x] 3.6 Create `src/infrastructure/database/typeorm/entities/news.orm-entity.ts` — `news` table; `@ManyToOne` to `UserOrmEntity` (author) and `NewsCategoryOrmEntity`; `@ManyToMany` to `TagOrmEntity` via `news_tags`; `status`, `publishedAt`, `createdAt`, `updatedAt` columns
+  - [x] 3.7 Create `src/infrastructure/database/typeorm/entities/comment.orm-entity.ts` — `comments` table with content, `@ManyToOne` to `UserOrmEntity` and `NewsOrmEntity`, `createdAt`
+  - [x] 3.8 Create `src/infrastructure/database/typeorm/entities/like.orm-entity.ts` — `likes` table with `@ManyToOne` to `UserOrmEntity` and `NewsOrmEntity`
+  - [x] 3.9 Create `src/infrastructure/database/typeorm/entities/notification.orm-entity.ts` — `notifications` table with `type`, `message`, `createdAt`
+  - [x] 3.10 Create `src/infrastructure/database/typeorm/entities/user-notification.orm-entity.ts` — `user_notifications` join table linking `UserOrmEntity` to `NotificationOrmEntity` with `isRead` flag
+  - [x] 3.11 Create `src/infrastructure/database/typeorm/entities/news-approval.orm-entity.ts` — `news_approvals` table with status, `@ManyToOne` to `NewsOrmEntity` and reviewer `UserOrmEntity`
+  - [x] 3.12 Create `src/infrastructure/database/typeorm/mappers/user.mapper.ts` — static `toDomain(orm: UserOrmEntity): UserDomain`
+  - [x] 3.13 Create `src/infrastructure/database/typeorm/mappers/news.mapper.ts` — static `toDomain(orm: NewsOrmEntity): NewsDomain`
+  - [x] 3.14 Create `src/infrastructure/database/typeorm/mappers/category.mapper.ts` and `tag.mapper.ts`
+  - [x] 3.15 Create `src/infrastructure/database/typeorm/repositories/user.typeorm-repository.ts` — implements `IUserRepository`; all methods use `this.repo` with relations `['roles', 'userInfo']`
+  - [x] 3.16 Create `src/infrastructure/database/typeorm/repositories/news.typeorm-repository.ts` — implements `INewsRepository`; load relations `['author', 'category', 'tags']`
+  - [x] 3.17 Create `src/infrastructure/database/typeorm/repositories/category.typeorm-repository.ts` — implements `ICategoryRepository`
+  - [x] 3.18 Create `src/infrastructure/database/typeorm/repositories/tag.typeorm-repository.ts` — implements `ITagRepository`; `findLastThree` orders by `id DESC` and limits to 3
+  - [x] 3.19 Create `src/infrastructure/database/database.module.ts` — `TypeOrmModule.forRootAsync` using `ConfigService`; `synchronize: false`; `migrationsRun: true`
+  - [x] 3.20 Create `src/infrastructure/database/data-source.ts` — standalone `DataSource` for TypeORM CLI (reads from `process.env.DATABASE_URL`)
+  - [x] 3.21 Generate the initial TypeORM migration: `npx typeorm migration:generate src/infrastructure/database/typeorm/migrations/InitSchema -d src/infrastructure/database/data-source.ts`
+  - [x] 3.22 Create `src/infrastructure/email/email.service.ts` — `EmailService` with `sendHtmlMessage(to, subject, html)` using Nodemailer transporter configured from `ConfigService`
+  - [x] 3.23 Create `src/infrastructure/email/email.module.ts` — exports `EmailService`
+  - [x] 3.24 Create `src/infrastructure/file-storage/file-storage.service.ts` — `saveFile(file, category): string` (saves to `UPLOAD_DIR/category/`) and `deleteFile(category, fileName): void`
+  - [x] 3.25 Create `src/infrastructure/file-storage/file-storage.module.ts` — exports `FileStorageService`
 
 ---
 
