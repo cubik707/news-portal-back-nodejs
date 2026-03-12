@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { uuidv7 } from 'uuidv7';
 import { UserRole } from '../../../shared/enums/user-role.enum';
 import { Email } from '../../../shared/value-objects/email.vo';
 import { PasswordHash } from '../../../shared/value-objects/password-hash.vo';
@@ -38,7 +38,7 @@ export class User {
   static create(props: CreateUserProps): User {
     return new User({
       ...props,
-      id: randomUUID(),
+      id: uuidv7(),
       isApproved: false,
       roles: [],
       createdAt: new Date(),

@@ -57,12 +57,6 @@ const ALL_ENTITIES = [
     { provide: CATEGORY_REPOSITORY, useClass: CategoryTypeormRepository },
     { provide: TAG_REPOSITORY, useClass: TagTypeormRepository },
   ],
-  exports: [
-    TypeOrmModule,
-    USER_REPOSITORY,
-    NEWS_REPOSITORY,
-    CATEGORY_REPOSITORY,
-    TAG_REPOSITORY,
-  ],
+  exports: [TypeOrmModule, USER_REPOSITORY, NEWS_REPOSITORY, CATEGORY_REPOSITORY, TAG_REPOSITORY],
 })
 export class DatabaseModule {}

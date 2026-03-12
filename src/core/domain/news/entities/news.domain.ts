@@ -1,6 +1,6 @@
-import { randomUUID } from 'crypto';
+import { uuidv7 } from 'uuidv7';
 import { Category } from '../../category/entities/category.domain';
-import { Tag } from '../../tag/entities/tag.domain';
+import type { Tag } from '../../tag/entities/tag.domain';
 import { User } from '../../user/entities/user.domain';
 import { NewsStatus } from '../../../shared/enums/news-status.enum';
 
@@ -38,7 +38,7 @@ export class News {
     const now = new Date();
     return new News({
       ...props,
-      id: randomUUID(),
+      id: uuidv7(),
       status: props.status ?? NewsStatus.draft,
       createdAt: now,
       updatedAt: now,
@@ -97,7 +97,7 @@ export class News {
   }
 
   get tags(): Tag[] {
-    return [...this.props.tags];
+    return this.props.tags;
   }
 
   // ── Business methods ───────────────────────────────────────────────────────
