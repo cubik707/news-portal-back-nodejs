@@ -277,11 +277,11 @@ Update the file after completing each sub-task, not just after completing an ent
 ---
 
 - [ ] 5.0 Presentation Layer
-  - [ ] 5.1 Create `src/presentation/shared/guards/jwt-auth.guard.ts` — extends `AuthGuard('jwt')`
-  - [ ] 5.2 Create `src/presentation/shared/guards/roles.guard.ts` — reads `ROLES_KEY` metadata via `Reflector`, checks `user.roles` includes at least one required role, throws `ForbiddenException` otherwise
-  - [ ] 5.3 Create `src/presentation/shared/guards/approved.guard.ts` — throws `UnauthorizedException` if `user.isApproved` is false
-  - [ ] 5.4 Create `src/presentation/shared/decorators/roles.decorator.ts` — `@Roles(...roles: UserRole[])` using `SetMetadata`
-  - [ ] 5.5 Create `src/presentation/shared/decorators/current-user.decorator.ts` — `@CurrentUser()` param decorator extracting `request.user`
+  - [x] 5.1 Create `src/presentation/shared/guards/jwt-auth.guard.ts` — extends `AuthGuard('jwt')`
+  - [x] 5.2 Create `src/presentation/shared/guards/roles.guard.ts` — reads `ROLES_KEY` metadata via `Reflector`, checks `user.roles` includes at least one required role, throws `ForbiddenException` otherwise
+  - [x] 5.3 Create `src/presentation/shared/guards/approved.guard.ts` — throws `UnauthorizedException` if `user.isApproved` is false
+  - [x] 5.4 Create `src/presentation/shared/decorators/roles.decorator.ts` — `@Roles(...roles: UserRole[])` using `SetMetadata`
+  - [x] 5.5 Create `src/presentation/shared/decorators/current-user.decorator.ts` — `@CurrentUser()` param decorator extracting `request.user`
   - [ ] 5.6 Create `src/presentation/auth/jwt.strategy.ts` — `PassportStrategy(Strategy)`, reads `JWT_SECRET` from config, validates payload by loading user from repo, rejects unapproved users
   - [ ] 5.7 Create `src/presentation/auth/auth.controller.ts` — `POST /auth` returns `{ token }` (no wrapper), `POST /register` returns `SuccessResponseDto`, `GET /me` returns `SuccessResponseDto`, `GET /verify-token` returns `SuccessResponseDto`
   - [ ] 5.8 Create `src/presentation/auth/auth.module.ts` — imports `PassportModule`, `JwtModule.registerAsync` (secret from config, expiresIn 14400), provides `JwtStrategy` and auth use cases
