@@ -2,6 +2,7 @@ import { uuidv7 } from 'uuidv7';
 import { UserRole } from '../../../shared/enums/user-role.enum';
 import { Email } from '../../../shared/value-objects/email.vo';
 import { PasswordHash } from '../../../shared/value-objects/password-hash.vo';
+import { IPasswordHasher } from '../../../shared/ports/password-hasher.port';
 
 export interface UserProps {
   id: string;
@@ -144,5 +145,9 @@ export class User {
 
   hasRole(role: UserRole): boolean {
     return this.props.roles.includes(role);
+  }
+
+  async validatePassword(plain: string, hasher: IPasswordHasher): Promise<boolean> {
+    return hasher.compare(plain, this.props.passwordHash.getValue());
   }
 }
