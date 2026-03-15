@@ -8,6 +8,9 @@ import { UserMapper } from '../mappers/user.mapper';
 import { RoleOrmEntity } from '../entities/role.orm-entity';
 import { UserInfoOrmEntity } from '../entities/user-info.orm-entity';
 import { InjectRepository as InjectRepo } from '@nestjs/typeorm';
+import { Category } from '../../../../core/domain/category/entities/category.domain';
+import { CategoryOrmEntity } from '../entities/category.orm-entity';
+import { CategoryMapper } from '../mappers/category.mapper';
 
 export class UserTypeormRepository implements IUserRepository {
   constructor(
@@ -15,6 +18,8 @@ export class UserTypeormRepository implements IUserRepository {
     private readonly repo: Repository<UserOrmEntity>,
     @InjectRepo(RoleOrmEntity)
     private readonly roleRepo: Repository<RoleOrmEntity>,
+    @InjectRepo(CategoryOrmEntity)
+    private readonly categoryRepo: Repository<CategoryOrmEntity>,
   ) {}
 
   private get relations(): string[] {
@@ -129,5 +134,42 @@ export class UserTypeormRepository implements IUserRepository {
 
     const withoutRole = await this.repo.findOne({ where: { id }, relations: this.relations });
     return UserMapper.toDomain(withoutRole!);
+  }
+
+  async findSubscriptions(userId: string): Promise<Category[]> {
+    const entity = await this.repo.findOne({
+      where: { id: userId },
+      relations: ['subscribedCategories'],
+    });
+    if (!entity) return [];
+    return entity.subscribedCategories.map(CategoryMapper.toDomain);
+  }
+
+  async addSubscription(userId: string, categoryId: string): Promise<void> {
+    const entity = await this.repo.findOne({
+      where: { id: userId },
+      relations: ['subscribedCategories'],
+    });
+    if (!entity) throw new Error(`User ${userId} not found`);
+
+    const alreadySubscribed = entity.subscribedCategories.some((c) => c.id === categoryId);
+    if (!alreadySubscribed) {
+      const category = await this.categoryRepo.findOne({ where: { id: categoryId } });
+      if (category) {
+        entity.subscribedCategories.push(category);
+        await this.repo.save(entity);
+      }
+    }
+  }
+
+  async removeSubscription(userId: string, categoryId: string): Promise<void> {
+    const entity = await this.repo.findOne({
+      where: { id: userId },
+      relations: ['subscribedCategories'],
+    });
+    if (!entity) throw new Error(`User ${userId} not found`);
+
+    entity.subscribedCategories = entity.subscribedCategories.filter((c) => c.id !== categoryId);
+    await this.repo.save(entity);
   }
 }
