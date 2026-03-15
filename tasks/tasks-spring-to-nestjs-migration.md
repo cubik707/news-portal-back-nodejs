@@ -276,7 +276,7 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ---
 
-- [ ] 5.0 Presentation Layer
+- [x] 5.0 Presentation Layer
   - [x] 5.1 Create `src/presentation/shared/guards/jwt-auth.guard.ts` — extends `AuthGuard('jwt')`
   - [x] 5.2 Create `src/presentation/shared/guards/roles.guard.ts` — reads `ROLES_KEY` metadata via `Reflector`, checks `user.roles` includes at least one required role, throws `ForbiddenException` otherwise
   - [x] 5.3 Create `src/presentation/shared/guards/approved.guard.ts` — throws `UnauthorizedException` if `user.isApproved` is false
@@ -299,7 +299,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 5.20 Create `src/presentation/subscriptions/subscriptions.module.ts`
   - [x] 5.21 Create `src/presentation/files/files.controller.ts` — `POST /upload` (Multer `@UseInterceptors(FileInterceptor)`), `DELETE /delete-image` (body `{ category, fileName }`)
   - [x] 5.22 Create `src/presentation/files/files.module.ts`
-  - [ ] 5.23 Update `src/app.module.ts` to import all feature modules: `DatabaseModule`, `EmailModule`, `FileStorageModule`, `AuthModule`, `UsersModule`, `AdminModule`, `NewsModule`, `CategoriesModule`, `TagsModule`, `SubscriptionsModule`, `FilesModule`
+  - [x] 5.23 Update `src/app.module.ts` to import all feature modules: `DatabaseModule`, `EmailModule`, `FileStorageModule`, `AuthModule`, `UsersModule`, `AdminModule`, `NewsModule`, `CategoriesModule`, `TagsModule`, `SubscriptionsModule`, `FilesModule`
 
 ---
 
