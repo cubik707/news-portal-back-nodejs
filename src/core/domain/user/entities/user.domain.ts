@@ -150,4 +150,8 @@ export class User {
   async validatePassword(plain: string, hasher: IPasswordHasher): Promise<boolean> {
     return hasher.compare(plain, this.props.passwordHash.getValue());
   }
+
+  updatePasswordHash(hash: PasswordHash): void {
+    this.props.passwordHash = hash;
+  }
 }

@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { User } from '../../../core/domain/user/entities/user.domain';
 import {
   IUserRepository,
@@ -8,6 +7,10 @@ import {
 import { UserNotFoundException } from '../../../core/domain/user/exceptions/user-not-found.exception';
 import { Email } from '../../../core/shared/value-objects/email.vo';
 import { PasswordHash } from '../../../core/shared/value-objects/password-hash.vo';
+import {
+  IPasswordHasher,
+  PASSWORD_HASHER,
+} from '../../../core/shared/ports/password-hasher.port';
 
 export interface UpdateUserCommand {
   id: string;
@@ -27,6 +30,8 @@ export class UpdateUserUseCase {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
+    @Inject(PASSWORD_HASHER)
+    private readonly passwordHasher: IPasswordHasher,
   ) {}
 
   async execute(command: UpdateUserCommand): Promise<User> {
@@ -47,23 +52,8 @@ export class UpdateUserUseCase {
     });
 
     if (command.password) {
-      const hash = await bcrypt.hash(command.password, 10);
-      const updatedUser = User.reconstitute({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        passwordHash: PasswordHash.fromHash(hash),
-        isApproved: user.isApproved,
-        roles: user.roles,
-        createdAt: user.createdAt,
-        lastName: user.lastName,
-        firstName: user.firstName,
-        surname: user.surname,
-        position: user.position,
-        department: user.department,
-        avatarUrl: user.avatarUrl,
-      });
-      return this.userRepository.update(command.id, updatedUser);
+      const hash = await this.passwordHasher.hash(command.password);
+      user.updatePasswordHash(PasswordHash.fromHash(hash));
     }
 
     return this.userRepository.update(command.id, user);

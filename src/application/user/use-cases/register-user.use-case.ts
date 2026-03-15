@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { User } from '../../../core/domain/user/entities/user.domain';
 import {
   IUserRepository,
@@ -9,6 +8,10 @@ import { UserAlreadyExistsException } from '../../../core/domain/user/exceptions
 import { UserEmailAlreadyExistsException } from '../../../core/domain/user/exceptions/user-email-already-exists.exception';
 import { Email } from '../../../core/shared/value-objects/email.vo';
 import { PasswordHash } from '../../../core/shared/value-objects/password-hash.vo';
+import {
+  IPasswordHasher,
+  PASSWORD_HASHER,
+} from '../../../core/shared/ports/password-hasher.port';
 import { EmailService } from '../../../infrastructure/email/email.service';
 
 export interface RegisterUserCommand {
@@ -27,6 +30,8 @@ export class RegisterUserUseCase {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
+    @Inject(PASSWORD_HASHER)
+    private readonly passwordHasher: IPasswordHasher,
     private readonly emailService: EmailService,
   ) {}
 
@@ -41,12 +46,12 @@ export class RegisterUserUseCase {
       throw new UserEmailAlreadyExistsException(command.email);
     }
 
-    const passwordHash = await bcrypt.hash(command.password, 10);
+    const hash = await this.passwordHasher.hash(command.password);
 
     const user = User.create({
       username: command.username,
       email: new Email(command.email),
-      passwordHash: PasswordHash.fromHash(passwordHash),
+      passwordHash: PasswordHash.fromHash(hash),
       lastName: command.lastName,
       firstName: command.firstName,
       surname: command.surname,
