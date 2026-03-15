@@ -282,9 +282,9 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 5.3 Create `src/presentation/shared/guards/approved.guard.ts` — throws `UnauthorizedException` if `user.isApproved` is false
   - [x] 5.4 Create `src/presentation/shared/decorators/roles.decorator.ts` — `@Roles(...roles: UserRole[])` using `SetMetadata`
   - [x] 5.5 Create `src/presentation/shared/decorators/current-user.decorator.ts` — `@CurrentUser()` param decorator extracting `request.user`
-  - [ ] 5.6 Create `src/presentation/auth/jwt.strategy.ts` — `PassportStrategy(Strategy)`, reads `JWT_SECRET` from config, validates payload by loading user from repo, rejects unapproved users
-  - [ ] 5.7 Create `src/presentation/auth/auth.controller.ts` — `POST /auth` returns `{ token }` (no wrapper), `POST /register` returns `SuccessResponseDto`, `GET /me` returns `SuccessResponseDto`, `GET /verify-token` returns `SuccessResponseDto`
-  - [ ] 5.8 Create `src/presentation/auth/auth.module.ts` — imports `PassportModule`, `JwtModule.registerAsync` (secret from config, expiresIn 14400), provides `JwtStrategy` and auth use cases
+  - [x] 5.6 Create `src/presentation/auth/jwt.strategy.ts` — `PassportStrategy(Strategy)`, reads `JWT_SECRET` from config, validates payload by loading user from repo, rejects unapproved users
+  - [x] 5.7 Create `src/presentation/auth/auth.controller.ts` — `POST /auth` returns `{ token }` (no wrapper), `POST /register` returns `SuccessResponseDto`, `GET /me` returns `SuccessResponseDto`, `GET /verify-token` returns `SuccessResponseDto`
+  - [x] 5.8 Create `src/presentation/auth/auth.module.ts` — imports `PassportModule`, `JwtModule.registerAsync` (secret from config, expiresIn 14400), provides `JwtStrategy` and auth use cases
   - [ ] 5.9 Create `src/presentation/users/users.controller.ts` — all 6 user endpoints with correct guards (`JwtAuthGuard`, `RolesGuard`) and roles
   - [ ] 5.10 Create `src/presentation/users/users.module.ts`
   - [ ] 5.11 Create `src/presentation/admin/admin.controller.ts` — `PATCH /admin/users/:id/approve`, `PATCH /admin/users/:id/roles`, `DELETE /admin/users/:id/roles` (body contains `{ role }`), all ADMIN only
