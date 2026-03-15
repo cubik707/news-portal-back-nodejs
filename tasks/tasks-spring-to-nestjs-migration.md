@@ -287,8 +287,8 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 5.8 Create `src/presentation/auth/auth.module.ts` — imports `PassportModule`, `JwtModule.registerAsync` (secret from config, expiresIn 14400), provides `JwtStrategy` and auth use cases
   - [x] 5.9 Create `src/presentation/users/users.controller.ts` — all 6 user endpoints with correct guards (`JwtAuthGuard`, `RolesGuard`) and roles
   - [x] 5.10 Create `src/presentation/users/users.module.ts`
-  - [ ] 5.11 Create `src/presentation/admin/admin.controller.ts` — `PATCH /admin/users/:id/approve`, `PATCH /admin/users/:id/roles`, `DELETE /admin/users/:id/roles` (body contains `{ role }`), all ADMIN only
-  - [ ] 5.12 Create `src/presentation/admin/admin.module.ts`
+  - [x] 5.11 Create `src/presentation/admin/admin.controller.ts` — `PATCH /admin/users/:id/approve`, `PATCH /admin/users/:id/roles`, `DELETE /admin/users/:id/roles` (body contains `{ role }`), all ADMIN only
+  - [x] 5.12 Create `src/presentation/admin/admin.module.ts`
   - [ ] 5.13 Create `src/presentation/news/news.controller.ts` — all 9 news endpoints; note `GET /news/status` must be declared **before** `GET /news/:id` to avoid route conflict
   - [ ] 5.14 Create `src/presentation/news/news.module.ts`
   - [ ] 5.15 Create `src/presentation/categories/categories.controller.ts` — all 5 category endpoints
