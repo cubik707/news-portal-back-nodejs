@@ -295,8 +295,8 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 5.16 Create `src/presentation/categories/categories.module.ts`
   - [x] 5.17 Create `src/presentation/tags/tags.controller.ts` — all 4 tag endpoints; `GET /tags/last-three` must be declared **before** `GET /tags/:id`
   - [x] 5.18 Create `src/presentation/tags/tags.module.ts`
-  - [ ] 5.19 Create `src/presentation/subscriptions/subscriptions.controller.ts` — `@Controller('user')` prefix; all 3 subscription endpoints at `/user/subscriptions`
-  - [ ] 5.20 Create `src/presentation/subscriptions/subscriptions.module.ts`
+  - [x] 5.19 Create `src/presentation/subscriptions/subscriptions.controller.ts` — `@Controller('user')` prefix; all 3 subscription endpoints at `/user/subscriptions`
+  - [x] 5.20 Create `src/presentation/subscriptions/subscriptions.module.ts`
   - [ ] 5.21 Create `src/presentation/files/files.controller.ts` — `POST /upload` (Multer `@UseInterceptors(FileInterceptor)`), `DELETE /delete-image` (body `{ category, fileName }`)
   - [ ] 5.22 Create `src/presentation/files/files.module.ts`
   - [ ] 5.23 Update `src/app.module.ts` to import all feature modules: `DatabaseModule`, `EmailModule`, `FileStorageModule`, `AuthModule`, `UsersModule`, `AdminModule`, `NewsModule`, `CategoriesModule`, `TagsModule`, `SubscriptionsModule`, `FilesModule`
