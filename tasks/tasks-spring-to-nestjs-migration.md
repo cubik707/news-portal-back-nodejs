@@ -237,42 +237,42 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ---
 
-- [ ] 4.0 Application Layer (Use Cases & DTOs)
-  - [ ] 4.1 Create `src/application/auth/dtos/auth-request.dto.ts` — `username: string`, `password: string` with `class-validator` decorators
-  - [ ] 4.2 Create `src/application/auth/use-cases/authenticate-user.use-case.ts` — finds user by username, validates bcrypt password, checks `isApproved`, returns signed JWT with payload `{ sub: username, roles }`
-  - [ ] 4.3 Create `src/application/auth/use-cases/verify-token.use-case.ts` — validates the token is still active (used by `GET /verify-token`)
-  - [ ] 4.4 Create `src/application/user/dtos/user-registration.dto.ts` — `username`, `email`, `password`, `lastName`, `firstName`, optional `surname`, `position`, `department`
-  - [ ] 4.5 Create `src/application/user/dtos/user-response.dto.ts` — matches Java `UserResponseDTO` exactly: `id`, `username`, `email`, `lastName`, `firstName`, `surname`, `position`, `department`, `avatarUrl`, `isApproved`, `roles`
-  - [ ] 4.6 Create `src/application/user/dtos/user-for-news.dto.ts` — minimal user shape embedded in news responses
-  - [ ] 4.7 Create `src/application/user/dtos/user-subscriptions.dto.ts` — wraps list of subscribed categories
-  - [ ] 4.8 Create `src/application/user/dtos/update-role-request.dto.ts` — `role: UserRole`
-  - [ ] 4.9 Create `src/application/user/use-cases/register-user.use-case.ts` — checks for existing username/email, hashes password with bcrypt (salt 10), saves user, sends registration email via `EmailService`
-  - [ ] 4.10 Create `src/application/user/use-cases/get-user.use-case.ts` — finds by id, throws `UserNotFoundException` if not found
-  - [ ] 4.11 Create `src/application/user/use-cases/get-all-users.use-case.ts`
-  - [ ] 4.12 Create `src/application/user/use-cases/create-user.use-case.ts` — admin-side user creation (similar to register but no email sent)
-  - [ ] 4.13 Create `src/application/user/use-cases/update-user.use-case.ts` — full PUT update
-  - [ ] 4.14 Create `src/application/user/use-cases/update-user-field.use-case.ts` — partial PATCH update accepting `Record<string, any>`
-  - [ ] 4.15 Create `src/application/user/use-cases/delete-user.use-case.ts` — throws `UserNotFoundException` if not found before deleting
-  - [ ] 4.16 Create `src/application/user/use-cases/approve-user.use-case.ts`
-  - [ ] 4.17 Create `src/application/user/use-cases/assign-role.use-case.ts`
-  - [ ] 4.18 Create `src/application/user/use-cases/remove-role.use-case.ts`
-  - [ ] 4.19 Create `src/application/news/dtos/news-create.dto.ts` — `title`, `content`, optional `image`, `categoryId`, `tagIds: number[]`, `status`
-  - [ ] 4.20 Create `src/application/news/dtos/news-update.dto.ts` — same fields as create, all optional
-  - [ ] 4.21 Create `src/application/news/dtos/news-response.dto.ts` — matches Java `NewsDTO`: `id`, `title`, `content`, `image`, `author: UserForNewsDto`, `tags`, `status`, `publishedAt`, `category`
-  - [ ] 4.22 Create `src/application/news/use-cases/create-news.use-case.ts`
-  - [ ] 4.23 Create `src/application/news/use-cases/update-news.use-case.ts`
-  - [ ] 4.24 Create `src/application/news/use-cases/delete-news.use-case.ts`
-  - [ ] 4.25 Create `src/application/news/use-cases/get-all-news.use-case.ts`
-  - [ ] 4.26 Create `src/application/news/use-cases/get-news-by-id.use-case.ts`
-  - [ ] 4.27 Create `src/application/news/use-cases/get-news-by-category.use-case.ts`
-  - [ ] 4.28 Create `src/application/news/use-cases/get-news-by-status.use-case.ts`
-  - [ ] 4.29 Create `src/application/news/use-cases/get-news-by-status-and-author.use-case.ts`
-  - [ ] 4.30 Create `src/application/news/use-cases/get-news-by-category-and-status.use-case.ts`
-  - [ ] 4.31 Create category DTOs: `category-response.dto.ts` (`id`, `name`), `category-create.dto.ts` (`name: string`)
-  - [ ] 4.32 Create category use cases: `create-category`, `update-category`, `delete-category`, `get-all-categories`, `get-category-by-id`
-  - [ ] 4.33 Create tag DTOs: `tag-response.dto.ts` (`id`, `name`), `tag-create.dto.ts` (`name: string`)
-  - [ ] 4.34 Create tag use cases: `create-tag`, `get-all-tags`, `get-tag-by-id`, `get-last-three-tags`
-  - [ ] 4.35 Create subscription use cases: `get-user-subscriptions`, `subscribe`, `unsubscribe`
+- [x] 4.0 Application Layer (Use Cases & DTOs)
+  - [x] 4.1 Create `src/application/auth/dtos/auth-request.dto.ts` — `username: string`, `password: string` with `class-validator` decorators
+  - [x] 4.2 Create `src/application/auth/use-cases/authenticate-user.use-case.ts` — finds user by username, validates bcrypt password, checks `isApproved`, returns signed JWT with payload `{ sub: username, roles }`
+  - [x] 4.3 Create `src/application/auth/use-cases/verify-token.use-case.ts` — validates the token is still active (used by `GET /verify-token`)
+  - [x] 4.4 Create `src/application/user/dtos/user-registration.dto.ts` — `username`, `email`, `password`, `lastName`, `firstName`, optional `surname`, `position`, `department`
+  - [x] 4.5 Create `src/application/user/dtos/user-response.dto.ts` — matches Java `UserResponseDTO` exactly: `id`, `username`, `email`, `lastName`, `firstName`, `surname`, `position`, `department`, `avatarUrl`, `isApproved`, `roles`
+  - [x] 4.6 Create `src/application/user/dtos/user-for-news.dto.ts` — minimal user shape embedded in news responses
+  - [x] 4.7 Create `src/application/user/dtos/user-subscriptions.dto.ts` — wraps list of subscribed categories
+  - [x] 4.8 Create `src/application/user/dtos/update-role-request.dto.ts` — `role: UserRole`
+  - [x] 4.9 Create `src/application/user/use-cases/register-user.use-case.ts` — checks for existing username/email, hashes password with bcrypt (salt 10), saves user, sends registration email via `EmailService`
+  - [x] 4.10 Create `src/application/user/use-cases/get-user.use-case.ts` — finds by id, throws `UserNotFoundException` if not found
+  - [x] 4.11 Create `src/application/user/use-cases/get-all-users.use-case.ts`
+  - [x] 4.12 Create `src/application/user/use-cases/create-user.use-case.ts` — admin-side user creation (similar to register but no email sent)
+  - [x] 4.13 Create `src/application/user/use-cases/update-user.use-case.ts` — full PUT update
+  - [x] 4.14 Create `src/application/user/use-cases/update-user-field.use-case.ts` — partial PATCH update accepting `Record<string, any>`
+  - [x] 4.15 Create `src/application/user/use-cases/delete-user.use-case.ts` — throws `UserNotFoundException` if not found before deleting
+  - [x] 4.16 Create `src/application/user/use-cases/approve-user.use-case.ts`
+  - [x] 4.17 Create `src/application/user/use-cases/assign-role.use-case.ts`
+  - [x] 4.18 Create `src/application/user/use-cases/remove-role.use-case.ts`
+  - [x] 4.19 Create `src/application/news/dtos/news-create.dto.ts` — `title`, `content`, optional `image`, `categoryId`, `tagIds: number[]`, `status`
+  - [x] 4.20 Create `src/application/news/dtos/news-update.dto.ts` — same fields as create, all optional
+  - [x] 4.21 Create `src/application/news/dtos/news-response.dto.ts` — matches Java `NewsDTO`: `id`, `title`, `content`, `image`, `author: UserForNewsDto`, `tags`, `status`, `publishedAt`, `category`
+  - [x] 4.22 Create `src/application/news/use-cases/create-news.use-case.ts`
+  - [x] 4.23 Create `src/application/news/use-cases/update-news.use-case.ts`
+  - [x] 4.24 Create `src/application/news/use-cases/delete-news.use-case.ts`
+  - [x] 4.25 Create `src/application/news/use-cases/get-all-news.use-case.ts`
+  - [x] 4.26 Create `src/application/news/use-cases/get-news-by-id.use-case.ts`
+  - [x] 4.27 Create `src/application/news/use-cases/get-news-by-category.use-case.ts`
+  - [x] 4.28 Create `src/application/news/use-cases/get-news-by-status.use-case.ts`
+  - [x] 4.29 Create `src/application/news/use-cases/get-news-by-status-and-author.use-case.ts`
+  - [x] 4.30 Create `src/application/news/use-cases/get-news-by-category-and-status.use-case.ts`
+  - [x] 4.31 Create category DTOs: `category-response.dto.ts` (`id`, `name`), `category-create.dto.ts` (`name: string`)
+  - [x] 4.32 Create category use cases: `create-category`, `update-category`, `delete-category`, `get-all-categories`, `get-category-by-id`
+  - [x] 4.33 Create tag DTOs: `tag-response.dto.ts` (`id`, `name`), `tag-create.dto.ts` (`name: string`)
+  - [x] 4.34 Create tag use cases: `create-tag`, `get-all-tags`, `get-tag-by-id`, `get-last-three-tags`
+  - [x] 4.35 Create subscription use cases: `get-user-subscriptions`, `subscribe`, `unsubscribe`
 
 ---
 
