@@ -289,8 +289,8 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 5.10 Create `src/presentation/users/users.module.ts`
   - [x] 5.11 Create `src/presentation/admin/admin.controller.ts` — `PATCH /admin/users/:id/approve`, `PATCH /admin/users/:id/roles`, `DELETE /admin/users/:id/roles` (body contains `{ role }`), all ADMIN only
   - [x] 5.12 Create `src/presentation/admin/admin.module.ts`
-  - [ ] 5.13 Create `src/presentation/news/news.controller.ts` — all 9 news endpoints; note `GET /news/status` must be declared **before** `GET /news/:id` to avoid route conflict
-  - [ ] 5.14 Create `src/presentation/news/news.module.ts`
+  - [x] 5.13 Create `src/presentation/news/news.controller.ts` — all 9 news endpoints; note `GET /news/status` must be declared **before** `GET /news/:id` to avoid route conflict
+  - [x] 5.14 Create `src/presentation/news/news.module.ts`
   - [ ] 5.15 Create `src/presentation/categories/categories.controller.ts` — all 5 category endpoints
   - [ ] 5.16 Create `src/presentation/categories/categories.module.ts`
   - [ ] 5.17 Create `src/presentation/tags/tags.controller.ts` — all 4 tag endpoints; `GET /tags/last-three` must be declared **before** `GET /tags/:id`
