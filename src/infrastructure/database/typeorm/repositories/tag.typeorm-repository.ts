@@ -21,6 +21,12 @@ export class TagTypeormRepository implements ITagRepository {
     return entity ? TagMapper.toDomain(entity) : null;
   }
 
+  async findByIds(ids: string[]): Promise<Tag[]> {
+    if (ids.length === 0) return [];
+    const entities = await this.repo.findBy(ids.map((id) => ({ id })));
+    return entities.map(TagMapper.toDomain);
+  }
+
   async findLastThree(): Promise<Tag[]> {
     const entities = await this.repo.find({ order: { id: 'DESC' }, take: 3 });
     return entities.map(TagMapper.toDomain);
