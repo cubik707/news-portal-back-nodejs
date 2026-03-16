@@ -24,14 +24,20 @@ export class TagsController {
   @Get()
   async findAll(): Promise<SuccessResponseDto<TagResponseDto[]>> {
     const tags = await this.getAllTags.execute();
-    return new SuccessResponseDto(tags.map(TagResponseDto.fromDomain), 'Tags retrieved');
+    return new SuccessResponseDto(
+      tags.map((t) => TagResponseDto.fromDomain(t)),
+      'Tags retrieved',
+    );
   }
 
   // Declare static route BEFORE parameterized :id
   @Get('last-three')
   async findLastThree(): Promise<SuccessResponseDto<TagResponseDto[]>> {
     const tags = await this.getLastThreeTags.execute();
-    return new SuccessResponseDto(tags.map(TagResponseDto.fromDomain), 'Last three tags retrieved');
+    return new SuccessResponseDto(
+      tags.map((t) => TagResponseDto.fromDomain(t)),
+      'Last three tags retrieved',
+    );
   }
 
   @Get(':id')

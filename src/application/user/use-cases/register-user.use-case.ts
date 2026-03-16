@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../../../core/domain/user/entities/user.domain';
 import {
-  IUserRepository,
+  type IUserRepository,
   USER_REPOSITORY,
 } from '../../../core/domain/user/repositories/user.repository.interface';
 import { UserAlreadyExistsException } from '../../../core/domain/user/exceptions/user-already-exists.exception';
@@ -9,7 +9,7 @@ import { UserEmailAlreadyExistsException } from '../../../core/domain/user/excep
 import { Email } from '../../../core/shared/value-objects/email.vo';
 import { PasswordHash } from '../../../core/shared/value-objects/password-hash.vo';
 import {
-  IPasswordHasher,
+  type IPasswordHasher,
   PASSWORD_HASHER,
 } from '../../../core/shared/ports/password-hasher.port';
 import { EmailService } from '../../../infrastructure/email/email.service';

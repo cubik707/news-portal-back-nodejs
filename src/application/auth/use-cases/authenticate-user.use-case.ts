@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  IUserRepository,
+  type IUserRepository,
   USER_REPOSITORY,
 } from '../../../core/domain/user/repositories/user.repository.interface';
 import {
-  IPasswordHasher,
+  type IPasswordHasher,
   PASSWORD_HASHER,
 } from '../../../core/shared/ports/password-hasher.port';
-import { IJwtService, JWT_SERVICE } from '../../../core/shared/ports/jwt.port';
+import { type IJwtService, JWT_SERVICE } from '../../../core/shared/ports/jwt.port';
 import { InvalidCredentialsException } from '../../../core/domain/auth/exceptions/invalid-credentials.exception';
 import { UserNotApprovedException } from '../../../core/domain/user/exceptions/user-not-approved.exception';
 

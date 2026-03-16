@@ -1,12 +1,8 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BusinessException } from '../../../core/shared/exceptions/business.exception.js';
+
+type ErrorPayload = { status: number; error: string; message: string };
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -15,42 +11,46 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    let status: number;
-    let error: string;
-    let message: string;
+    const payload = this.resolvePayload(exception);
 
+    response.status(payload.status).json({ ...payload, path: request.url });
+  }
+
+  private resolvePayload(exception: unknown): ErrorPayload {
     if (exception instanceof BusinessException) {
-      status = exception.statusCode;
-      error = exception.name;
-      message = exception.message;
-    } else if (exception instanceof HttpException) {
-      status = exception.getStatus();
-      const res = exception.getResponse();
-      if (typeof res === 'string') {
-        message = res;
-        error = exception.name;
-      } else if (typeof res === 'object' && res !== null) {
-        const resObj = res as Record<string, unknown>;
-        message = Array.isArray(resObj['message'])
-          ? (resObj['message'] as string[]).join(', ')
-          : String(resObj['message'] ?? exception.message);
-        error = String(resObj['error'] ?? exception.name);
-      } else {
-        message = exception.message;
-        error = exception.name;
-      }
-    } else {
-      status = HttpStatus.INTERNAL_SERVER_ERROR;
-      error = 'InternalServerError';
-      message =
-        exception instanceof Error ? exception.message : 'Internal server error';
+      return { status: exception.statusCode, error: exception.name, message: exception.message };
+    }
+    if (exception instanceof HttpException) {
+      return this.resolveHttpPayload(exception);
+    }
+    return {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      error: 'InternalServerError',
+      message: exception instanceof Error ? exception.message : 'Internal server error',
+    };
+  }
+
+  private resolveHttpPayload(exception: HttpException): ErrorPayload {
+    const status = exception.getStatus();
+    const res = exception.getResponse();
+
+    if (typeof res === 'string') {
+      return { status, error: exception.name, message: res };
     }
 
-    response.status(status).json({
-      error,
-      message,
-      status,
-      path: request.url,
-    });
+    if (typeof res === 'object' && res !== null) {
+      const resObj = res as Record<string, unknown>;
+      const rawMessage = resObj['message'];
+      const message = Array.isArray(rawMessage)
+        ? (rawMessage as string[]).join(', ')
+        : typeof rawMessage === 'string'
+          ? rawMessage
+          : exception.message;
+      const rawError = resObj['error'];
+      const error = typeof rawError === 'string' ? rawError : exception.name;
+      return { status, error, message };
+    }
+
+    return { status, error: exception.name, message: exception.message };
   }
 }

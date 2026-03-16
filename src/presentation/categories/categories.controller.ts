@@ -27,7 +27,7 @@ export class CategoriesController {
   async findAll(): Promise<SuccessResponseDto<CategoryResponseDto[]>> {
     const categories = await this.getAllCategories.execute();
     return new SuccessResponseDto(
-      categories.map(CategoryResponseDto.fromDomain),
+      categories.map((c) => CategoryResponseDto.fromDomain(c)),
       'Categories retrieved',
     );
   }
