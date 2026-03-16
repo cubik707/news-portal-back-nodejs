@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Category } from '../../../core/domain/category/entities/category.domain';
 import {
-  ICategoryRepository,
+  type ICategoryRepository,
   CATEGORY_REPOSITORY,
 } from '../../../core/domain/category/repositories/category.repository.interface';
 

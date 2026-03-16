@@ -1,15 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { News } from '../../../core/domain/news/entities/news.domain';
 import {
-  INewsRepository,
+  type INewsRepository,
   NEWS_REPOSITORY,
 } from '../../../core/domain/news/repositories/news.repository.interface';
 import {
-  ICategoryRepository,
+  type ICategoryRepository,
   CATEGORY_REPOSITORY,
 } from '../../../core/domain/category/repositories/category.repository.interface';
 import {
-  ITagRepository,
+  type ITagRepository,
   TAG_REPOSITORY,
 } from '../../../core/domain/tag/repositories/tag.repository.interface';
 import { NewsNotFoundException } from '../../../core/domain/news/exceptions/news-not-found.exception';
@@ -57,7 +57,7 @@ export class UpdateNewsUseCase {
       if (found.length !== command.tagIds.length) {
         const foundIds = new Set(found.map((t) => t.id));
         const missingId = command.tagIds.find((id) => !foundIds.has(id));
-        throw new TagNotFoundException(missingId as unknown as number);
+        throw new TagNotFoundException(missingId);
       }
       tags = found;
     }

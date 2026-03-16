@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { News } from '../../../core/domain/news/entities/news.domain';
 import {
-  INewsRepository,
+  type INewsRepository,
   NEWS_REPOSITORY,
 } from '../../../core/domain/news/repositories/news.repository.interface';
 

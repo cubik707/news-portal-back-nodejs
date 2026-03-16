@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  ICategoryRepository,
+  type ICategoryRepository,
   CATEGORY_REPOSITORY,
 } from '../../../core/domain/category/repositories/category.repository.interface';
 import { CategoryNotFoundException } from '../../../core/domain/category/exceptions/category-not-found.exception';

@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  IUserRepository,
+  type IUserRepository,
   USER_REPOSITORY,
 } from '../../../core/domain/user/repositories/user.repository.interface';
 import {
-  ICategoryRepository,
+  type ICategoryRepository,
   CATEGORY_REPOSITORY,
 } from '../../../core/domain/category/repositories/category.repository.interface';
 import { UserNotFoundException } from '../../../core/domain/user/exceptions/user-not-found.exception';

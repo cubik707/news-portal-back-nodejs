@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  INewsRepository,
+  type INewsRepository,
   NEWS_REPOSITORY,
 } from '../../../core/domain/news/repositories/news.repository.interface';
 import { NewsNotFoundException } from '../../../core/domain/news/exceptions/news-not-found.exception';

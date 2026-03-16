@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
 
-interface UploadedFile {
+export interface UploadedFile {
   originalname: string;
   buffer: Buffer;
 }
@@ -16,21 +16,17 @@ export class FileStorageService {
     this.uploadDir = this.config.get<string>('UPLOAD_DIR') ?? './uploads';
   }
 
-  saveFile(file: UploadedFile, category: string): string {
+  async saveFile(file: UploadedFile, category: string): Promise<string> {
     const dir = path.join(this.uploadDir, category);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
+    await fs.promises.mkdir(dir, { recursive: true });
     const fileName = `${Date.now()}-${file.originalname}`;
     const filePath = path.join(dir, fileName);
-    fs.writeFileSync(filePath, file.buffer);
+    await fs.promises.writeFile(filePath, file.buffer);
     return `${category}/${fileName}`;
   }
 
-  deleteFile(category: string, fileName: string): void {
+  async deleteFile(category: string, fileName: string): Promise<void> {
     const filePath = path.join(this.uploadDir, category, fileName);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
+    await fs.promises.unlink(filePath).catch(() => {});
   }
 }
