@@ -7,7 +7,7 @@ import { SuccessResponseDto } from '../shared/response/success-response.dto';
 import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
-import { JwtUserPayload } from '../auth/jwt.strategy';
+import type { JwtUserPayload } from '../auth/jwt.strategy';
 
 @Controller('user')
 @UseGuards(JwtAuthGuard, ApprovedGuard)

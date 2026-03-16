@@ -19,7 +19,7 @@ import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { UserRole } from '../../core/shared/enums/user-role.enum';
-import { JwtUserPayload } from '../auth/jwt.strategy';
+import type { JwtUserPayload } from '../auth/jwt.strategy';
 
 @Controller('news')
 export class NewsController {
@@ -38,7 +38,10 @@ export class NewsController {
   @Get()
   async findAll(): Promise<SuccessResponseDto<NewsResponseDto[]>> {
     const news = await this.getAllNews.execute();
-    return new SuccessResponseDto(news.map(NewsResponseDto.fromDomain), 'News retrieved');
+    return new SuccessResponseDto(
+      news.map((n) => NewsResponseDto.fromDomain(n)),
+      'News retrieved',
+    );
   }
 
   // Declare static routes BEFORE parameterized :id to avoid conflicts
@@ -47,7 +50,10 @@ export class NewsController {
     @Query('status') status: NewsStatus,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
     const news = await this.getNewsByStatus.execute(status);
-    return new SuccessResponseDto(news.map(NewsResponseDto.fromDomain), 'News retrieved');
+    return new SuccessResponseDto(
+      news.map((n) => NewsResponseDto.fromDomain(n)),
+      'News retrieved',
+    );
   }
 
   @Get('category/:categoryId')
@@ -55,7 +61,10 @@ export class NewsController {
     @Param('categoryId') categoryId: string,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
     const news = await this.getNewsByCategory.execute(categoryId);
-    return new SuccessResponseDto(news.map(NewsResponseDto.fromDomain), 'News retrieved');
+    return new SuccessResponseDto(
+      news.map((n) => NewsResponseDto.fromDomain(n)),
+      'News retrieved',
+    );
   }
 
   @Get('category/:categoryId/status')
@@ -64,7 +73,10 @@ export class NewsController {
     @Query('status') status: NewsStatus,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
     const news = await this.getNewsByCategoryAndStatus.execute(categoryId, status);
-    return new SuccessResponseDto(news.map(NewsResponseDto.fromDomain), 'News retrieved');
+    return new SuccessResponseDto(
+      news.map((n) => NewsResponseDto.fromDomain(n)),
+      'News retrieved',
+    );
   }
 
   @Get('author/:authorId/status')
@@ -73,7 +85,10 @@ export class NewsController {
     @Query('status') status: NewsStatus,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
     const news = await this.getNewsByStatusAndAuthor.execute(authorId, status);
-    return new SuccessResponseDto(news.map(NewsResponseDto.fromDomain), 'News retrieved');
+    return new SuccessResponseDto(
+      news.map((n) => NewsResponseDto.fromDomain(n)),
+      'News retrieved',
+    );
   }
 
   @Get(':id')
