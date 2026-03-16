@@ -4,7 +4,7 @@ export class TagResponseDto {
   id!: string;
   name!: string;
 
-  static fromDomain(tag: Tag): TagResponseDto {
+  static fromDomain(this: void, tag: Tag): TagResponseDto {
     const dto = new TagResponseDto();
     dto.id = tag.id;
     dto.name = tag.name;

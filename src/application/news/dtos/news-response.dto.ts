@@ -15,7 +15,7 @@ export class NewsResponseDto {
   publishedAt?: Date;
   category!: CategoryResponseDto;
 
-  static fromDomain(news: News): NewsResponseDto {
+  static fromDomain(this: void, news: News): NewsResponseDto {
     const dto = new NewsResponseDto();
     dto.id = news.id;
     dto.title = news.title;

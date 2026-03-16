@@ -7,7 +7,7 @@ export class UserForNewsDto {
   surname?: string;
   avatarUrl?: string;
 
-  static fromDomain(user: User): UserForNewsDto {
+  static fromDomain(this: void, user: User): UserForNewsDto {
     const dto = new UserForNewsDto();
     dto.id = user.id;
     dto.firstName = user.firstName;

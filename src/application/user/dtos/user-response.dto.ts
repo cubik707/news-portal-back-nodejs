@@ -14,7 +14,7 @@ export class UserResponseDto {
   isApproved!: boolean;
   roles!: UserRole[];
 
-  static fromDomain(user: User): UserResponseDto {
+  static fromDomain(this: void, user: User): UserResponseDto {
     const dto = new UserResponseDto();
     dto.id = user.id;
     dto.username = user.username;
