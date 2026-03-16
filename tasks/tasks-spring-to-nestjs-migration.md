@@ -303,20 +303,20 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ---
 
-- [ ] 6.0 Testing (Unit & Integration Tests per Module)
-  - [ ] 6.1 Write unit tests for `authenticate-user.use-case.ts` — mock `IUserRepository` and `JwtService`; test valid credentials, wrong password, unapproved user
-  - [ ] 6.2 Write unit tests for `register-user.use-case.ts` — mock repo and `EmailService`; test successful registration, duplicate username, duplicate email
-  - [ ] 6.3 Write unit tests for `get-user.use-case.ts` — test found case and `UserNotFoundException`
-  - [ ] 6.4 Write unit tests for `approve-user.use-case.ts`, `assign-role.use-case.ts`, `remove-role.use-case.ts`
-  - [ ] 6.5 Write unit tests for `create-news.use-case.ts`, `update-news.use-case.ts`, `delete-news.use-case.ts`
-  - [ ] 6.6 Write unit tests for all news query use cases (`getById`, `getByCategory`, `getByStatus`, `getByStatusAndAuthor`, `getByCategoryAndStatus`)
-  - [ ] 6.7 Write unit tests for category use cases: create, update, delete, get all, get by id
-  - [ ] 6.8 Write unit tests for tag use cases: create, get all, get by id, get last three
-  - [ ] 6.9 Write unit tests for subscription use cases: get subscriptions, subscribe, unsubscribe
-  - [ ] 6.10 Write integration tests for auth flows (`test/auth.e2e-spec.ts`): register → approve → login → `GET /me` → `GET /verify-token`
-  - [ ] 6.11 Write integration tests for user CRUD (`test/users.e2e-spec.ts`): create, get, update (PUT + PATCH), delete, role management
-  - [ ] 6.12 Write integration tests for news CRUD (`test/news.e2e-spec.ts`): create, update, delete, all query variants
-  - [ ] 6.13 Confirm all tests pass: `npx jest` (unit) and `npx jest --config test/jest-e2e.json` (integration)
+- [x] 6.0 Testing (Unit & Integration Tests per Module)
+  - [x] 6.1 Write unit tests for `authenticate-user.use-case.ts` — mock `IUserRepository` and `JwtService`; test valid credentials, wrong password, unapproved user
+  - [x] 6.2 Write unit tests for `register-user.use-case.ts` — mock repo and `EmailService`; test successful registration, duplicate username, duplicate email
+  - [x] 6.3 Write unit tests for `get-user.use-case.ts` — test found case and `UserNotFoundException`
+  - [x] 6.4 Write unit tests for `approve-user.use-case.ts`, `assign-role.use-case.ts`, `remove-role.use-case.ts`
+  - [x] 6.5 Write unit tests for `create-news.use-case.ts`, `update-news.use-case.ts`, `delete-news.use-case.ts`
+  - [x] 6.6 Write unit tests for all news query use cases (`getById`, `getByCategory`, `getByStatus`, `getByStatusAndAuthor`, `getByCategoryAndStatus`)
+  - [x] 6.7 Write unit tests for category use cases: create, update, delete, get all, get by id
+  - [x] 6.8 Write unit tests for tag use cases: create, get all, get by id, get last three
+  - [x] 6.9 Write unit tests for subscription use cases: get subscriptions, subscribe, unsubscribe
+  - [x] 6.10 Write integration tests for auth flows (`test/auth.e2e-spec.ts`): register → approve → login → `GET /me` → `GET /verify-token`
+  - [x] 6.11 Write integration tests for user CRUD (`test/users.e2e-spec.ts`): create, get, update (PUT + PATCH), delete, role management
+  - [x] 6.12 Write integration tests for news CRUD (`test/news.e2e-spec.ts`): create, update, delete, all query variants
+  - [x] 6.13 Confirm all tests pass: `npx jest` (unit) and `npx jest --config test/jest-e2e.json` (integration)
 
 ---
 
