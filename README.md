@@ -1,17 +1,32 @@
 # News Portal — Backend (Node.js)
 
-A RESTful API for a news portal built with **NestJS**, **TypeORM**, and **PostgreSQL**. The service handles authentication, news management, categories, tags, file uploads, and user subscriptions.
+A RESTful API for an **internal IT company news portal** built with **NestJS**, **TypeORM**, and **PostgreSQL**. The service handles authentication, news management with an approval workflow, categories, tags, file uploads, user subscriptions, and notifications.
 
 ## Table of Contents
 
-- [Architecture](#architecture)
-- [Technologies](#technologies)
-- [Project Structure](#project-structure)
-- [API Endpoints](#api-endpoints)
-- [Authentication & Authorization](#authentication--authorization)
-- [Environment Variables](#environment-variables)
-- [Running the Project](#running-the-project)
-- [Testing](#testing)
+- [News Portal — Backend (Node.js)](#news-portal--backend-nodejs)
+  - [Table of Contents](#table-of-contents)
+  - [Architecture](#architecture)
+  - [Technologies](#technologies)
+  - [Project Structure](#project-structure)
+  - [API Endpoints](#api-endpoints)
+    - [Auth](#auth)
+    - [Users](#users)
+    - [Admin](#admin)
+    - [News](#news)
+    - [Categories](#categories)
+    - [Tags](#tags)
+    - [Subscriptions](#subscriptions)
+    - [Files](#files)
+  - [Authentication \& Authorization](#authentication--authorization)
+  - [Environment Variables](#environment-variables)
+  - [Running the Project](#running-the-project)
+    - [Prerequisites](#prerequisites)
+    - [Steps](#steps)
+  - [Database](#database)
+    - [Migration commands](#migration-commands)
+    - [Seed](#seed)
+  - [Testing](#testing)
 
 ---
 
@@ -77,6 +92,11 @@ src/
 │
 ├── infrastructure/                # Framework & external service adapters
 │   ├── database/                  # TypeORM module, ORM entities, mappers, migrations
+│   │   ├── data-source.ts         # TypeORM DataSource config
+│   │   ├── seed.ts                # Database seed script (test data)
+│   │   └── typeorm/
+│   │       ├── entities/          # ORM entity classes
+│   │       └── migrations/        # TypeORM migration files
 │   ├── email/                     # Nodemailer email service
 │   ├── file-storage/              # File upload / delete service
 │   └── security/                  # JWT adapter, bcrypt password hasher
@@ -213,8 +233,12 @@ Authorization: Bearer <token>
 Copy `.env.example` to `.env` and fill in the values:
 
 ```env
-# PostgreSQL connection string
-DATABASE_URL=postgresql://user:password@localhost:5432/news_portal
+# PostgreSQL connection
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=your_password
+DB_NAME=news_portal
 
 # Secret used to sign JWT tokens
 JWT_SECRET=your_jwt_secret
@@ -238,7 +262,7 @@ NODE_ENV=development
 
 - Node.js 18+
 - npm 9+
-- PostgreSQL 14+ (running and accessible via `DATABASE_URL`)
+- PostgreSQL 14+
 
 ### Steps
 
@@ -250,22 +274,90 @@ NODE_ENV=development
 2. **Configure environment:**
    ```bash
    cp .env.example .env
-   # Edit .env with your database URL, JWT secret, etc.
+   # Edit .env with your database credentials, JWT secret, etc.
    ```
 
-3. **Run in development mode** (auto-restart on changes):
+3. **Create the database** (if it doesn't exist yet):
+   ```bash
+   psql -U postgres -c "CREATE DATABASE news_portal;"
+   ```
+
+4. **Run migrations** to create all tables:
+   ```bash
+   npm run migration:run
+   ```
+
+5. **(Optional) Seed the database** with test data:
+   ```bash
+   npm run seed
+   ```
+
+6. **Start in development mode** (auto-restart on changes):
    ```bash
    npm run start:dev
    ```
 
-4. **Or build and run in production mode:**
+7. **Or build and run in production mode:**
    ```bash
    npm run build
-   npm run start
+   npm run start:prod
    ```
 
 The server starts on **port 8080**.
-Database migrations run automatically on startup (`migrationsRun: true`).
+
+---
+
+## Database
+
+### Migration commands
+
+```bash
+# Apply all pending migrations
+npm run migration:run
+
+# Revert the last applied migration
+npm run migration:revert
+
+# Generate a new migration based on entity changes
+npm run migration:generate -- src/infrastructure/database/typeorm/migrations/MigrationName
+```
+
+### Seed
+
+The seed script populates the database with realistic test data for an IT company portal:
+
+```bash
+npm run seed
+```
+
+Password for all test users - Password123!
+
+**What gets created:**
+
+| Entity | Count | Details |
+|--------|-------|---------|
+| Users | 7 | 1 admin, 2 editors, 4 developers/QA/DevOps |
+| Categories | 7 | Разработка, DevOps и инфраструктура, Безопасность, etc. |
+| Tags | 12 | TypeScript, NestJS, Docker, Kubernetes, CI/CD, etc. |
+| News | 7 | 6 published, 1 draft |
+| Comments | 8 | — |
+| Likes | 12 | — |
+| Approvals | 4 | — |
+| Notifications | 4 + 10 user notifications | — |
+
+**Test accounts** (password for all: `Password123!`):
+
+| Username | Role | Position |
+|----------|------|----------|
+| `admin` | Admin | Системный администратор (DevOps) |
+| `editor_volkova` | Editor | Технический редактор |
+| `editor_morozov` | Editor | Редактор корпоративных новостей |
+| `sokolova_dev` | User | Senior Frontend Developer |
+| `nikitin_dev` | User | Backend Developer |
+| `lebedeva_qa` | User | QA Engineer |
+| `orlov_devops` | User | DevOps Engineer |
+
+The seed script is idempotent — re-running it will not create duplicates.
 
 ---
 
