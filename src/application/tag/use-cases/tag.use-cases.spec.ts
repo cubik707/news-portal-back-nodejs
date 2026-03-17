@@ -19,10 +19,7 @@ describe('CreateTagUseCase', () => {
     tagRepository = { save: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        CreateTagUseCase,
-        { provide: TAG_REPOSITORY, useValue: tagRepository },
-      ],
+      providers: [CreateTagUseCase, { provide: TAG_REPOSITORY, useValue: tagRepository }],
     }).compile();
 
     useCase = module.get(CreateTagUseCase);
@@ -49,10 +46,7 @@ describe('GetAllTagsUseCase', () => {
     tagRepository = { findAll: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        GetAllTagsUseCase,
-        { provide: TAG_REPOSITORY, useValue: tagRepository },
-      ],
+      providers: [GetAllTagsUseCase, { provide: TAG_REPOSITORY, useValue: tagRepository }],
     }).compile();
 
     useCase = module.get(GetAllTagsUseCase);
@@ -87,10 +81,7 @@ describe('GetTagByIdUseCase', () => {
     tagRepository = { findById: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        GetTagByIdUseCase,
-        { provide: TAG_REPOSITORY, useValue: tagRepository },
-      ],
+      providers: [GetTagByIdUseCase, { provide: TAG_REPOSITORY, useValue: tagRepository }],
     }).compile();
 
     useCase = module.get(GetTagByIdUseCase);
@@ -123,10 +114,7 @@ describe('GetLastThreeTagsUseCase', () => {
     tagRepository = { findLastThree: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        GetLastThreeTagsUseCase,
-        { provide: TAG_REPOSITORY, useValue: tagRepository },
-      ],
+      providers: [GetLastThreeTagsUseCase, { provide: TAG_REPOSITORY, useValue: tagRepository }],
     }).compile();
 
     useCase = module.get(GetLastThreeTagsUseCase);

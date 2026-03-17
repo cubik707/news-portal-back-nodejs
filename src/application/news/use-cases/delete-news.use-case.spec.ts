@@ -41,10 +41,7 @@ describe('DeleteNewsUseCase', () => {
     newsRepository = { findById: jest.fn(), delete: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        DeleteNewsUseCase,
-        { provide: NEWS_REPOSITORY, useValue: newsRepository },
-      ],
+      providers: [DeleteNewsUseCase, { provide: NEWS_REPOSITORY, useValue: newsRepository }],
     }).compile();
 
     useCase = module.get(DeleteNewsUseCase);

@@ -28,10 +28,7 @@ describe('GetUserUseCase', () => {
     userRepository = { findById: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        GetUserUseCase,
-        { provide: USER_REPOSITORY, useValue: userRepository },
-      ],
+      providers: [GetUserUseCase, { provide: USER_REPOSITORY, useValue: userRepository }],
     }).compile();
 
     useCase = module.get(GetUserUseCase);

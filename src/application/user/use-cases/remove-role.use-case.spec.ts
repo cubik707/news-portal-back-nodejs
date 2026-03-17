@@ -28,10 +28,7 @@ describe('RemoveRoleUseCase', () => {
     userRepository = { findById: jest.fn(), removeRole: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        RemoveRoleUseCase,
-        { provide: USER_REPOSITORY, useValue: userRepository },
-      ],
+      providers: [RemoveRoleUseCase, { provide: USER_REPOSITORY, useValue: userRepository }],
     }).compile();
 
     useCase = module.get(RemoveRoleUseCase);

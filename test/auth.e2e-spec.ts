@@ -124,9 +124,7 @@ describe('Auth (E2E)', () => {
       const user = makeUser(false);
       registerUser.execute.mockResolvedValue(user);
 
-      const res = await request(app.getHttpServer())
-        .post('/register')
-        .send(registrationBody);
+      const res = await request(app.getHttpServer()).post('/register').send(registrationBody);
 
       expect(res.status).toBe(201);
       expect(res.body).toMatchObject({
@@ -139,9 +137,7 @@ describe('Auth (E2E)', () => {
     it('should return 409 when username is already taken', async () => {
       registerUser.execute.mockRejectedValue(new UserAlreadyExistsException('newuser'));
 
-      const res = await request(app.getHttpServer())
-        .post('/register')
-        .send(registrationBody);
+      const res = await request(app.getHttpServer()).post('/register').send(registrationBody);
 
       expect(res.status).toBe(409);
       expect(res.body).toMatchObject({ status: 409 });

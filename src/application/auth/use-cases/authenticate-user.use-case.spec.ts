@@ -86,8 +86,6 @@ describe('AuthenticateUserUseCase', () => {
     userRepository.findByUsername.mockResolvedValue(user);
     passwordHasher.compare.mockResolvedValue(true);
 
-    await expect(useCase.execute('testuser', 'password')).rejects.toThrow(
-      UserNotApprovedException,
-    );
+    await expect(useCase.execute('testuser', 'password')).rejects.toThrow(UserNotApprovedException);
   });
 });

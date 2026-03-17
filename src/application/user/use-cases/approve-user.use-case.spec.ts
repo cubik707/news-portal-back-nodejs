@@ -28,10 +28,7 @@ describe('ApproveUserUseCase', () => {
     userRepository = { findById: jest.fn(), approve: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ApproveUserUseCase,
-        { provide: USER_REPOSITORY, useValue: userRepository },
-      ],
+      providers: [ApproveUserUseCase, { provide: USER_REPOSITORY, useValue: userRepository }],
     }).compile();
 
     useCase = module.get(ApproveUserUseCase);

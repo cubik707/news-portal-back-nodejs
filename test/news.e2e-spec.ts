@@ -95,7 +95,12 @@ describe('News (E2E)', () => {
       .useValue({
         canActivate: (ctx: ExecutionContext) => {
           const req = ctx.switchToHttp().getRequest();
-          req.user = { id: 'author-id', username: 'editor', roles: [UserRole.EDITOR], isApproved: true };
+          req.user = {
+            id: 'author-id',
+            username: 'editor',
+            roles: [UserRole.EDITOR],
+            isApproved: true,
+          };
           return true;
         },
       })
@@ -169,7 +174,10 @@ describe('News (E2E)', () => {
         .query({ status: 'published' });
 
       expect(res.status).toBe(200);
-      expect(getNewsByCategoryAndStatus.execute).toHaveBeenCalledWith('cat-id', NewsStatus.published);
+      expect(getNewsByCategoryAndStatus.execute).toHaveBeenCalledWith(
+        'cat-id',
+        NewsStatus.published,
+      );
     });
   });
 
@@ -184,7 +192,10 @@ describe('News (E2E)', () => {
         .query({ status: 'published' });
 
       expect(res.status).toBe(200);
-      expect(getNewsByStatusAndAuthor.execute).toHaveBeenCalledWith('author-id', NewsStatus.published);
+      expect(getNewsByStatusAndAuthor.execute).toHaveBeenCalledWith(
+        'author-id',
+        NewsStatus.published,
+      );
     });
   });
 
@@ -258,9 +269,7 @@ describe('News (E2E)', () => {
     it('should return 404 when news is not found', async () => {
       updateNews.execute.mockRejectedValue(new NewsNotFoundException('bad-id'));
 
-      const res = await request(app.getHttpServer())
-        .put('/news/bad-id')
-        .send({ title: 'x' });
+      const res = await request(app.getHttpServer()).put('/news/bad-id').send({ title: 'x' });
 
       expect(res.status).toBe(404);
     });

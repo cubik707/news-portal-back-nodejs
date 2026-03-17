@@ -8,8 +8,7 @@ import { CATEGORY_REPOSITORY } from '../../../core/domain/category/repositories/
 import { Category } from '../../../core/domain/category/entities/category.domain';
 import { CategoryNotFoundException } from '../../../core/domain/category/exceptions/category-not-found.exception';
 
-const makeCategory = (id = 'cat-id', name = 'Tech') =>
-  Category.reconstitute({ id, name });
+const makeCategory = (id = 'cat-id', name = 'Tech') => Category.reconstitute({ id, name });
 
 // ─── CreateCategoryUseCase ───────────────────────────────────────────────────
 

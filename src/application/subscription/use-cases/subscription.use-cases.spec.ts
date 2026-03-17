@@ -133,10 +133,7 @@ describe('UnsubscribeUseCase', () => {
     userRepository = { findById: jest.fn(), removeSubscription: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        UnsubscribeUseCase,
-        { provide: USER_REPOSITORY, useValue: userRepository },
-      ],
+      providers: [UnsubscribeUseCase, { provide: USER_REPOSITORY, useValue: userRepository }],
     }).compile();
 
     useCase = module.get(UnsubscribeUseCase);

@@ -53,10 +53,7 @@ describe('GetAllNewsUseCase', () => {
     newsRepository = { findAll: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        GetAllNewsUseCase,
-        { provide: NEWS_REPOSITORY, useValue: newsRepository },
-      ],
+      providers: [GetAllNewsUseCase, { provide: NEWS_REPOSITORY, useValue: newsRepository }],
     }).compile();
 
     useCase = module.get(GetAllNewsUseCase);
@@ -91,10 +88,7 @@ describe('GetNewsByIdUseCase', () => {
     newsRepository = { findById: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        GetNewsByIdUseCase,
-        { provide: NEWS_REPOSITORY, useValue: newsRepository },
-      ],
+      providers: [GetNewsByIdUseCase, { provide: NEWS_REPOSITORY, useValue: newsRepository }],
     }).compile();
 
     useCase = module.get(GetNewsByIdUseCase);
@@ -127,10 +121,7 @@ describe('GetNewsByCategoryUseCase', () => {
     newsRepository = { findByCategory: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        GetNewsByCategoryUseCase,
-        { provide: NEWS_REPOSITORY, useValue: newsRepository },
-      ],
+      providers: [GetNewsByCategoryUseCase, { provide: NEWS_REPOSITORY, useValue: newsRepository }],
     }).compile();
 
     useCase = module.get(GetNewsByCategoryUseCase);
@@ -157,10 +148,7 @@ describe('GetNewsByStatusUseCase', () => {
     newsRepository = { findByStatus: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        GetNewsByStatusUseCase,
-        { provide: NEWS_REPOSITORY, useValue: newsRepository },
-      ],
+      providers: [GetNewsByStatusUseCase, { provide: NEWS_REPOSITORY, useValue: newsRepository }],
     }).compile();
 
     useCase = module.get(GetNewsByStatusUseCase);

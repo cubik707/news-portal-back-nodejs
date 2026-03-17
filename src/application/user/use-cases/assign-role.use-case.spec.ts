@@ -28,10 +28,7 @@ describe('AssignRoleUseCase', () => {
     userRepository = { findById: jest.fn(), assignRole: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        AssignRoleUseCase,
-        { provide: USER_REPOSITORY, useValue: userRepository },
-      ],
+      providers: [AssignRoleUseCase, { provide: USER_REPOSITORY, useValue: userRepository }],
     }).compile();
 
     useCase = module.get(AssignRoleUseCase);
@@ -40,10 +37,17 @@ describe('AssignRoleUseCase', () => {
   it('should assign a role to an existing user', async () => {
     const user = makeUser();
     const updatedUser = User.reconstitute({
-      ...{ id: 'user-id', username: 'testuser', email: new Email('test@example.com'),
-        passwordHash: PasswordHash.fromHash('hashed'), isApproved: true,
-        roles: [UserRole.USER, UserRole.EDITOR], createdAt: new Date(),
-        lastName: 'Last', firstName: 'First' },
+      ...{
+        id: 'user-id',
+        username: 'testuser',
+        email: new Email('test@example.com'),
+        passwordHash: PasswordHash.fromHash('hashed'),
+        isApproved: true,
+        roles: [UserRole.USER, UserRole.EDITOR],
+        createdAt: new Date(),
+        lastName: 'Last',
+        firstName: 'First',
+      },
     });
     userRepository.findById.mockResolvedValue(user);
     userRepository.assignRole.mockResolvedValue(updatedUser);

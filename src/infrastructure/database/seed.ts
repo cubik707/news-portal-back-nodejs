@@ -20,17 +20,46 @@ async function seed() {
   await AppDataSource.initialize();
   console.log('Подключение к БД установлено');
 
-  const roleRepo = AppDataSource.getRepository(RoleOrmEntity);
-  const userRepo = AppDataSource.getRepository(UserOrmEntity);
-  const userInfoRepo = AppDataSource.getRepository(UserInfoOrmEntity);
-  const categoryRepo = AppDataSource.getRepository(CategoryOrmEntity);
-  const tagRepo = AppDataSource.getRepository(TagOrmEntity);
-  const newsRepo = AppDataSource.getRepository(NewsOrmEntity);
-  const commentRepo = AppDataSource.getRepository(CommentOrmEntity);
-  const likeRepo = AppDataSource.getRepository(LikeOrmEntity);
-  const notificationRepo = AppDataSource.getRepository(NotificationOrmEntity);
-  const userNotificationRepo = AppDataSource.getRepository(UserNotificationOrmEntity);
-  const approvalRepo = AppDataSource.getRepository(NewsApprovalOrmEntity);
+  const queryRunner = AppDataSource.createQueryRunner();
+  await queryRunner.connect();
+  await queryRunner.startTransaction();
+
+  try {
+    await seedData(queryRunner.manager);
+    await queryRunner.commitTransaction();
+  } catch (err) {
+    await queryRunner.rollbackTransaction();
+    throw err;
+  } finally {
+    await queryRunner.release();
+  }
+
+  await AppDataSource.destroy();
+  console.log('');
+  console.log('✓ База данных успешно заполнена тестовыми данными');
+  console.log('');
+  console.log('Тестовые пользователи (пароль для всех: Password123!):');
+  console.log('  admin            — системный администратор (DevOps)');
+  console.log('  editor_volkova   — технический редактор');
+  console.log('  editor_morozov   — редактор корпоративных новостей');
+  console.log('  sokolova_dev     — Senior Frontend Developer');
+  console.log('  nikitin_dev      — Backend Developer');
+  console.log('  lebedeva_qa      — QA Engineer');
+  console.log('  orlov_devops     — DevOps Engineer');
+}
+
+async function seedData(manager: import('typeorm').EntityManager) {
+  const roleRepo = manager.getRepository(RoleOrmEntity);
+  const userRepo = manager.getRepository(UserOrmEntity);
+  const userInfoRepo = manager.getRepository(UserInfoOrmEntity);
+  const categoryRepo = manager.getRepository(CategoryOrmEntity);
+  const tagRepo = manager.getRepository(TagOrmEntity);
+  const newsRepo = manager.getRepository(NewsOrmEntity);
+  const commentRepo = manager.getRepository(CommentOrmEntity);
+  const likeRepo = manager.getRepository(LikeOrmEntity);
+  const notificationRepo = manager.getRepository(NotificationOrmEntity);
+  const userNotificationRepo = manager.getRepository(UserNotificationOrmEntity);
+  const approvalRepo = manager.getRepository(NewsApprovalOrmEntity);
 
   // --- Роли ---
   console.log('Создание ролей...');
@@ -180,7 +209,9 @@ async function seed() {
     savedCategories.push(category);
   }
 
-  const [catDev, catDevOps, catSecurity, catLife, catProducts, catTrends, catEducation] = savedCategories;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [catDev, catDevOps, catSecurity, catLife, catProducts, catTrends, catEducation] =
+    savedCategories;
 
   // --- Теги ---
   console.log('Создание тегов...');
@@ -209,7 +240,21 @@ async function seed() {
     savedTags.push(tag);
   }
 
-  const [tagTS, tagNest, tagPG, tagDocker, tagK8s, tagCICD, tagReview, tagRefactor, tagRelease, tagMeetup, tagHackathon, tagHiring] = savedTags;
+  const [
+    tagTS,
+    tagNest,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    tagPG,
+    tagDocker,
+    tagK8s,
+    tagCICD,
+    tagReview,
+    tagRefactor,
+    tagRelease,
+    tagMeetup,
+    tagHackathon,
+    tagHiring,
+  ] = savedTags;
 
   // --- Новости ---
   console.log('Создание новостей...');
@@ -310,7 +355,8 @@ async function seed() {
     {
       news: savedNews[0],
       user: user2,
-      content: 'Участвовал в миграции — действительно стало намного чище. class-validator сильно упростил жизнь.',
+      content:
+        'Участвовал в миграции — действительно стало намного чище. class-validator сильно упростил жизнь.',
     },
     {
       news: savedNews[1],
@@ -330,7 +376,8 @@ async function seed() {
     {
       news: savedNews[4],
       user: user2,
-      content: 'Уже зарегистрировал команду. Тема AI-ассистентов очень актуальна — есть много идей.',
+      content:
+        'Уже зарегистрировал команду. Тема AI-ассистентов очень актуальна — есть много идей.',
     },
     {
       news: savedNews[4],
@@ -415,19 +462,23 @@ async function seed() {
   const notificationsData = [
     {
       news: savedNews[0],
-      message: 'Новая статья в категории «Разработка»: «Переход на NestJS завершён: итоги миграции бэкенда»',
+      message:
+        'Новая статья в категории «Разработка»: «Переход на NestJS завершён: итоги миграции бэкенда»',
     },
     {
       news: savedNews[2],
-      message: 'Новая статья в категории «Продукты и релизы»: «Выпущена версия 2.5 корпоративного портала»',
+      message:
+        'Новая статья в категории «Продукты и релизы»: «Выпущена версия 2.5 корпоративного портала»',
     },
     {
       news: savedNews[4],
-      message: 'Новая статья в категории «Жизнь компании»: «Внутренний хакатон «TechSprint 2026»: регистрация открыта»',
+      message:
+        'Новая статья в категории «Жизнь компании»: «Внутренний хакатон «TechSprint 2026»: регистрация открыта»',
     },
     {
       news: savedNews[6],
-      message: 'Новая статья в категории «Жизнь компании»: «Открыты вакансии: ищем Senior Backend и DevOps инженеров»',
+      message:
+        'Новая статья в категории «Жизнь компании»: «Открыты вакансии: ищем Senior Backend и DevOps инженеров»',
     },
   ];
 
@@ -457,19 +508,6 @@ async function seed() {
     const userNotification = userNotificationRepo.create(data);
     await userNotificationRepo.save(userNotification);
   }
-
-  await AppDataSource.destroy();
-  console.log('');
-  console.log('✓ База данных успешно заполнена тестовыми данными');
-  console.log('');
-  console.log('Тестовые пользователи (пароль для всех: Password123!):');
-  console.log('  admin            — системный администратор (DevOps)');
-  console.log('  editor_volkova   — технический редактор');
-  console.log('  editor_morozov   — редактор корпоративных новостей');
-  console.log('  sokolova_dev     — Senior Frontend Developer');
-  console.log('  nikitin_dev      — Backend Developer');
-  console.log('  lebedeva_qa      — QA Engineer');
-  console.log('  orlov_devops     — DevOps Engineer');
 }
 
 seed().catch((err) => {

@@ -65,7 +65,12 @@ describe('Users (E2E)', () => {
       .useValue({
         canActivate: (ctx: ExecutionContext) => {
           const req = ctx.switchToHttp().getRequest();
-          req.user = { id: 'user-id', username: 'testuser', roles: [UserRole.ADMIN], isApproved: true };
+          req.user = {
+            id: 'user-id',
+            username: 'testuser',
+            roles: [UserRole.ADMIN],
+            isApproved: true,
+          };
           return true;
         },
       })
