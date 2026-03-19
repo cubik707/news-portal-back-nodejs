@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './infrastructure/database/database.module';
+import { LoggerModule } from './infrastructure/logger/logger.module';
 import { EmailModule } from './infrastructure/email/email.module';
 import { FileStorageModule } from './infrastructure/file-storage/file-storage.module';
 import { AuthModule } from './presentation/auth/auth.module';
@@ -11,10 +13,12 @@ import { CategoriesModule } from './presentation/categories/categories.module';
 import { TagsModule } from './presentation/tags/tags.module';
 import { SubscriptionsModule } from './presentation/subscriptions/subscriptions.module';
 import { FilesModule } from './presentation/files/files.module';
+import { GlobalExceptionFilter } from './presentation/shared/filters/global-exception.filter';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    LoggerModule,
     DatabaseModule,
     EmailModule,
     FileStorageModule,
@@ -27,5 +31,6 @@ import { FilesModule } from './presentation/files/files.module';
     SubscriptionsModule,
     FilesModule,
   ],
+  providers: [{ provide: APP_FILTER, useClass: GlobalExceptionFilter }],
 })
 export class AppModule {}

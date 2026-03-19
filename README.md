@@ -252,7 +252,17 @@ UPLOAD_DIR=./uploads
 
 # Application environment
 NODE_ENV=development
+
+# Log verbosity level (fatal | error | warn | info | debug | trace)
+# Default: 'debug' in development, 'info' in production
+LOG_LEVEL=debug
 ```
+
+> **Logging behaviour**
+> - In development (`NODE_ENV=development`) logs are colorized and human-readable via pino-pretty.
+> - In production (`NODE_ENV=production`) logs are emitted as newline-delimited JSON.
+> - HTTP request/response pairs are logged automatically. Status 2xx/3xx → `info`, 4xx → `warn`, 5xx → `error`.
+> - Override the minimum log level at runtime with `LOG_LEVEL` (e.g. `LOG_LEVEL=warn` silences info/debug).
 
 ---
 

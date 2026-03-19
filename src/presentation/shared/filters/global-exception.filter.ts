@@ -1,17 +1,39 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BusinessException } from '../../../core/shared/exceptions/business.exception.js';
 
 type ErrorPayload = { status: number; error: string; message: string };
 
 @Catch()
+@Injectable()
 export class GlobalExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(GlobalExceptionFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
     const payload = this.resolvePayload(exception);
+
+    if (payload.status >= 500) {
+      this.logger.error(
+        { err: exception, req: request.url, status: payload.status },
+        payload.message,
+      );
+    } else if (payload.status >= 400) {
+      this.logger.warn({ req: request.url, status: payload.status }, payload.message);
+    } else {
+      this.logger.log({ req: request.url, status: payload.status }, payload.message);
+    }
 
     response.status(payload.status).json({ ...payload, path: request.url });
   }
