@@ -12,8 +12,8 @@ import { ApprovalStatus } from '../../../../core/shared/enums/approval-status.en
 
 @Entity('news_approval')
 export class NewsApprovalOrmEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @ManyToOne(() => NewsOrmEntity, { nullable: false })
   @JoinColumn({ name: 'news_id' })

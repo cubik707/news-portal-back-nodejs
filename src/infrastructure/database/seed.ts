@@ -282,8 +282,8 @@ async function seedData(manager: import('typeorm').EntityManager) {
       content: `Отдел разработки выпустил версию 2.5 внутреннего новостного портала. Релиз содержит 12 новых функций и закрывает 34 задачи из бэклога.\n\nГлавные нововведения: система подписок на категории с email-уведомлениями, улучшенный редактор новостей с поддержкой Markdown, пагинация и фильтрация в ленте, а также экспорт новостей в PDF.\n\nКоманда frontend во главе с Ольгой Соколовой полностью переработала интерфейс на компонентной архитектуре. Производительность страниц выросла по метрике LCP на 40%. Следующий релиз (2.6) запланирован на апрель.`,
       author: editor1,
       category: catProducts,
-      status: NewsStatus.published,
-      publishedAt: new Date('2026-03-11T11:00:00'),
+      status: NewsStatus.draft,
+      publishedAt: null,
       tags: [tagRelease, tagTS],
     },
     {
@@ -300,8 +300,8 @@ async function seedData(manager: import('typeorm').EntityManager) {
       content: `Компания объявляет о проведении ежегодного внутреннего хакатона «TechSprint 2026». Мероприятие пройдёт 4–5 апреля в офисе компании.\n\nУчастники смогут сформировать команды от 2 до 5 человек и реализовать проект на любом стеке технологий. Темы в этом году: инструменты для повышения продуктивности разработчиков, внутренние платформенные решения и AI-ассистенты для рабочих процессов.\n\nПризовой фонд составляет 500 000 рублей. Лучшие проекты будут рассмотрены для внедрения в продакшен. Регистрация команд открыта до 28 марта через корпоративный портал.`,
       author: editor1,
       category: catLife,
-      status: NewsStatus.published,
-      publishedAt: new Date('2026-03-15T09:00:00'),
+      status: NewsStatus.draft,
+      publishedAt: null,
       tags: [tagHackathon, tagMeetup],
     },
     {
@@ -318,8 +318,8 @@ async function seedData(manager: import('typeorm').EntityManager) {
       content: `HR-отдел совместно с техническими командами открыл новые вакансии. Компания активно расширяется и приглашает опытных специалистов.\n\nОткрытые позиции: Senior Backend Developer (стек: NestJS, PostgreSQL, Redis), DevOps Engineer (Kubernetes, Terraform, GitLab CI). Обе позиции предполагают возможность гибридного формата работы.\n\nЕсли у вас есть знакомые специалисты — направляйте их резюме на careers@techcorp.ru или через реферальную программу в HR-системе. За успешный реферал предусмотрено вознаграждение.`,
       author: editor1,
       category: catLife,
-      status: NewsStatus.published,
-      publishedAt: new Date('2026-03-16T10:00:00'),
+      status: NewsStatus.draft,
+      publishedAt: null,
       tags: [tagHiring, tagNest, tagK8s],
     },
   ];
@@ -446,15 +446,38 @@ async function seedData(manager: import('typeorm').EntityManager) {
     },
     {
       news: savedNews[5],
-      editor: adminUser,
+      editor: editor1,
       status: ApprovalStatus.pending,
       comment: undefined,
+    },
+    {
+      news: savedNews[2],
+      editor: editor2,
+      status: ApprovalStatus.pending,
+      comment: undefined,
+    },
+    {
+      news: savedNews[4],
+      editor: editor1,
+      status: ApprovalStatus.pending,
+      comment: undefined,
+    },
+    {
+      news: savedNews[6],
+      editor: editor2,
+      status: ApprovalStatus.rejected,
+      comment: 'Необходимо уточнить требования к кандидатам и добавить ссылку на HR-портал.',
     },
   ];
 
   for (const data of approvalsData) {
-    const approval = approvalRepo.create(data);
-    await approvalRepo.save(approval);
+    const existing = await approvalRepo.findOne({
+      where: { news: { id: data.news.id }, status: data.status },
+    });
+    if (!existing) {
+      const approval = approvalRepo.create(data);
+      await approvalRepo.save(approval);
+    }
   }
 
   // --- Уведомления ---

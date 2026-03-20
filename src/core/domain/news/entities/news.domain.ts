@@ -102,6 +102,22 @@ export class News {
 
   // ── Business methods ───────────────────────────────────────────────────────
 
+  approve(): void {
+    if (this.props.status !== NewsStatus.draft) {
+      throw new Error(`Cannot approve news with status "${this.props.status}"`);
+    }
+    this.props.status = NewsStatus.published;
+    this.props.publishedAt = new Date();
+    this.props.updatedAt = new Date();
+  }
+
+  reject(): void {
+    if (this.props.status !== NewsStatus.draft) {
+      throw new Error(`Cannot reject news with status "${this.props.status}"`);
+    }
+    this.props.updatedAt = new Date();
+  }
+
   publish(): void {
     this.props.status = NewsStatus.published;
     this.props.publishedAt = new Date();

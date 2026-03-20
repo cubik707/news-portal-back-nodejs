@@ -24,15 +24,18 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     const payload = this.resolvePayload(exception);
 
+    const meta = {
+      url: `${request.method} ${request.url}`,
+      status: payload.status,
+      error: payload.error,
+    };
+
     if (payload.status >= 500) {
-      this.logger.error(
-        { err: exception, req: request.url, status: payload.status },
-        payload.message,
-      );
+      this.logger.error({ ...meta, err: exception }, payload.message);
     } else if (payload.status >= 400) {
-      this.logger.warn({ req: request.url, status: payload.status }, payload.message);
+      this.logger.warn(meta, payload.message);
     } else {
-      this.logger.log({ req: request.url, status: payload.status }, payload.message);
+      this.logger.log(meta, payload.message);
     }
 
     response.status(payload.status).json({ ...payload, path: request.url });
