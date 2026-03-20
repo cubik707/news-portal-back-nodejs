@@ -5,14 +5,13 @@ import { RemoveRoleUseCase } from '../../application/user/use-cases/remove-role.
 import { UpdateRoleRequestDto } from '../../application/user/dtos/update-role-request.dto';
 import { UserResponseDto } from '../../application/user/dtos/user-response.dto';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
 import { UserRole } from '../../core/shared/enums/user-role.enum';
 
 @Controller('admin')
-@UseGuards(JwtAuthGuard, ApprovedGuard, RolesGuard)
+@UseGuards(ApprovedGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
 export class AdminController {
   constructor(

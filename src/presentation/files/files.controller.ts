@@ -13,7 +13,6 @@ import {
   UploadedFile as IUploadedFile,
 } from '../../infrastructure/file-storage/file-storage.service';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 
 interface DeleteImageBody {
@@ -22,7 +21,7 @@ interface DeleteImageBody {
 }
 
 @Controller()
-@UseGuards(JwtAuthGuard, ApprovedGuard)
+@UseGuards(ApprovedGuard)
 export class FilesController {
   constructor(private readonly fileStorage: FileStorageService) {}
 

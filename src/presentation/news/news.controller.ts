@@ -13,7 +13,6 @@ import { NewsUpdateDto } from '../../application/news/dtos/news-update.dto';
 import { NewsResponseDto } from '../../application/news/dtos/news-response.dto';
 import { NewsStatus } from '../../core/shared/enums/news-status.enum';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
@@ -98,7 +97,7 @@ export class NewsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, ApprovedGuard, RolesGuard)
+  @UseGuards(ApprovedGuard, RolesGuard)
   @Roles(UserRole.EDITOR)
   async create(
     @Body() dto: NewsCreateDto,
@@ -117,7 +116,7 @@ export class NewsController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard, ApprovedGuard, RolesGuard)
+  @UseGuards(ApprovedGuard, RolesGuard)
   @Roles(UserRole.EDITOR)
   async update(
     @Param('id') id: string,
@@ -136,7 +135,7 @@ export class NewsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, ApprovedGuard, RolesGuard)
+  @UseGuards(ApprovedGuard, RolesGuard)
   @Roles(UserRole.EDITOR, UserRole.ADMIN)
   async remove(@Param('id') id: string): Promise<SuccessResponseDto<null>> {
     await this.deleteNews.execute(id);

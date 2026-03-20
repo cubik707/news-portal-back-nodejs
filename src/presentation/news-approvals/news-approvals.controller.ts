@@ -3,14 +3,13 @@ import { ProcessNewsApprovalUseCase } from '../../application/news-approval/use-
 import { ProcessNewsApprovalDto } from '../../application/news-approval/dtos/process-news-approval.dto';
 import { NewsApprovalResponseDto } from '../../application/news-approval/dtos/news-approval-response.dto';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
 import { UserRole } from '../../core/shared/enums/user-role.enum';
 
 @Controller('news-approvals')
-@UseGuards(JwtAuthGuard, ApprovedGuard, RolesGuard)
+@UseGuards(ApprovedGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
 export class NewsApprovalsController {
   constructor(private readonly processNewsApproval: ProcessNewsApprovalUseCase) {}

@@ -4,13 +4,12 @@ import { SubscribeUseCase } from '../../application/subscription/use-cases/subsc
 import { UnsubscribeUseCase } from '../../application/subscription/use-cases/unsubscribe.use-case';
 import { UserSubscriptionsDto } from '../../application/user/dtos/user-subscriptions.dto';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import type { JwtUserPayload } from '../auth/jwt.strategy';
 
 @Controller('user')
-@UseGuards(JwtAuthGuard, ApprovedGuard)
+@UseGuards(ApprovedGuard)
 export class SubscriptionsController {
   constructor(
     private readonly getUserSubscriptions: GetUserSubscriptionsUseCase,

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './presentation/shared/guards/jwt-auth.guard';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { LoggerModule } from './infrastructure/logger/logger.module';
@@ -33,6 +34,9 @@ import { GlobalExceptionFilter } from './presentation/shared/filters/global-exce
     FilesModule,
     NewsApprovalsModule,
   ],
-  providers: [{ provide: APP_FILTER, useClass: GlobalExceptionFilter }],
+  providers: [
+    { provide: APP_FILTER, useClass: GlobalExceptionFilter },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+  ],
 })
 export class AppModule {}

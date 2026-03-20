@@ -8,14 +8,13 @@ import { DeleteUserUseCase } from '../../application/user/use-cases/delete-user.
 import { UserRegistrationDto } from '../../application/user/dtos/user-registration.dto';
 import { UserResponseDto } from '../../application/user/dtos/user-response.dto';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
 import { UserRole } from '../../core/shared/enums/user-role.enum';
 
 @Controller('users')
-@UseGuards(JwtAuthGuard, ApprovedGuard)
+@UseGuards(ApprovedGuard)
 export class UsersController {
   constructor(
     private readonly getAllUsers: GetAllUsersUseCase,

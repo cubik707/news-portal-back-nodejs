@@ -7,7 +7,6 @@ import { GetCategoryByIdUseCase } from '../../application/category/use-cases/get
 import { CategoryCreateDto } from '../../application/category/dtos/category-create.dto';
 import { CategoryResponseDto } from '../../application/category/dtos/category-response.dto';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
@@ -39,7 +38,7 @@ export class CategoriesController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, ApprovedGuard, RolesGuard)
+  @UseGuards(ApprovedGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async create(@Body() dto: CategoryCreateDto): Promise<SuccessResponseDto<CategoryResponseDto>> {
     const category = await this.createCategory.execute(dto.name);
@@ -47,7 +46,7 @@ export class CategoriesController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard, ApprovedGuard, RolesGuard)
+  @UseGuards(ApprovedGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async update(
     @Param('id') id: string,
@@ -58,7 +57,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, ApprovedGuard, RolesGuard)
+  @UseGuards(ApprovedGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async remove(@Param('id') id: string): Promise<SuccessResponseDto<null>> {
     await this.deleteCategory.execute(id);

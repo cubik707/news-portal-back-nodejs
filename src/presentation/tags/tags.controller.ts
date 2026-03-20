@@ -6,7 +6,6 @@ import { GetLastThreeTagsUseCase } from '../../application/tag/use-cases/get-las
 import { TagCreateDto } from '../../application/tag/dtos/tag-create.dto';
 import { TagResponseDto } from '../../application/tag/dtos/tag-response.dto';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
@@ -47,7 +46,7 @@ export class TagsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, ApprovedGuard, RolesGuard)
+  @UseGuards(ApprovedGuard, RolesGuard)
   @Roles(UserRole.EDITOR)
   async create(@Body() dto: TagCreateDto): Promise<SuccessResponseDto<TagResponseDto>> {
     const tag = await this.createTag.execute(dto.name);
