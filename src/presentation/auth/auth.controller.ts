@@ -21,8 +21,9 @@ export class AuthController {
 
   @Public()
   @Post('auth')
-  async login(@Body() dto: AuthRequestDto): Promise<{ token: string }> {
-    return this.authenticateUser.execute(dto.username, dto.password);
+  async login(@Body() dto: AuthRequestDto): Promise<SuccessResponseDto<{ token: string }>> {
+    const result = await this.authenticateUser.execute(dto.username, dto.password);
+    return new SuccessResponseDto(result, 'Login successful');
   }
 
   @Public()
