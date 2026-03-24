@@ -5,26 +5,36 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { UserOrmEntity } from './user.orm-entity';
 import { NewsOrmEntity } from './news.orm-entity';
 
 @Entity('comments')
 export class CommentOrmEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
-
-  @ManyToOne(() => NewsOrmEntity, { nullable: false })
-  @JoinColumn({ name: 'news_id' })
-  news!: NewsOrmEntity;
-
-  @ManyToOne(() => UserOrmEntity, { nullable: false })
-  @JoinColumn({ name: 'user_id' })
-  user!: UserOrmEntity;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column({ type: 'text', nullable: false })
   content!: string;
 
+  @ManyToOne(() => UserOrmEntity, { nullable: false, eager: false })
+  @JoinColumn({ name: 'author_id' })
+  author!: UserOrmEntity;
+
+  @ManyToOne(() => NewsOrmEntity, { nullable: false, eager: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'news_id' })
+  news!: NewsOrmEntity;
+
+  @Column({ name: 'news_id' })
+  newsId!: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt!: Date;
+
+  @Column({ name: 'edited_at', type: 'timestamp', nullable: true })
+  editedAt!: Date | null;
 }
