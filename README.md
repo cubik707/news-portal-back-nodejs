@@ -1,98 +1,391 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# News Portal — Backend (Node.js)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A RESTful API for an **internal IT company news portal** built with **NestJS**, **TypeORM**, and **PostgreSQL**. The service handles authentication, news management with an approval workflow, categories, tags, file uploads, user subscriptions, and notifications.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Table of Contents
 
-## Description
+- [News Portal — Backend (Node.js)](#news-portal--backend-nodejs)
+  - [Table of Contents](#table-of-contents)
+  - [Architecture](#architecture)
+  - [Technologies](#technologies)
+  - [Project Structure](#project-structure)
+  - [API Endpoints](#api-endpoints)
+    - [Auth](#auth)
+    - [Users](#users)
+    - [Admin](#admin)
+    - [News](#news)
+    - [Categories](#categories)
+    - [Tags](#tags)
+    - [Subscriptions](#subscriptions)
+    - [Files](#files)
+  - [Authentication \& Authorization](#authentication--authorization)
+  - [Environment Variables](#environment-variables)
+  - [Running the Project](#running-the-project)
+    - [Prerequisites](#prerequisites)
+    - [Steps](#steps)
+  - [Database](#database)
+    - [Migration commands](#migration-commands)
+    - [Seed](#seed)
+  - [Testing](#testing)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## Architecture
 
-```bash
-$ npm install
+The project follows **Clean Architecture** (Hexagonal / Ports & Adapters), organized into four layers:
+
+```
+Presentation  →  Application  →  Core (Domain)  ←  Infrastructure
 ```
 
-## Compile and run the project
+| Layer | Responsibility |
+|---|---|
+| **Core** | Domain entities, value objects, repository interfaces, domain exceptions |
+| **Application** | Use cases — one class per operation, orchestrates domain and ports |
+| **Infrastructure** | TypeORM repositories, JWT adapter, bcrypt, email, file storage |
+| **Presentation** | NestJS controllers, guards, decorators, global exception filter |
 
-```bash
-# development
-$ npm run start
+**Key patterns:**
+- **Use Case pattern** — each business operation is a dedicated class with a single `execute()` method
+- **Port & Adapter** — external concerns (JWT, password hashing) are abstracted behind interfaces defined in the core layer
+- **Repository pattern** — domain layer declares `IXxxRepository` interfaces; TypeORM implementations live in infrastructure
 
-# watch mode
-$ npm run start:dev
+---
 
-# production mode
-$ npm run start:prod
+## Technologies
+
+- **[NestJS 11](https://nestjs.com/)** — framework (controllers, DI, modules)
+- **[TypeORM 0.3](https://typeorm.io/)** — ORM with migration support
+- **[PostgreSQL](https://www.postgresql.org/)** — primary database
+- **[Passport + JWT](https://docs.nestjs.com/security/authentication)** — authentication
+- **[Bcrypt](https://github.com/kelektiv/node.bcrypt.js)** — password hashing (10 rounds)
+- **[Nodemailer](https://nodemailer.com/)** — email notifications
+- **[Multer](https://github.com/expressjs/multer)** — file uploads
+- **[class-validator](https://github.com/typestack/class-validator)** — DTO validation
+- **[Jest](https://jestjs.io/) + [Supertest](https://github.com/ladjs/supertest)** — unit and E2E testing
+
+---
+
+## Project Structure
+
+```
+src/
+├── main.ts                        # Bootstrap, CORS, global pipes
+├── app.module.ts                  # Root module
+│
+├── core/                          # Domain layer (no framework dependencies)
+│   ├── domain/
+│   │   ├── auth/                  # Auth-related exceptions
+│   │   ├── category/              # Category entity, repository interface
+│   │   ├── news/                  # News entity, repository interface
+│   │   ├── tag/                   # Tag entity, repository interface
+│   │   └── user/                  # User entity, repository interface
+│   └── shared/                    # Enums, value objects, shared ports & exceptions
+│
+├── application/                   # Use cases & DTOs
+│   ├── auth/                      # Login, register use cases
+│   ├── category/                  # CRUD use cases for categories
+│   ├── news/                      # CRUD use cases for news
+│   ├── subscription/              # Subscribe / unsubscribe use cases
+│   ├── tag/                       # Tag use cases
+│   └── user/                      # User management use cases
+│
+├── infrastructure/                # Framework & external service adapters
+│   ├── database/                  # TypeORM module, ORM entities, mappers, migrations
+│   │   ├── data-source.ts         # TypeORM DataSource config
+│   │   ├── seed.ts                # Database seed script (test data)
+│   │   └── typeorm/
+│   │       ├── entities/          # ORM entity classes
+│   │       └── migrations/        # TypeORM migration files
+│   ├── email/                     # Nodemailer email service
+│   ├── file-storage/              # File upload / delete service
+│   └── security/                  # JWT adapter, bcrypt password hasher
+│
+└── presentation/                  # HTTP layer
+    ├── admin/                     # Admin-only endpoints
+    ├── auth/                      # Login, register, /me endpoints
+    ├── categories/                # Category endpoints
+    ├── files/                     # Upload / delete file endpoints
+    ├── news/                      # News endpoints
+    ├── subscriptions/             # Subscription endpoints
+    ├── tags/                      # Tag endpoints
+    ├── users/                     # User endpoints
+    └── shared/
+        ├── decorators/            # @CurrentUser(), @Roles()
+        ├── filters/               # Global exception filter
+        └── guards/                # JwtAuthGuard, ApprovedGuard, RolesGuard
+
+test/                              # E2E tests (Supertest)
 ```
 
-## Run tests
+---
 
-```bash
-# unit tests
-$ npm run test
+## API Endpoints
 
-# e2e tests
-$ npm run test:e2e
+All successful responses are wrapped in `{ data: T }`.
 
-# test coverage
-$ npm run test:cov
+### Auth
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `POST` | `/auth` | — | Login — returns JWT token |
+| `POST` | `/register` | — | Register a new user |
+| `GET` | `/me` | JWT + Approved | Get current user profile |
+| `GET` | `/verify-token` | JWT | Verify token validity |
+
+### Users
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/users` | JWT + Approved + Admin | List all users |
+| `GET` | `/users/:id` | JWT + Approved | Get user by ID |
+| `POST` | `/users` | JWT + Approved + Admin | Create user |
+| `PUT` | `/users/:id` | JWT + Approved | Update user |
+| `PATCH` | `/users/:id` | JWT + Approved | Partial update user |
+| `DELETE` | `/users/:id` | JWT + Approved + Admin | Delete user |
+
+### Admin
+
+All `/admin` routes require **JWT + Approved + Admin** role.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `PATCH` | `/admin/users/:id/approve` | Approve a user |
+| `PATCH` | `/admin/users/:id/roles` | Assign role to user |
+| `DELETE` | `/admin/users/:id/roles` | Remove role from user |
+
+### News
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/news` | — | Get all news |
+| `GET` | `/news/:id` | — | Get news by ID |
+| `GET` | `/news/status?status=` | — | Filter news by status |
+| `GET` | `/news/category/:categoryId` | — | Get news by category |
+| `GET` | `/news/category/:categoryId/status?status=` | — | Filter by category + status |
+| `GET` | `/news/author/:authorId/status?status=` | — | Get news by author + status |
+| `POST` | `/news` | JWT + Approved + Editor | Create news |
+| `PUT` | `/news/:id` | JWT + Approved + Editor | Update news |
+| `DELETE` | `/news/:id` | JWT + Approved + Editor/Admin | Delete news |
+
+### Categories
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/categories` | — | List all categories |
+| `GET` | `/categories/:id` | — | Get category by ID |
+| `POST` | `/categories` | JWT + Approved + Admin | Create category |
+| `PUT` | `/categories/:id` | JWT + Approved + Admin | Update category |
+| `DELETE` | `/categories/:id` | JWT + Approved + Admin | Delete category |
+
+### Tags
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/tags` | — | List all tags |
+| `GET` | `/tags/last-three` | — | Get last 3 tags |
+| `GET` | `/tags/:id` | — | Get tag by ID |
+| `POST` | `/tags` | JWT + Approved + Editor | Create tag |
+
+### Subscriptions
+
+All `/user/subscriptions` routes require **JWT + Approved**.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/user/subscriptions` | Get current user's subscriptions |
+| `POST` | `/user/subscriptions/:subscriptionId` | Subscribe to a category |
+| `DELETE` | `/user/subscriptions/:subscriptionId` | Unsubscribe from a category |
+
+### Files
+
+All file routes require **JWT + Approved**.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/upload` | Upload file (`multipart/form-data`, field: `category`) |
+| `DELETE` | `/delete-image` | Delete file (body: `category`, `fileName`) |
+
+---
+
+## Authentication & Authorization
+
+**Authentication** is done via JWT Bearer tokens (4-hour expiry). Include the token in every protected request:
+
+```
+Authorization: Bearer <token>
 ```
 
-## Deployment
+**User Roles:**
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+| Role | Description |
+|------|-------------|
+| `USER` | Default role, read-only access |
+| `EDITOR` | Can create, update, and delete news and tags |
+| `ADMIN` | Full access including user and category management |
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+**Account approval:** After registration, a user account must be approved by an admin (`PATCH /admin/users/:id/approve`) before the user can access protected endpoints. The `ApprovedGuard` enforces this check on all protected routes.
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+---
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in the values:
+
+```env
+# PostgreSQL connection
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=your_password
+DB_NAME=news_portal
+
+# Secret used to sign JWT tokens
+JWT_SECRET=your_jwt_secret
+
+# Gmail credentials for sending emails (use an App Password)
+MAIL_USERNAME=your_email@gmail.com
+MAIL_PASSWORD=your_app_password
+
+# Directory for uploaded files (relative or absolute path)
+UPLOAD_DIR=./uploads
+
+# Application environment
+NODE_ENV=development
+
+# Log verbosity level (fatal | error | warn | info | debug | trace)
+# Default: 'debug' in development, 'info' in production
+LOG_LEVEL=debug
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+> **Logging behaviour**
+> - In development (`NODE_ENV=development`) logs are colorized and human-readable via pino-pretty.
+> - In production (`NODE_ENV=production`) logs are emitted as newline-delimited JSON.
+> - HTTP request/response pairs are logged automatically. Status 2xx/3xx → `info`, 4xx → `warn`, 5xx → `error`.
+> - Override the minimum log level at runtime with `LOG_LEVEL` (e.g. `LOG_LEVEL=warn` silences info/debug).
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+## Running the Project
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Prerequisites
 
-## Support
+- Node.js 18+
+- npm 9+
+- PostgreSQL 14+
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Steps
 
-## Stay in touch
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+2. **Configure environment:**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your database credentials, JWT secret, etc.
+   ```
 
-## License
+3. **Create the database** (if it doesn't exist yet):
+   ```bash
+   psql -U postgres -c "CREATE DATABASE news_portal;"
+   ```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+4. **Run migrations** to create all tables:
+   ```bash
+   npm run migration:run
+   ```
+
+5. **(Optional) Seed the database** with test data:
+   ```bash
+   npm run seed
+   ```
+
+6. **Start in development mode** (auto-restart on changes):
+   ```bash
+   npm run start:dev
+   ```
+
+7. **Or build and run in production mode:**
+   ```bash
+   npm run build
+   npm run start:prod
+   ```
+
+The server starts on **port 8080**.
+
+---
+
+## Database
+
+### Migration commands
+
+```bash
+# Apply all pending migrations
+npm run migration:run
+
+# Revert the last applied migration
+npm run migration:revert
+
+# Generate a new migration based on entity changes
+npm run migration:generate -- src/infrastructure/database/typeorm/migrations/MigrationName
+```
+
+### Seed
+
+The seed script populates the database with realistic test data for an IT company portal:
+
+```bash
+npm run seed
+```
+
+Password for all test users - Password123!
+
+**What gets created:**
+
+| Entity | Count | Details |
+|--------|-------|---------|
+| Users | 7 | 1 admin, 2 editors, 4 developers/QA/DevOps |
+| Categories | 7 | Разработка, DevOps и инфраструктура, Безопасность, etc. |
+| Tags | 12 | TypeScript, NestJS, Docker, Kubernetes, CI/CD, etc. |
+| News | 7 | 6 published, 1 draft |
+| Comments | 8 | — |
+| Likes | 12 | — |
+| Approvals | 4 | — |
+| Notifications | 4 + 10 user notifications | — |
+
+**Test accounts** (password for all: `Password123!`):
+
+| Username | Role | Position |
+|----------|------|----------|
+| `admin` | Admin | Системный администратор (DevOps) |
+| `editor_volkova` | Editor | Технический редактор |
+| `editor_morozov` | Editor | Редактор корпоративных новостей |
+| `sokolova_dev` | User | Senior Frontend Developer |
+| `nikitin_dev` | User | Backend Developer |
+| `lebedeva_qa` | User | QA Engineer |
+| `orlov_devops` | User | DevOps Engineer |
+
+The seed script is idempotent — re-running it will not create duplicates.
+
+---
+
+## Testing
+
+```bash
+# Unit tests
+npm run test
+
+# Unit tests with coverage report
+npm run test:cov
+
+# E2E tests
+npm run test:e2e
+
+# All tests (unit + E2E)
+npm run test:all
+```
+
+Unit tests live alongside source files as `*.spec.ts`.
+E2E tests are in `test/` as `*.e2e-spec.ts` and test full HTTP request/response cycles using Supertest.
