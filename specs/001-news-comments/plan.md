@@ -222,14 +222,14 @@ DROP TABLE IF EXISTS "comments";
 
 | Method | Route | Guards | Use Case |
 |--------|-------|--------|----------|
-| `GET` | `/news/:newsId/comments` | none (public) | `GetCommentsByNewsUseCase` |
+| `GET` | `/news/:newsId/comments` | `ApprovedGuard` | `GetCommentsByNewsUseCase` |
 | `POST` | `/news/:newsId/comments` | `ApprovedGuard` | `CreateCommentUseCase` |
 | `PUT` | `/comments/:id` | `ApprovedGuard` | `UpdateCommentUseCase` |
 | `DELETE` | `/comments/:id` | `ApprovedGuard` | `DeleteCommentUseCase` |
 
 - All responses wrapped in `SuccessResponseDto`
-- `@Public()` decorator on `GET` (existing pattern for bypassing `JwtAuthGuard`)
-- `@CurrentUser()` for extracting `requestingUserId` and `isAdmin` in protected routes
+- All endpoints require `JwtAuthGuard` (applied globally) + `ApprovedGuard` — this is an internal corporate platform, no public access
+- `@CurrentUser()` for extracting `requestingUserId` and `isAdmin` in all routes
 
 **`comments.module.ts`**
 - Declares `CommentsController`

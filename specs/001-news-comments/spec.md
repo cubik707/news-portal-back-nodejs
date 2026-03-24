@@ -9,16 +9,17 @@
 
 ### User Story 1 — Read Comments on an Article (Priority: P1)
 
-Any visitor — authenticated or not — opens a news article and sees all comments left by other users, ordered from oldest to newest, with the author's name and the time of posting visible for each comment.
+An authenticated and approved employee opens a news article and sees all comments left by other users, ordered from oldest to newest, with the author's name and the time of posting visible for each comment.
 
-**Why this priority**: Comments are primarily a reading experience. Displaying them to all visitors is the foundation every other story builds on.
+**Why this priority**: Comments are primarily a reading experience. Displaying them to authenticated employees is the foundation every other story builds on.
 
-**Independent Test**: Can be fully tested by opening any news article and verifying that existing comments are visible without logging in.
+**Independent Test**: Can be fully tested by opening any news article with a valid employee token and verifying that existing comments are visible.
 
 **Acceptance Scenarios**:
 
-1. **Given** a published article with comments, **When** any visitor opens the article, **Then** all comments are shown in chronological order with author name and timestamp.
-2. **Given** a published article with no comments, **When** any visitor opens the article, **Then** a "no comments yet" state is displayed and the comment count shows 0.
+1. **Given** an authenticated employee opens a published article with comments, **When** the page loads, **Then** all comments are shown in chronological order with author name and timestamp.
+2. **Given** an authenticated employee opens a published article with no comments, **When** the page loads, **Then** a "no comments yet" state is displayed and the comment count shows 0.
+3. **Given** a request without a valid token, **When** the comments endpoint is called, **Then** access is denied with a 401 response.
 
 ---
 
@@ -96,7 +97,7 @@ An admin reviews comments on an article and finds one that violates community gu
 
 ### Functional Requirements
 
-- **FR-001**: System MUST display all comments for a news article to any visitor without requiring authentication.
+- **FR-001**: System MUST display all comments for a news article to any authenticated and approved employee. Unauthenticated requests MUST be rejected.
 - **FR-002**: System MUST allow any registered and approved user to post a comment on any news article.
 - **FR-003**: Comment text MUST NOT be empty and MUST NOT exceed 2000 characters.
 - **FR-004**: Each comment MUST record and display the author's name and the date/time it was posted.
@@ -121,7 +122,7 @@ An admin reviews comments on an article and finds one that violates community gu
 ### Measurable Outcomes
 
 - **SC-001**: An approved user can post a comment on a news article in under 30 seconds from opening the article.
-- **SC-002**: Comments are visible to all visitors, including unauthenticated ones, with no additional steps required.
+- **SC-002**: Comments are visible to any authenticated employee without additional steps beyond normal login.
 - **SC-003**: A comment author can successfully edit or delete their own comment from the same view where comments are displayed.
 - **SC-004**: An administrator can remove any comment without navigating away from the article.
 - **SC-005**: The comment count on an article accurately reflects the current number of comments immediately after any add or delete operation.

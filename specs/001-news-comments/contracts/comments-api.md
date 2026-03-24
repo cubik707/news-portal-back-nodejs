@@ -10,7 +10,7 @@ All responses follow the existing `{ data: T, message: string }` envelope.
 
 Retrieve all comments for a news article, oldest first.
 
-**Auth**: Public (no JWT required)
+**Auth**: JWT + Approved (`JwtAuthGuard` + `ApprovedGuard`)
 
 **Response 200**
 ```json
@@ -34,6 +34,8 @@ Retrieve all comments for a news article, oldest first.
 }
 ```
 
+**Response 401** — not authenticated
+**Response 403** — account not approved
 **Response 404** — news article not found
 
 ---
