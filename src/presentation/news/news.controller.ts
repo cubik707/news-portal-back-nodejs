@@ -36,9 +36,9 @@ export class NewsController {
 
   @Get()
   async findAll(): Promise<SuccessResponseDto<NewsResponseDto[]>> {
-    const news = await this.getAllNews.execute();
+    const items = await this.getAllNews.execute();
     return new SuccessResponseDto(
-      news.map((n) => NewsResponseDto.fromDomain(n)),
+      items.map(({ news, commentCount }) => NewsResponseDto.fromDomain(news, commentCount)),
       'News retrieved',
     );
   }
@@ -92,8 +92,8 @@ export class NewsController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<SuccessResponseDto<NewsResponseDto>> {
-    const news = await this.getNewsById.execute(id);
-    return new SuccessResponseDto(NewsResponseDto.fromDomain(news), 'News retrieved');
+    const { news, commentCount } = await this.getNewsById.execute(id);
+    return new SuccessResponseDto(NewsResponseDto.fromDomain(news, commentCount), 'News retrieved');
   }
 
   @Post()

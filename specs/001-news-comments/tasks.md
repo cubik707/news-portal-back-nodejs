@@ -14,7 +14,7 @@
 
 **Purpose**: Create the folder skeleton for the new `comment` bounded context
 
-- [ ] T001 Create directory structure: `src/core/domain/comment/entities/`, `src/core/domain/comment/repositories/`, `src/core/domain/comment/exceptions/`, `src/application/comment/use-cases/`, `src/application/comment/dtos/`, `src/presentation/comments/`
+- [X] T001 Create directory structure: `src/core/domain/comment/entities/`, `src/core/domain/comment/repositories/`, `src/core/domain/comment/exceptions/`, `src/application/comment/use-cases/`, `src/application/comment/dtos/`, `src/presentation/comments/`
 
 ---
 
@@ -24,16 +24,16 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 Create `Comment` domain entity with `create()` / `reconstitute()` factories, `updateContent()` business method, and `editedAt` field in `src/core/domain/comment/entities/comment.domain.ts`
-- [ ] T003 [P] Create `ICommentRepository` interface (`findAllByNewsId`, `countByNewsId`, `findById`, `save`, `update`, `delete`) and `COMMENT_REPOSITORY` symbol in `src/core/domain/comment/repositories/comment.repository.interface.ts`
-- [ ] T004 [P] Create `CommentNotFoundException` extending `NotFoundException` in `src/core/domain/comment/exceptions/comment-not-found.exception.ts`
-- [ ] T005 [P] Create `CommentAccessDeniedException` extending `ForbiddenException` in `src/core/domain/comment/exceptions/comment-access-denied.exception.ts`
-- [ ] T006 Create `CommentOrmEntity` with `@Entity('comments')`, UUID PK, `content` TEXT, `ManyToOne` to `UserOrmEntity` and `NewsOrmEntity` (CASCADE), `createdAt`, `updatedAt`, nullable `editedAt` in `src/infrastructure/database/typeorm/entities/comment.orm-entity.ts`
-- [ ] T007 Create `CommentMapper.toDomain(orm): Comment` using `Comment.reconstitute()` in `src/infrastructure/database/typeorm/mappers/comment.mapper.ts`
-- [ ] T008 Create `CommentTypeormRepository` implementing `ICommentRepository` (all 6 methods) in `src/infrastructure/database/typeorm/repositories/comment.typeorm-repository.ts`
-- [ ] T009 Generate migration `AddCommentsBoundedContext` creating `comments` table (UUID PK, `content` TEXT NOT NULL, `author_id` UUID FK→users, `news_id` UUID FK→news CASCADE DELETE, `created_at`, `updated_at`, `edited_at` NULLABLE) in `src/infrastructure/database/typeorm/migrations/<timestamp>-AddCommentsBoundedContext.ts`
-- [ ] T010 Create `CommentsModule` wiring `COMMENT_REPOSITORY` → `CommentTypeormRepository`, importing `TypeOrmModule.forFeature([CommentOrmEntity, NewsOrmEntity, UserOrmEntity])` in `src/presentation/comments/comments.module.ts`
-- [ ] T011 Register `CommentsModule` in `src/app.module.ts`
+- [X] T002 Create `Comment` domain entity with `create()` / `reconstitute()` factories, `updateContent()` business method, and `editedAt` field in `src/core/domain/comment/entities/comment.domain.ts`
+- [X] T003 [P] Create `ICommentRepository` interface (`findAllByNewsId`, `countByNewsId`, `findById`, `save`, `update`, `delete`) and `COMMENT_REPOSITORY` symbol in `src/core/domain/comment/repositories/comment.repository.interface.ts`
+- [X] T004 [P] Create `CommentNotFoundException` extending `NotFoundException` in `src/core/domain/comment/exceptions/comment-not-found.exception.ts`
+- [X] T005 [P] Create `CommentAccessDeniedException` extending `ForbiddenException` in `src/core/domain/comment/exceptions/comment-access-denied.exception.ts`
+- [X] T006 Create `CommentOrmEntity` with `@Entity('comments')`, UUID PK, `content` TEXT, `ManyToOne` to `UserOrmEntity` and `NewsOrmEntity` (CASCADE), `createdAt`, `updatedAt`, nullable `editedAt` in `src/infrastructure/database/typeorm/entities/comment.orm-entity.ts`
+- [X] T007 Create `CommentMapper.toDomain(orm): Comment` using `Comment.reconstitute()` in `src/infrastructure/database/typeorm/mappers/comment.mapper.ts`
+- [X] T008 Create `CommentTypeormRepository` implementing `ICommentRepository` (all 6 methods) in `src/infrastructure/database/typeorm/repositories/comment.typeorm-repository.ts`
+- [X] T009 Generate migration `AddCommentsBoundedContext` creating `comments` table (UUID PK, `content` TEXT NOT NULL, `author_id` UUID FK→users, `news_id` UUID FK→news CASCADE DELETE, `created_at`, `updated_at`, `edited_at` NULLABLE) in `src/infrastructure/database/typeorm/migrations/<timestamp>-AddCommentsBoundedContext.ts`
+- [X] T010 Create `CommentsModule` wiring `COMMENT_REPOSITORY` → `CommentTypeormRepository`, importing `TypeOrmModule.forFeature([CommentOrmEntity, NewsOrmEntity, UserOrmEntity])` in `src/presentation/comments/comments.module.ts`
+- [X] T011 Register `CommentsModule` in `src/app.module.ts`
 
 **Checkpoint**: Run `npm run migration:run` — `comments` table created. App boots without errors.
 
@@ -45,10 +45,10 @@
 
 **Independent Test**: `GET /news/:newsId/comments` with a valid approved-user token returns `[]` on an article with no comments, and returns the correct list after seeding comments. Same call without a token returns 401.
 
-- [ ] T012 [US1] Create `CommentResponseDto` with `fromDomain()` static factory (fields: `id`, `content`, `author` {id, username, firstName, lastName}, `newsId`, `createdAt`, `editedAt`) in `src/application/comment/dtos/comment-response.dto.ts`
-- [ ] T013 [US1] Create `GetCommentsByNewsUseCase` injecting `INewsRepository` (verify news exists → 404) and `ICommentRepository` (`findAllByNewsId`) in `src/application/comment/use-cases/get-comments-by-news.use-case.ts`
-- [ ] T014 [US1] Add `GET /news/:newsId/comments` endpoint (`@UseGuards(ApprovedGuard)`, uses `GetCommentsByNewsUseCase`, returns `SuccessResponseDto<CommentResponseDto[]>`) and inject use case in `CommentsModule` in `src/presentation/comments/comments.controller.ts`
-- [ ] T015 [US1] Write E2E integration tests for `GET /news/:newsId/comments`: 200 with empty list, 200 with populated list (oldest-first order), 401 without token, 403 unapproved user, 404 unknown newsId in `test/comments.e2e-spec.ts`
+- [X] T012 [US1] Create `CommentResponseDto` with `fromDomain()` static factory (fields: `id`, `content`, `author` {id, username, firstName, lastName}, `newsId`, `createdAt`, `editedAt`) in `src/application/comment/dtos/comment-response.dto.ts`
+- [X] T013 [US1] Create `GetCommentsByNewsUseCase` injecting `INewsRepository` (verify news exists → 404) and `ICommentRepository` (`findAllByNewsId`) in `src/application/comment/use-cases/get-comments-by-news.use-case.ts`
+- [X] T014 [US1] Add `GET /news/:newsId/comments` endpoint (`@UseGuards(ApprovedGuard)`, uses `GetCommentsByNewsUseCase`, returns `SuccessResponseDto<CommentResponseDto[]>`) and inject use case in `CommentsModule` in `src/presentation/comments/comments.controller.ts`
+- [X] T015 [US1] Write E2E integration tests for `GET /news/:newsId/comments`: 200 with empty list, 200 with populated list (oldest-first order), 401 without token, 403 unapproved user, 404 unknown newsId in `test/comments.e2e-spec.ts`
 
 **Checkpoint**: `GET /news/:newsId/comments` returns comments without auth. E2E tests pass.
 
@@ -60,10 +60,10 @@
 
 **Independent Test**: `POST /news/:newsId/comments` with a valid JWT for an approved user returns 201 with the new comment; same call without a token returns 401.
 
-- [ ] T016 [P] [US2] Create `CommentCreateDto` with `@IsString() @MinLength(1) @MaxLength(2000) content` in `src/application/comment/dtos/comment-create.dto.ts`
-- [ ] T017 [US2] Create `CreateCommentUseCase` injecting `INewsRepository` (verify news exists → 404), `IUserRepository` (load author), `ICommentRepository` (`save`) in `src/application/comment/use-cases/create-comment.use-case.ts`
-- [ ] T018 [US2] Add `POST /news/:newsId/comments` endpoint (`@UseGuards(ApprovedGuard)`, `@CurrentUser()`, delegates to `CreateCommentUseCase`, returns 201) and register use case in `CommentsModule` in `src/presentation/comments/comments.controller.ts`
-- [ ] T019 [US2] Add E2E tests for `POST`: 201 approved user, 400 empty content, 400 content > 2000 chars, 403 unapproved user, 404 unknown newsId in `test/comments.e2e-spec.ts`
+- [X] T016 [P] [US2] Create `CommentCreateDto` with `@IsString() @MinLength(1) @MaxLength(2000) content` in `src/application/comment/dtos/comment-create.dto.ts`
+- [X] T017 [US2] Create `CreateCommentUseCase` injecting `INewsRepository` (verify news exists → 404), `IUserRepository` (load author), `ICommentRepository` (`save`) in `src/application/comment/use-cases/create-comment.use-case.ts`
+- [X] T018 [US2] Add `POST /news/:newsId/comments` endpoint (`@UseGuards(ApprovedGuard)`, `@CurrentUser()`, delegates to `CreateCommentUseCase`, returns 201) and register use case in `CommentsModule` in `src/presentation/comments/comments.controller.ts`
+- [X] T019 [US2] Add E2E tests for `POST`: 201 approved user, 400 empty content, 400 content > 2000 chars, 403 unapproved user, 404 unknown newsId in `test/comments.e2e-spec.ts`
 
 **Checkpoint**: Approved users can post comments. Validation and auth guards work. E2E tests pass.
 
@@ -75,10 +75,10 @@
 
 **Independent Test**: `PUT /comments/:id` by the comment's author returns 200 with updated `content` and non-null `editedAt`; same call by a different user returns 403.
 
-- [ ] T020 [P] [US3] Create `CommentUpdateDto` with same validation as `CommentCreateDto` in `src/application/comment/dtos/comment-update.dto.ts`
-- [ ] T021 [US3] Create `UpdateCommentUseCase` injecting `ICommentRepository`: load by id → 404, check ownership → 403 (`CommentAccessDeniedException`), call `comment.updateContent()`, persist in `src/application/comment/use-cases/update-comment.use-case.ts`
-- [ ] T022 [US3] Add `PUT /comments/:id` endpoint (`@UseGuards(ApprovedGuard)`, `@CurrentUser()`, delegates to `UpdateCommentUseCase`) and register use case in `CommentsModule` in `src/presentation/comments/comments.controller.ts`
-- [ ] T023 [US3] Add E2E tests for `PUT`: 200 author edits own comment (`editedAt` is set), 400 empty content, 403 non-author, 404 unknown id in `test/comments.e2e-spec.ts`
+- [X] T020 [P] [US3] Create `CommentUpdateDto` with same validation as `CommentCreateDto` in `src/application/comment/dtos/comment-update.dto.ts`
+- [X] T021 [US3] Create `UpdateCommentUseCase` injecting `ICommentRepository`: load by id → 404, check ownership → 403 (`CommentAccessDeniedException`), call `comment.updateContent()`, persist in `src/application/comment/use-cases/update-comment.use-case.ts`
+- [X] T022 [US3] Add `PUT /comments/:id` endpoint (`@UseGuards(ApprovedGuard)`, `@CurrentUser()`, delegates to `UpdateCommentUseCase`) and register use case in `CommentsModule` in `src/presentation/comments/comments.controller.ts`
+- [X] T023 [US3] Add E2E tests for `PUT`: 200 author edits own comment (`editedAt` is set), 400 empty content, 403 non-author, 404 unknown id in `test/comments.e2e-spec.ts`
 
 **Checkpoint**: Authors can edit their comments. `editedAt` is set and returned. Non-authors get 403.
 
@@ -90,10 +90,10 @@
 
 **Independent Test**: `DELETE /comments/:id` by author → 200 and comment gone; by admin on another user's comment → 200; by non-owner non-admin → 403.
 
-- [ ] T024 [US4] Create `DeleteCommentUseCase` injecting `ICommentRepository`: load by id → 404, check `authorId === requestingUserId || isAdmin` → 403 if neither, call `delete()` in `src/application/comment/use-cases/delete-comment.use-case.ts`
-- [ ] T025 [US4] Add `DELETE /comments/:id` endpoint (`@UseGuards(ApprovedGuard)`, `@CurrentUser()`, passes `isAdmin` flag from JWT payload to use case, returns `SuccessResponseDto<null>`) and register use case in `CommentsModule` in `src/presentation/comments/comments.controller.ts`
-- [ ] T026 [US4] Add E2E tests for `DELETE` — author deletes own comment → 200, comment count decreases; 403 non-owner non-admin; 404 unknown id in `test/comments.e2e-spec.ts`
-- [ ] T027 [US5] Add E2E test for admin deleting another user's comment → 200 in `test/comments.e2e-spec.ts`
+- [X] T024 [US4] Create `DeleteCommentUseCase` injecting `ICommentRepository`: load by id → 404, check `authorId === requestingUserId || isAdmin` → 403 if neither, call `delete()` in `src/application/comment/use-cases/delete-comment.use-case.ts`
+- [X] T025 [US4] Add `DELETE /comments/:id` endpoint (`@UseGuards(ApprovedGuard)`, `@CurrentUser()`, passes `isAdmin` flag from JWT payload to use case, returns `SuccessResponseDto<null>`) and register use case in `CommentsModule` in `src/presentation/comments/comments.controller.ts`
+- [X] T026 [US4] Add E2E tests for `DELETE` — author deletes own comment → 200, comment count decreases; 403 non-owner non-admin; 404 unknown id in `test/comments.e2e-spec.ts`
+- [X] T027 [US5] Add E2E test for admin deleting another user's comment → 200 in `test/comments.e2e-spec.ts`
 
 **Checkpoint**: Authors and admins can delete comments. All other users get 403. E2E tests pass.
 
@@ -103,11 +103,11 @@
 
 **Purpose**: `commentCount` on news responses and documentation
 
-- [ ] T028 Add `commentCount: number` field to `NewsResponseDto.fromDomain()` signature in `src/application/news/dtos/news-response.dto.ts`
-- [ ] T029 Inject `ICommentRepository` into `GetAllNewsUseCase`, call `countByNewsId()` per article, pass count into `NewsResponseDto.fromDomain()` in `src/application/news/use-cases/get-all-news.use-case.ts`
-- [ ] T030 Inject `ICommentRepository` into `GetNewsByIdUseCase`, call `countByNewsId()`, pass count into `NewsResponseDto.fromDomain()` in `src/application/news/use-cases/get-news-by-id.use-case.ts`
-- [ ] T031 Add E2E assertion: `GET /news/:newsId` response includes `commentCount` field that reflects the current comment count in `test/comments.e2e-spec.ts`
-- [ ] T032 Update `README.md` with Comments API endpoints table and any new env/migration notes
+- [X] T028 Add `commentCount: number` field to `NewsResponseDto.fromDomain()` signature in `src/application/news/dtos/news-response.dto.ts`
+- [X] T029 Inject `ICommentRepository` into `GetAllNewsUseCase`, call `countByNewsId()` per article, pass count into `NewsResponseDto.fromDomain()` in `src/application/news/use-cases/get-all-news.use-case.ts`
+- [X] T030 Inject `ICommentRepository` into `GetNewsByIdUseCase`, call `countByNewsId()`, pass count into `NewsResponseDto.fromDomain()` in `src/application/news/use-cases/get-news-by-id.use-case.ts`
+- [X] T031 Add E2E assertion: `GET /news/:newsId` response includes `commentCount` field that reflects the current comment count in `test/comments.e2e-spec.ts`
+- [X] T032 Update `README.md` with Comments API endpoints table and any new env/migration notes
 
 ---
 

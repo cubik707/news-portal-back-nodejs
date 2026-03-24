@@ -124,7 +124,10 @@ describe('News (E2E)', () => {
 
   describe('GET /news', () => {
     it('should return all news', async () => {
-      getAllNews.execute.mockResolvedValue([makeNews('1'), makeNews('2')]);
+      getAllNews.execute.mockResolvedValue([
+        { news: makeNews('1'), commentCount: 0 },
+        { news: makeNews('2'), commentCount: 0 },
+      ]);
 
       const res = await request(app.getHttpServer()).get('/news');
 
@@ -203,7 +206,7 @@ describe('News (E2E)', () => {
 
   describe('GET /news/:id', () => {
     it('should return news by id', async () => {
-      getNewsById.execute.mockResolvedValue(makeNews());
+      getNewsById.execute.mockResolvedValue({ news: makeNews(), commentCount: 0 });
 
       const res = await request(app.getHttpServer()).get('/news/news-id');
 

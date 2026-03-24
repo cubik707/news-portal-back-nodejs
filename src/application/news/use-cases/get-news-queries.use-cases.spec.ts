@@ -6,6 +6,7 @@ import { GetNewsByStatusUseCase } from './get-news-by-status.use-case';
 import { GetNewsByStatusAndAuthorUseCase } from './get-news-by-status-and-author.use-case';
 import { GetNewsByCategoryAndStatusUseCase } from './get-news-by-category-and-status.use-case';
 import { NEWS_REPOSITORY } from '../../../core/domain/news/repositories/news.repository.interface';
+import { COMMENT_REPOSITORY } from '../../../core/domain/comment/repositories/comment.repository.interface';
 import { User } from '../../../core/domain/user/entities/user.domain';
 import { Email } from '../../../core/shared/value-objects/email.vo';
 import { PasswordHash } from '../../../core/shared/value-objects/password-hash.vo';
@@ -48,24 +49,32 @@ const makeNews = (id = 'news-id', status = NewsStatus.published) =>
 describe('GetAllNewsUseCase', () => {
   let useCase: GetAllNewsUseCase;
   let newsRepository: { findAll: jest.Mock };
+  let commentRepository: { countByNewsId: jest.Mock };
 
   beforeEach(async () => {
     newsRepository = { findAll: jest.fn() };
+    commentRepository = { countByNewsId: jest.fn().mockResolvedValue(0) };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [GetAllNewsUseCase, { provide: NEWS_REPOSITORY, useValue: newsRepository }],
+      providers: [
+        GetAllNewsUseCase,
+        { provide: NEWS_REPOSITORY, useValue: newsRepository },
+        { provide: COMMENT_REPOSITORY, useValue: commentRepository },
+      ],
     }).compile();
 
     useCase = module.get(GetAllNewsUseCase);
   });
 
-  it('should return all news', async () => {
+  it('should return all news with comment counts', async () => {
     const news = [makeNews('1'), makeNews('2')];
     newsRepository.findAll.mockResolvedValue(news);
+    commentRepository.countByNewsId.mockResolvedValue(3);
 
     const result = await useCase.execute();
 
-    expect(result).toEqual(news);
+    expect(result).toHaveLength(2);
+    expect(result[0]).toMatchObject({ news: news[0], commentCount: 3 });
     expect(newsRepository.findAll).toHaveBeenCalled();
   });
 
@@ -83,24 +92,31 @@ describe('GetAllNewsUseCase', () => {
 describe('GetNewsByIdUseCase', () => {
   let useCase: GetNewsByIdUseCase;
   let newsRepository: { findById: jest.Mock };
+  let commentRepository: { countByNewsId: jest.Mock };
 
   beforeEach(async () => {
     newsRepository = { findById: jest.fn() };
+    commentRepository = { countByNewsId: jest.fn().mockResolvedValue(0) };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [GetNewsByIdUseCase, { provide: NEWS_REPOSITORY, useValue: newsRepository }],
+      providers: [
+        GetNewsByIdUseCase,
+        { provide: NEWS_REPOSITORY, useValue: newsRepository },
+        { provide: COMMENT_REPOSITORY, useValue: commentRepository },
+      ],
     }).compile();
 
     useCase = module.get(GetNewsByIdUseCase);
   });
 
-  it('should return news when found', async () => {
+  it('should return news with comment count when found', async () => {
     const news = makeNews();
     newsRepository.findById.mockResolvedValue(news);
+    commentRepository.countByNewsId.mockResolvedValue(5);
 
     const result = await useCase.execute('news-id');
 
-    expect(result).toBe(news);
+    expect(result).toMatchObject({ news, commentCount: 5 });
     expect(newsRepository.findById).toHaveBeenCalledWith('news-id');
   });
 

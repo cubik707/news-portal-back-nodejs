@@ -14,6 +14,7 @@ A RESTful API for an **internal IT company news portal** built with **NestJS**, 
     - [Users](#users)
     - [Admin](#admin)
     - [News](#news)
+    - [Comments](#comments)
     - [Categories](#categories)
     - [Tags](#tags)
     - [Subscriptions](#subscriptions)
@@ -167,6 +168,33 @@ All `/admin` routes require **JWT + Approved + Admin** role.
 | `POST` | `/news` | JWT + Approved + Editor | Create news |
 | `PUT` | `/news/:id` | JWT + Approved + Editor | Update news |
 | `DELETE` | `/news/:id` | JWT + Approved + Editor/Admin | Delete news |
+
+### Comments
+
+All comment endpoints require **JWT + Approved** (registered and approved account). News responses (`GET /news`, `GET /news/:id`) now include a `commentCount` field.
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/news/:newsId/comments` | JWT + Approved | List all comments for a news article (oldest first) |
+| `POST` | `/news/:newsId/comments` | JWT + Approved | Post a new comment on a news article |
+| `PUT` | `/comments/:id` | JWT + Approved | Edit own comment (author only) |
+| `DELETE` | `/comments/:id` | JWT + Approved | Delete a comment (author or Admin) |
+
+**Comment response shape:**
+```json
+{
+  "id": "019571c4-...",
+  "content": "Great article!",
+  "author": { "id": "...", "username": "nikitin_dev", "firstName": "Ivan", "lastName": "Nikitin" },
+  "newsId": "019571c4-...",
+  "createdAt": "2026-03-24T10:00:00.000Z",
+  "editedAt": null
+}
+```
+
+**Migration note:** Run `npm run migration:run` after pulling this feature — migration `1000000000003-AddCommentsBoundedContext` recreates the `comments` table with UUID PK, `author_id`, `updated_at`, and nullable `edited_at` columns.
+
+---
 
 ### Categories
 
