@@ -1,3 +1,4 @@
+import type { Server } from 'http';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe, ExecutionContext } from '@nestjs/common';
 import request from 'supertest';
@@ -94,7 +95,7 @@ describe('News (E2E)', () => {
       .overrideGuard(JwtAuthGuard)
       .useValue({
         canActivate: (ctx: ExecutionContext) => {
-          const req = ctx.switchToHttp().getRequest();
+          const req = ctx.switchToHttp().getRequest<{ user: unknown }>();
           req.user = {
             id: 'author-id',
             username: 'editor',
@@ -129,11 +130,11 @@ describe('News (E2E)', () => {
         { news: makeNews('2'), commentCount: 0 },
       ]);
 
-      const res = await request(app.getHttpServer()).get('/news');
+      const res = await request(app.getHttpServer() as Server).get('/news');
 
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({ status: 200, message: 'News retrieved' });
-      expect(res.body.data).toHaveLength(2);
+      expect((res.body as { data: unknown[] }).data).toHaveLength(2);
     });
   });
 
@@ -143,12 +144,12 @@ describe('News (E2E)', () => {
     it('should return news filtered by status', async () => {
       getNewsByStatus.execute.mockResolvedValue([makeNews()]);
 
-      const res = await request(app.getHttpServer())
+      const res = await request(app.getHttpServer() as Server)
         .get('/news/status')
         .query({ status: 'published' });
 
       expect(res.status).toBe(200);
-      expect(res.body.data).toHaveLength(1);
+      expect((res.body as { data: unknown[] }).data).toHaveLength(1);
       expect(getNewsByStatus.execute).toHaveBeenCalledWith(NewsStatus.published);
     });
   });
@@ -159,7 +160,7 @@ describe('News (E2E)', () => {
     it('should return news filtered by category', async () => {
       getNewsByCategory.execute.mockResolvedValue([makeNews()]);
 
-      const res = await request(app.getHttpServer()).get('/news/category/cat-id');
+      const res = await request(app.getHttpServer() as Server).get('/news/category/cat-id');
 
       expect(res.status).toBe(200);
       expect(getNewsByCategory.execute).toHaveBeenCalledWith('cat-id');
@@ -172,7 +173,7 @@ describe('News (E2E)', () => {
     it('should return news filtered by category and status', async () => {
       getNewsByCategoryAndStatus.execute.mockResolvedValue([makeNews()]);
 
-      const res = await request(app.getHttpServer())
+      const res = await request(app.getHttpServer() as Server)
         .get('/news/category/cat-id/status')
         .query({ status: 'published' });
 
@@ -190,7 +191,7 @@ describe('News (E2E)', () => {
     it('should return news filtered by author and status', async () => {
       getNewsByStatusAndAuthor.execute.mockResolvedValue([makeNews()]);
 
-      const res = await request(app.getHttpServer())
+      const res = await request(app.getHttpServer() as Server)
         .get('/news/author/author-id/status')
         .query({ status: 'published' });
 
@@ -208,7 +209,7 @@ describe('News (E2E)', () => {
     it('should return news by id', async () => {
       getNewsById.execute.mockResolvedValue({ news: makeNews(), commentCount: 0 });
 
-      const res = await request(app.getHttpServer()).get('/news/news-id');
+      const res = await request(app.getHttpServer() as Server).get('/news/news-id');
 
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({
@@ -220,7 +221,7 @@ describe('News (E2E)', () => {
     it('should return 404 when news is not found', async () => {
       getNewsById.execute.mockRejectedValue(new NewsNotFoundException('bad-id'));
 
-      const res = await request(app.getHttpServer()).get('/news/bad-id');
+      const res = await request(app.getHttpServer() as Server).get('/news/bad-id');
 
       expect(res.status).toBe(404);
       expect(res.body).toMatchObject({ status: 404 });
@@ -239,7 +240,9 @@ describe('News (E2E)', () => {
     it('should create news and return it', async () => {
       createNews.execute.mockResolvedValue(makeNews());
 
-      const res = await request(app.getHttpServer()).post('/news').send(body);
+      const res = await request(app.getHttpServer() as Server)
+        .post('/news')
+        .send(body);
 
       expect(res.status).toBe(201);
       expect(res.body).toMatchObject({ status: 200, message: 'News created' });
@@ -249,7 +252,9 @@ describe('News (E2E)', () => {
     });
 
     it('should return 400 when required fields are missing', async () => {
-      const res = await request(app.getHttpServer()).post('/news').send({ title: 'Only title' });
+      const res = await request(app.getHttpServer() as Server)
+        .post('/news')
+        .send({ title: 'Only title' });
 
       expect(res.status).toBe(400);
     });
@@ -261,7 +266,7 @@ describe('News (E2E)', () => {
     it('should update news and return it', async () => {
       updateNews.execute.mockResolvedValue(makeNews());
 
-      const res = await request(app.getHttpServer())
+      const res = await request(app.getHttpServer() as Server)
         .put('/news/news-id')
         .send({ title: 'Updated' });
 
@@ -272,7 +277,9 @@ describe('News (E2E)', () => {
     it('should return 404 when news is not found', async () => {
       updateNews.execute.mockRejectedValue(new NewsNotFoundException('bad-id'));
 
-      const res = await request(app.getHttpServer()).put('/news/bad-id').send({ title: 'x' });
+      const res = await request(app.getHttpServer() as Server)
+        .put('/news/bad-id')
+        .send({ title: 'x' });
 
       expect(res.status).toBe(404);
     });
@@ -284,7 +291,7 @@ describe('News (E2E)', () => {
     it('should delete news and return success', async () => {
       deleteNews.execute.mockResolvedValue(undefined);
 
-      const res = await request(app.getHttpServer()).delete('/news/news-id');
+      const res = await request(app.getHttpServer() as Server).delete('/news/news-id');
 
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({ status: 200, message: 'News deleted' });
@@ -293,7 +300,7 @@ describe('News (E2E)', () => {
     it('should return 404 when news is not found', async () => {
       deleteNews.execute.mockRejectedValue(new NewsNotFoundException('bad-id'));
 
-      const res = await request(app.getHttpServer()).delete('/news/bad-id');
+      const res = await request(app.getHttpServer() as Server).delete('/news/bad-id');
 
       expect(res.status).toBe(404);
     });

@@ -60,14 +60,20 @@ export class CommentTypeormRepository implements ICommentRepository {
   }
 
   async update(comment: Comment): Promise<Comment> {
-    const entity = await this.repo.findOne({ where: { id: comment.id }, relations: this.relations });
+    const entity = await this.repo.findOne({
+      where: { id: comment.id },
+      relations: this.relations,
+    });
     if (!entity) throw new Error(`Comment ${comment.id} not found`);
 
     entity.content = comment.content;
     entity.editedAt = comment.editedAt ?? null;
 
     await this.repo.save(entity);
-    const updated = await this.repo.findOne({ where: { id: comment.id }, relations: this.relations });
+    const updated = await this.repo.findOne({
+      where: { id: comment.id },
+      relations: this.relations,
+    });
     return CommentMapper.toDomain(updated!);
   }
 

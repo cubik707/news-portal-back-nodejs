@@ -24,6 +24,9 @@ export class NewsApprovalsController {
       status: dto.status,
       comment: dto.comment,
     });
-    return new SuccessResponseDto(NewsApprovalResponseDto.fromDomain(approval), 'News approval processed');
+    return new SuccessResponseDto(
+      NewsApprovalResponseDto.fromDomain(approval),
+      'News approval processed',
+    );
   }
 }

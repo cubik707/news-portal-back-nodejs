@@ -313,7 +313,7 @@ describe('Comments (E2E)', () => {
       expect(res.status).toBe(404);
     });
 
-    it('T027-1: should return 200 when admin deletes another user\'s comment', async () => {
+    it("T027-1: should return 200 when admin deletes another user's comment", async () => {
       await buildApp(makeApprovedGuard('admin-id', [UserRole.ADMIN]));
       deleteComment.execute.mockResolvedValue(undefined);
 

@@ -67,6 +67,14 @@ const ALL_ENTITIES = [
     { provide: NEWS_APPROVAL_REPOSITORY, useClass: NewsApprovalTypeormRepository },
     { provide: COMMENT_REPOSITORY, useClass: CommentTypeormRepository },
   ],
-  exports: [TypeOrmModule, USER_REPOSITORY, NEWS_REPOSITORY, CATEGORY_REPOSITORY, TAG_REPOSITORY, NEWS_APPROVAL_REPOSITORY, COMMENT_REPOSITORY],
+  exports: [
+    TypeOrmModule,
+    USER_REPOSITORY,
+    NEWS_REPOSITORY,
+    CATEGORY_REPOSITORY,
+    TAG_REPOSITORY,
+    NEWS_APPROVAL_REPOSITORY,
+    COMMENT_REPOSITORY,
+  ],
 })
 export class DatabaseModule {}
