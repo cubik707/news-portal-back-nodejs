@@ -17,11 +17,13 @@ import { NewsTypeormRepository } from './typeorm/repositories/news.typeorm-repos
 import { CategoryTypeormRepository } from './typeorm/repositories/category.typeorm-repository';
 import { TagTypeormRepository } from './typeorm/repositories/tag.typeorm-repository';
 import { NewsApprovalTypeormRepository } from './typeorm/repositories/news-approval.typeorm-repository';
+import { CommentTypeormRepository } from './typeorm/repositories/comment.typeorm-repository';
 import { USER_REPOSITORY } from '../../core/domain/user/repositories/user.repository.interface';
 import { NEWS_REPOSITORY } from '../../core/domain/news/repositories/news.repository.interface';
 import { CATEGORY_REPOSITORY } from '../../core/domain/category/repositories/category.repository.interface';
 import { TAG_REPOSITORY } from '../../core/domain/tag/repositories/tag.repository.interface';
 import { NEWS_APPROVAL_REPOSITORY } from '../../core/domain/news-approval/repositories/news-approval.repository.interface';
+import { COMMENT_REPOSITORY } from '../../core/domain/comment/repositories/comment.repository.interface';
 
 const ALL_ENTITIES = [
   UserOrmEntity,
@@ -63,7 +65,8 @@ const ALL_ENTITIES = [
     { provide: CATEGORY_REPOSITORY, useClass: CategoryTypeormRepository },
     { provide: TAG_REPOSITORY, useClass: TagTypeormRepository },
     { provide: NEWS_APPROVAL_REPOSITORY, useClass: NewsApprovalTypeormRepository },
+    { provide: COMMENT_REPOSITORY, useClass: CommentTypeormRepository },
   ],
-  exports: [TypeOrmModule, USER_REPOSITORY, NEWS_REPOSITORY, CATEGORY_REPOSITORY, TAG_REPOSITORY, NEWS_APPROVAL_REPOSITORY],
+  exports: [TypeOrmModule, USER_REPOSITORY, NEWS_REPOSITORY, CATEGORY_REPOSITORY, TAG_REPOSITORY, NEWS_APPROVAL_REPOSITORY, COMMENT_REPOSITORY],
 })
 export class DatabaseModule {}
