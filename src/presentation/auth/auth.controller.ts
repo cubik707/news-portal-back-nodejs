@@ -46,7 +46,9 @@ export class AuthController {
 
   @UseGuards(ApprovedGuard)
   @Get('me')
-  async getMe(@CurrentUser() jwtUser: JwtUserPayload): Promise<SuccessResponseDto<UserResponseDto>> {
+  async getMe(
+    @CurrentUser() jwtUser: JwtUserPayload,
+  ): Promise<SuccessResponseDto<UserResponseDto>> {
     const user = await this.getUser.execute(jwtUser.id);
     return new SuccessResponseDto(UserResponseDto.fromDomain(user), 'Current user retrieved');
   }
