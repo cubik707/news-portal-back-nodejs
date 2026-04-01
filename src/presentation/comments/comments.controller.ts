@@ -11,10 +11,12 @@ import {
 } from '@nestjs/common';
 import { GetCommentsByNewsUseCase } from '../../application/comment/use-cases/get-comments-by-news.use-case';
 import { GetLastCommentsUseCase } from '../../application/comment/use-cases/get-last-comments.use-case';
+import { GetCommentsByAuthorUseCase } from '../../application/comment/use-cases/get-comments-by-author.use-case';
 import { CreateCommentUseCase } from '../../application/comment/use-cases/create-comment.use-case';
 import { UpdateCommentUseCase } from '../../application/comment/use-cases/update-comment.use-case';
 import { DeleteCommentUseCase } from '../../application/comment/use-cases/delete-comment.use-case';
 import { CommentResponseDto } from '../../application/comment/dtos/comment-response.dto';
+import { CommentWithNewsResponseDto } from '../../application/comment/dtos/comment-with-news-response.dto';
 import { CommentCreateDto } from '../../application/comment/dtos/comment-create.dto';
 import { CommentUpdateDto } from '../../application/comment/dtos/comment-update.dto';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
@@ -30,10 +32,23 @@ export class CommentsController {
   constructor(
     private readonly getCommentsByNews: GetCommentsByNewsUseCase,
     private readonly getLastComments: GetLastCommentsUseCase,
+    private readonly getCommentsByAuthor: GetCommentsByAuthorUseCase,
     private readonly createComment: CreateCommentUseCase,
     private readonly updateComment: UpdateCommentUseCase,
     private readonly deleteComment: DeleteCommentUseCase,
   ) {}
+
+  @Get('comments/my')
+  @UseGuards(ApprovedGuard)
+  async findMy(
+    @CurrentUser() user: JwtUserPayload,
+  ): Promise<SuccessResponseDto<CommentWithNewsResponseDto[]>> {
+    const comments = await this.getCommentsByAuthor.execute(user.id);
+    return new SuccessResponseDto(
+      comments.map((c) => CommentWithNewsResponseDto.fromProjection(c)),
+      'Comments retrieved',
+    );
+  }
 
   @Get('comments/last')
   @UseGuards(ApprovedGuard)

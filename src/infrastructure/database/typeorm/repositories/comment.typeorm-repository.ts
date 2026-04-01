@@ -1,7 +1,10 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from '../../../../core/domain/comment/entities/comment.domain';
-import { ICommentRepository } from '../../../../core/domain/comment/repositories/comment.repository.interface';
+import {
+  ICommentRepository,
+  CommentWithNewsInfo,
+} from '../../../../core/domain/comment/repositories/comment.repository.interface';
 import { CommentOrmEntity } from '../entities/comment.orm-entity';
 import { CommentMapper } from '../mappers/comment.mapper';
 import { UserOrmEntity } from '../entities/user.orm-entity';
@@ -46,6 +49,30 @@ export class CommentTypeormRepository implements ICommentRepository {
   async findById(id: string): Promise<Comment | null> {
     const entity = await this.repo.findOne({ where: { id }, relations: this.relations });
     return entity ? CommentMapper.toDomain(entity) : null;
+  }
+
+  async findAllByAuthorId(authorId: string): Promise<CommentWithNewsInfo[]> {
+    const entities = await this.repo.find({
+      where: { author: { id: authorId } },
+      order: { createdAt: 'DESC' },
+      relations: [...this.relations, 'news'],
+    });
+    return entities.map((e) => ({
+      id: e.id,
+      content: e.content,
+      author: {
+        id: e.author.id,
+        username: e.author.username,
+        firstName: e.author.userInfo?.firstName ?? '',
+        lastName: e.author.userInfo?.lastName ?? '',
+        avatarUrl: e.author.userInfo?.avatarUrl ?? undefined,
+      },
+      newsId: e.newsId,
+      newsTitle: e.news.title,
+      createdAt: e.createdAt,
+      updatedAt: e.updatedAt,
+      editedAt: e.editedAt ?? undefined,
+    }));
   }
 
   async save(comment: Comment): Promise<Comment> {
