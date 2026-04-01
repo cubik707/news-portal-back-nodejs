@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { GetCommentsByNewsUseCase } from '../../application/comment/use-cases/get-comments-by-news.use-case';
+import { GetLastCommentsUseCase } from '../../application/comment/use-cases/get-last-comments.use-case';
 import { CreateCommentUseCase } from '../../application/comment/use-cases/create-comment.use-case';
 import { UpdateCommentUseCase } from '../../application/comment/use-cases/update-comment.use-case';
 import { DeleteCommentUseCase } from '../../application/comment/use-cases/delete-comment.use-case';
@@ -26,10 +27,21 @@ import { UserRole } from '../../core/shared/enums/user-role.enum';
 export class CommentsController {
   constructor(
     private readonly getCommentsByNews: GetCommentsByNewsUseCase,
+    private readonly getLastComments: GetLastCommentsUseCase,
     private readonly createComment: CreateCommentUseCase,
     private readonly updateComment: UpdateCommentUseCase,
     private readonly deleteComment: DeleteCommentUseCase,
   ) {}
+
+  @Get('comments/last')
+  @UseGuards(ApprovedGuard)
+  async findLast(): Promise<SuccessResponseDto<CommentResponseDto[]>> {
+    const comments = await this.getLastComments.execute(3);
+    return new SuccessResponseDto(
+      comments.map((c) => CommentResponseDto.fromDomain(c)),
+      'Last comments retrieved',
+    );
+  }
 
   @Get('news/:newsId/comments')
   @UseGuards(ApprovedGuard)

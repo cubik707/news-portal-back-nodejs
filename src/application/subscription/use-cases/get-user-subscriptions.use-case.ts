@@ -22,7 +22,7 @@ export class GetUserSubscriptionsUseCase {
 
     const dto = new UserSubscriptionsDto();
     dto.userId = userId;
-    dto.categories = categories.map(CategoryResponseDto.fromDomain);
+    dto.categories = categories.map((c) => CategoryResponseDto.fromDomain(c));
     return dto;
   }
 }

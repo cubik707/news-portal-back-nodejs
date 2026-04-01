@@ -27,7 +27,16 @@ export class CommentTypeormRepository implements ICommentRepository {
       order: { createdAt: 'ASC' },
       relations: this.relations,
     });
-    return entities.map(CommentMapper.toDomain);
+    return entities.map((e) => CommentMapper.toDomain(e));
+  }
+
+  async findLast(limit: number): Promise<Comment[]> {
+    const entities = await this.repo.find({
+      order: { createdAt: 'DESC' },
+      take: limit,
+      relations: this.relations,
+    });
+    return entities.map((e) => CommentMapper.toDomain(e));
   }
 
   async countByNewsId(newsId: string): Promise<number> {

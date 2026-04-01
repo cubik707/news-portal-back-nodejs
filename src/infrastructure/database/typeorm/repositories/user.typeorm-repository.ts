@@ -28,7 +28,7 @@ export class UserTypeormRepository implements IUserRepository {
 
   async findAll(): Promise<User[]> {
     const entities = await this.repo.find({ relations: this.relations });
-    return entities.map(UserMapper.toDomain);
+    return entities.map((e) => UserMapper.toDomain(e));
   }
 
   async findById(id: string): Promise<User | null> {
@@ -142,7 +142,7 @@ export class UserTypeormRepository implements IUserRepository {
       relations: ['subscribedCategories'],
     });
     if (!entity) return [];
-    return entity.subscribedCategories.map(CategoryMapper.toDomain);
+    return entity.subscribedCategories.map((e) => CategoryMapper.toDomain(e));
   }
 
   async addSubscription(userId: string, categoryId: string): Promise<void> {

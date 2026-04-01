@@ -13,7 +13,7 @@ export class CategoryTypeormRepository implements ICategoryRepository {
 
   async findAll(): Promise<Category[]> {
     const entities = await this.repo.find();
-    return entities.map(CategoryMapper.toDomain);
+    return entities.map((e) => CategoryMapper.toDomain(e));
   }
 
   async findById(id: string): Promise<Category | null> {
