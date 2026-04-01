@@ -362,13 +362,19 @@ npm run migration:generate -- src/infrastructure/database/typeorm/migrations/Mig
 
 ### Seed
 
-The seed script populates the database with realistic test data for an IT company portal:
+The seed script populates the database with realistic test data for an IT company portal.
+
+Two commands are available:
 
 ```bash
+# Add test data without touching existing records (idempotent — safe to re-run)
 npm run seed
+
+# Wipe all data first, then re-seed from scratch (useful for a clean slate)
+npm run seed:fresh
 ```
 
-Password for all test users - Password123!
+> **Warning:** `seed:fresh` truncates all tables with `CASCADE`. All existing data will be permanently deleted.
 
 **What gets created:**
 
@@ -395,7 +401,7 @@ Password for all test users - Password123!
 | `lebedeva_qa` | User | QA Engineer |
 | `orlov_devops` | User | DevOps Engineer |
 
-The seed script is idempotent — re-running it will not create duplicates.
+`npm run seed` is idempotent — re-running it will not create duplicates.
 
 ---
 

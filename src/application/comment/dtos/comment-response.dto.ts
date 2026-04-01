@@ -5,6 +5,7 @@ export class CommentAuthorDto {
   username!: string;
   firstName!: string;
   lastName!: string;
+  avatarUrl?: string;
 }
 
 export class CommentResponseDto {
@@ -24,6 +25,7 @@ export class CommentResponseDto {
       username: comment.author.username,
       firstName: comment.author.firstName,
       lastName: comment.author.lastName,
+      avatarUrl: comment.author.avatarUrl,
     };
     dto.newsId = comment.newsId;
     dto.createdAt = comment.createdAt;
