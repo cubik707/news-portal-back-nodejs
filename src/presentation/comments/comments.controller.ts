@@ -23,6 +23,8 @@ import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import type { JwtUserPayload } from '../auth/jwt.strategy';
 import { UserRole } from '../../core/shared/enums/user-role.enum';
 
+const LAST_COMMENTS_LIMIT = 2;
+
 @Controller()
 export class CommentsController {
   constructor(
@@ -36,7 +38,7 @@ export class CommentsController {
   @Get('comments/last')
   @UseGuards(ApprovedGuard)
   async findLast(): Promise<SuccessResponseDto<CommentResponseDto[]>> {
-    const comments = await this.getLastComments.execute(3);
+    const comments = await this.getLastComments.execute(LAST_COMMENTS_LIMIT);
     return new SuccessResponseDto(
       comments.map((c) => CommentResponseDto.fromDomain(c)),
       'Last comments retrieved',
