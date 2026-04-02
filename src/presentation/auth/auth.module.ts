@@ -9,6 +9,7 @@ import { AuthController } from './auth.controller';
 import { AuthenticateUserUseCase } from '../../application/auth/use-cases/authenticate-user.use-case';
 import { RegisterUserUseCase } from '../../application/user/use-cases/register-user.use-case';
 import { VerifyTokenUseCase } from '../../application/auth/use-cases/verify-token.use-case';
+import { GetUserUseCase } from '../../application/user/use-cases/get-user.use-case';
 import { NestJwtAdapter } from '../../infrastructure/security/nest-jwt.adapter';
 import { BcryptPasswordHasher } from '../../infrastructure/security/bcrypt-password-hasher';
 import { JWT_SERVICE } from '../../core/shared/ports/jwt.port';
@@ -36,6 +37,7 @@ import { PASSWORD_HASHER } from '../../core/shared/ports/password-hasher.port';
     AuthenticateUserUseCase,
     RegisterUserUseCase,
     VerifyTokenUseCase,
+    GetUserUseCase,
   ],
   exports: [JwtModule, PassportModule],
 })

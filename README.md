@@ -14,6 +14,7 @@ A RESTful API for an **internal IT company news portal** built with **NestJS**, 
     - [Users](#users)
     - [Admin](#admin)
     - [News](#news)
+    - [Comments](#comments)
     - [Categories](#categories)
     - [Tags](#tags)
     - [Subscriptions](#subscriptions)
@@ -167,6 +168,33 @@ All `/admin` routes require **JWT + Approved + Admin** role.
 | `POST` | `/news` | JWT + Approved + Editor | Create news |
 | `PUT` | `/news/:id` | JWT + Approved + Editor | Update news |
 | `DELETE` | `/news/:id` | JWT + Approved + Editor/Admin | Delete news |
+
+### Comments
+
+All comment endpoints require **JWT + Approved** (registered and approved account). News responses (`GET /news`, `GET /news/:id`) now include a `commentCount` field.
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/news/:newsId/comments` | JWT + Approved | List all comments for a news article (oldest first) |
+| `POST` | `/news/:newsId/comments` | JWT + Approved | Post a new comment on a news article |
+| `PUT` | `/comments/:id` | JWT + Approved | Edit own comment (author only) |
+| `DELETE` | `/comments/:id` | JWT + Approved | Delete a comment (author or Admin) |
+
+**Comment response shape:**
+```json
+{
+  "id": "019571c4-...",
+  "content": "Great article!",
+  "author": { "id": "...", "username": "nikitin_dev", "firstName": "Ivan", "lastName": "Nikitin" },
+  "newsId": "019571c4-...",
+  "createdAt": "2026-03-24T10:00:00.000Z",
+  "editedAt": null
+}
+```
+
+**Migration note:** Run `npm run migration:run` after pulling this feature — migration `1000000000003-AddCommentsBoundedContext` recreates the `comments` table with UUID PK, `author_id`, `updated_at`, and nullable `edited_at` columns.
+
+---
 
 ### Categories
 
@@ -334,13 +362,19 @@ npm run migration:generate -- src/infrastructure/database/typeorm/migrations/Mig
 
 ### Seed
 
-The seed script populates the database with realistic test data for an IT company portal:
+The seed script populates the database with realistic test data for an IT company portal.
+
+Two commands are available:
 
 ```bash
+# Add test data without touching existing records (idempotent — safe to re-run)
 npm run seed
+
+# Wipe all data first, then re-seed from scratch (useful for a clean slate)
+npm run seed:fresh
 ```
 
-Password for all test users - Password123!
+> **Warning:** `seed:fresh` truncates all tables with `CASCADE`. All existing data will be permanently deleted.
 
 **What gets created:**
 
@@ -367,7 +401,7 @@ Password for all test users - Password123!
 | `lebedeva_qa` | User | QA Engineer |
 | `orlov_devops` | User | DevOps Engineer |
 
-The seed script is idempotent — re-running it will not create duplicates.
+`npm run seed` is idempotent — re-running it will not create duplicates.
 
 ---
 

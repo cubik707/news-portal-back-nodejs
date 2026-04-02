@@ -24,7 +24,7 @@ export class NewsApprovalTypeormRepository implements INewsApprovalRepository {
       where: { news: { id: newsId } },
       relations: ['news', 'editor'],
     });
-    return entities.map(NewsApprovalMapper.toDomain);
+    return entities.map((e) => NewsApprovalMapper.toDomain(e));
   }
 
   async save(approval: NewsApproval): Promise<NewsApproval> {

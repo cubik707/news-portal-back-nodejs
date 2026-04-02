@@ -13,7 +13,7 @@ export class TagTypeormRepository implements ITagRepository {
 
   async findAll(): Promise<Tag[]> {
     const entities = await this.repo.find();
-    return entities.map(TagMapper.toDomain);
+    return entities.map((e) => TagMapper.toDomain(e));
   }
 
   async findById(id: string): Promise<Tag | null> {
@@ -24,12 +24,12 @@ export class TagTypeormRepository implements ITagRepository {
   async findByIds(ids: string[]): Promise<Tag[]> {
     if (ids.length === 0) return [];
     const entities = await this.repo.findBy(ids.map((id) => ({ id })));
-    return entities.map(TagMapper.toDomain);
+    return entities.map((e) => TagMapper.toDomain(e));
   }
 
   async findLastThree(): Promise<Tag[]> {
     const entities = await this.repo.find({ order: { id: 'DESC' }, take: 3 });
-    return entities.map(TagMapper.toDomain);
+    return entities.map((e) => TagMapper.toDomain(e));
   }
 
   async save(tag: Tag): Promise<Tag> {

@@ -28,7 +28,7 @@ export class NewsTypeormRepository implements INewsRepository {
 
   async findAll(): Promise<News[]> {
     const entities = await this.repo.find({ relations: this.relations });
-    return entities.map(NewsMapper.toDomain);
+    return entities.map((e) => NewsMapper.toDomain(e));
   }
 
   async findById(id: string): Promise<News | null> {
@@ -41,12 +41,12 @@ export class NewsTypeormRepository implements INewsRepository {
       where: { category: { id: categoryId } },
       relations: this.relations,
     });
-    return entities.map(NewsMapper.toDomain);
+    return entities.map((e) => NewsMapper.toDomain(e));
   }
 
   async findByStatus(status: NewsStatus): Promise<News[]> {
     const entities = await this.repo.find({ where: { status }, relations: this.relations });
-    return entities.map(NewsMapper.toDomain);
+    return entities.map((e) => NewsMapper.toDomain(e));
   }
 
   async findByStatusAndAuthor(status: NewsStatus, authorId: string): Promise<News[]> {
@@ -54,7 +54,7 @@ export class NewsTypeormRepository implements INewsRepository {
       where: { status, author: { id: authorId } },
       relations: this.relations,
     });
-    return entities.map(NewsMapper.toDomain);
+    return entities.map((e) => NewsMapper.toDomain(e));
   }
 
   async findByCategoryAndStatus(categoryId: string, status: NewsStatus): Promise<News[]> {
@@ -62,7 +62,7 @@ export class NewsTypeormRepository implements INewsRepository {
       where: { category: { id: categoryId }, status },
       relations: this.relations,
     });
-    return entities.map(NewsMapper.toDomain);
+    return entities.map((e) => NewsMapper.toDomain(e));
   }
 
   async save(news: News): Promise<News> {

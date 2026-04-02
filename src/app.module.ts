@@ -15,6 +15,7 @@ import { TagsModule } from './presentation/tags/tags.module';
 import { SubscriptionsModule } from './presentation/subscriptions/subscriptions.module';
 import { FilesModule } from './presentation/files/files.module';
 import { NewsApprovalsModule } from './presentation/news-approvals/news-approvals.module';
+import { CommentsModule } from './presentation/comments/comments.module';
 import { GlobalExceptionFilter } from './presentation/shared/filters/global-exception.filter';
 
 @Module({
@@ -33,6 +34,7 @@ import { GlobalExceptionFilter } from './presentation/shared/filters/global-exce
     SubscriptionsModule,
     FilesModule,
     NewsApprovalsModule,
+    CommentsModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: GlobalExceptionFilter },

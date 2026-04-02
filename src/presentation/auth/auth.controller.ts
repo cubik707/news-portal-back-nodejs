@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthenticateUserUseCase } from '../../application/auth/use-cases/authenticate-user.use-case';
 import { RegisterUserUseCase } from '../../application/user/use-cases/register-user.use-case';
 import { VerifyTokenUseCase } from '../../application/auth/use-cases/verify-token.use-case';
+import { GetUserUseCase } from '../../application/user/use-cases/get-user.use-case';
 import { AuthRequestDto } from '../../application/auth/dtos/auth-request.dto';
 import { UserRegistrationDto } from '../../application/user/dtos/user-registration.dto';
 import { UserResponseDto } from '../../application/user/dtos/user-response.dto';
@@ -17,6 +18,7 @@ export class AuthController {
     private readonly authenticateUser: AuthenticateUserUseCase,
     private readonly registerUser: RegisterUserUseCase,
     private readonly verifyToken: VerifyTokenUseCase,
+    private readonly getUser: GetUserUseCase,
   ) {}
 
   @Public()
@@ -44,8 +46,11 @@ export class AuthController {
 
   @UseGuards(ApprovedGuard)
   @Get('me')
-  getMe(@CurrentUser() user: JwtUserPayload): SuccessResponseDto<JwtUserPayload> {
-    return new SuccessResponseDto(user, 'Current user retrieved');
+  async getMe(
+    @CurrentUser() jwtUser: JwtUserPayload,
+  ): Promise<SuccessResponseDto<UserResponseDto>> {
+    const user = await this.getUser.execute(jwtUser.id);
+    return new SuccessResponseDto(UserResponseDto.fromDomain(user), 'Current user retrieved');
   }
 
   @Get('verify-token')

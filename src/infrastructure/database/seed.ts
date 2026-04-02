@@ -16,7 +16,34 @@ import { UserRole } from '../../core/shared/enums/user-role.enum';
 import { NewsStatus } from '../../core/shared/enums/news-status.enum';
 import { ApprovalStatus } from '../../core/shared/enums/approval-status.enum';
 
+const BASE_IMAGES_DIR = 'uploads';
+
+async function cleanDb(manager: import('typeorm').EntityManager) {
+  console.log('Очистка базы данных...');
+  await manager.query(`
+    TRUNCATE TABLE
+      user_notifications,
+      notifications,
+      news_approval,
+      likes,
+      comments,
+      news_tags,
+      news,
+      user_roles,
+      user_subscriptions,
+      users_info,
+      users,
+      tags,
+      news_categories,
+      roles
+    RESTART IDENTITY CASCADE
+  `);
+  console.log('База данных очищена');
+}
+
 async function seed() {
+  const isFresh = process.argv.includes('--fresh');
+
   await AppDataSource.initialize();
   console.log('Подключение к БД установлено');
 
@@ -25,6 +52,9 @@ async function seed() {
   await queryRunner.startTransaction();
 
   try {
+    if (isFresh) {
+      await cleanDb(queryRunner.manager);
+    }
     await seedData(queryRunner.manager);
     await queryRunner.commitTransaction();
   } catch (err) {
@@ -94,6 +124,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       surname: 'Николаевич',
       position: 'Системный администратор портала',
       department: 'DevOps',
+      avatarUrl: `${BASE_IMAGES_DIR}/avatars/zakharov.jpg`,
       roles: [roleAdmin],
     },
     {
@@ -104,6 +135,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       surname: 'Сергеевна',
       position: 'Технический редактор',
       department: 'Отдел технического контента',
+      avatarUrl: `${BASE_IMAGES_DIR}/avatars/volkova.jpg`,
       roles: [roleEditor],
     },
     {
@@ -114,6 +146,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       surname: 'Андреевич',
       position: 'Редактор корпоративных новостей',
       department: 'Отдел технического контента',
+      avatarUrl: `${BASE_IMAGES_DIR}/avatars/morozov.jpg`,
       roles: [roleEditor],
     },
     {
@@ -124,6 +157,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       surname: 'Игоревна',
       position: 'Senior Frontend Developer',
       department: 'Отдел разработки',
+      avatarUrl: `${BASE_IMAGES_DIR}/avatars/sokolova.jpg`,
       roles: [roleUser],
     },
     {
@@ -134,6 +168,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       surname: 'Владимирович',
       position: 'Backend Developer',
       department: 'Отдел разработки',
+      avatarUrl: `${BASE_IMAGES_DIR}/avatars/nikitin.jpg`,
       roles: [roleUser],
     },
     {
@@ -144,6 +179,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       surname: 'Александровна',
       position: 'QA Engineer',
       department: 'Отдел тестирования',
+      avatarUrl: `${BASE_IMAGES_DIR}/avatars/lebedeva.jpg`,
       roles: [roleUser],
     },
     {
@@ -154,6 +190,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       surname: 'Романович',
       position: 'DevOps Engineer',
       department: 'DevOps',
+      avatarUrl: `${BASE_IMAGES_DIR}/avatars/orlov.jpg`,
       roles: [roleUser],
     },
   ];
@@ -179,8 +216,15 @@ async function seedData(manager: import('typeorm').EntityManager) {
         surname: data.surname,
         position: data.position,
         department: data.department,
+        avatarUrl: data.avatarUrl,
       });
       await userInfoRepo.save(userInfo);
+    } else {
+      const userInfo = await userInfoRepo.findOne({ where: { userId: user.id } });
+      if (userInfo && userInfo.avatarUrl !== data.avatarUrl) {
+        userInfo.avatarUrl = data.avatarUrl;
+        await userInfoRepo.save(userInfo);
+      }
     }
     savedUsers.push(user);
   }
@@ -266,6 +310,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       category: catDev,
       status: NewsStatus.published,
       publishedAt: new Date('2026-03-05T10:00:00'),
+      image: `${BASE_IMAGES_DIR}/news/nestjs-migration.jpg`,
       tags: [tagNest, tagTS, tagRefactor],
     },
     {
@@ -275,6 +320,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       category: catDevOps,
       status: NewsStatus.published,
       publishedAt: new Date('2026-03-08T09:30:00'),
+      image: `${BASE_IMAGES_DIR}/news/kubernetes-update.jpg`,
       tags: [tagK8s, tagDocker, tagCICD],
     },
     {
@@ -284,6 +330,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       category: catProducts,
       status: NewsStatus.draft,
       publishedAt: null,
+      image: `${BASE_IMAGES_DIR}/news/portal-release.jpg`,
       tags: [tagRelease, tagTS],
     },
     {
@@ -293,6 +340,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       category: catSecurity,
       status: NewsStatus.published,
       publishedAt: new Date('2026-03-13T14:00:00'),
+      image: `${BASE_IMAGES_DIR}/news/security-audit.jpg`,
       tags: [tagK8s, tagCICD],
     },
     {
@@ -302,6 +350,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       category: catLife,
       status: NewsStatus.draft,
       publishedAt: null,
+      image: `${BASE_IMAGES_DIR}/news/techsprint-hackathon.jpg`,
       tags: [tagHackathon, tagMeetup],
     },
     {
@@ -311,6 +360,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       category: catDev,
       status: NewsStatus.draft,
       publishedAt: null,
+      image: `${BASE_IMAGES_DIR}/news/code-review-guidelines.jpg`,
       tags: [tagReview, tagCICD, tagTS],
     },
     {
@@ -320,6 +370,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
       category: catLife,
       status: NewsStatus.draft,
       publishedAt: null,
+      image: `${BASE_IMAGES_DIR}/news/vacancies.jpg`,
       tags: [tagHiring, tagNest, tagK8s],
     },
   ];
@@ -335,11 +386,16 @@ async function seedData(manager: import('typeorm').EntityManager) {
         category: data.category,
         status: data.status,
         publishedAt: data.publishedAt ?? undefined,
+        image: data.image,
         tags: data.tags,
       });
       await newsRepo.save(news);
       savedNews.push(news);
     } else {
+      if (existing.image !== data.image) {
+        existing.image = data.image;
+        await newsRepo.save(existing);
+      }
       savedNews.push(existing);
     }
   }
@@ -349,44 +405,44 @@ async function seedData(manager: import('typeorm').EntityManager) {
   const commentsData = [
     {
       news: savedNews[0],
-      user: user1,
+      author: user1,
       content: 'Отличная работа команды! Подскажите, планируется ли переход на монорепо с Nx?',
     },
     {
       news: savedNews[0],
-      user: user2,
+      author: user2,
       content:
         'Участвовал в миграции — действительно стало намного чище. class-validator сильно упростил жизнь.',
     },
     {
       news: savedNews[1],
-      user: user4,
+      author: user4,
       content: 'Проверил свои чарты — всё совместимо. Спасибо за заблаговременное предупреждение.',
     },
     {
       news: savedNews[1],
-      user: user1,
+      author: user1,
       content: 'А rolling update во время обновления кластера проходил без даунтайма?',
     },
     {
       news: savedNews[2],
-      user: user3,
+      author: user3,
       content: 'Наконец-то пагинация! Очень ждала этого в ленте.',
     },
     {
       news: savedNews[4],
-      user: user2,
+      author: user2,
       content:
         'Уже зарегистрировал команду. Тема AI-ассистентов очень актуальна — есть много идей.',
     },
     {
       news: savedNews[4],
-      user: user3,
+      author: user3,
       content: 'Будут ли онлайн-участники или только офлайн формат?',
     },
     {
       news: savedNews[6],
-      user: user1,
+      author: user1,
       content: 'Отправила резюме знакомого DevOps-инженера через реферальную программу.',
     },
   ];

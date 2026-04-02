@@ -4,6 +4,10 @@ import {
   type INewsRepository,
   NEWS_REPOSITORY,
 } from '../../../core/domain/news/repositories/news.repository.interface';
+import {
+  type ICommentRepository,
+  COMMENT_REPOSITORY,
+} from '../../../core/domain/comment/repositories/comment.repository.interface';
 import { NewsStatus } from '../../../core/shared/enums/news-status.enum';
 
 @Injectable()
@@ -11,9 +15,20 @@ export class GetNewsByStatusAndAuthorUseCase {
   constructor(
     @Inject(NEWS_REPOSITORY)
     private readonly newsRepository: INewsRepository,
+    @Inject(COMMENT_REPOSITORY)
+    private readonly commentRepository: ICommentRepository,
   ) {}
 
-  async execute(authorId: string, status: NewsStatus): Promise<News[]> {
-    return this.newsRepository.findByStatusAndAuthor(status, authorId);
+  async execute(
+    authorId: string,
+    status: NewsStatus,
+  ): Promise<{ news: News; commentCount: number }[]> {
+    const newsList = await this.newsRepository.findByStatusAndAuthor(status, authorId);
+    return Promise.all(
+      newsList.map(async (news) => ({
+        news,
+        commentCount: await this.commentRepository.countByNewsId(news.id),
+      })),
+    );
   }
 }

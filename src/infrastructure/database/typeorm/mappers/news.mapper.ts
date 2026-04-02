@@ -18,7 +18,7 @@ export class NewsMapper {
       updatedAt: orm.updatedAt,
       author: UserMapper.toDomain(orm.author),
       category: CategoryMapper.toDomain(orm.category),
-      tags: (orm.tags ?? []).map(TagMapper.toDomain),
+      tags: (orm.tags ?? []).map((t) => TagMapper.toDomain(t)),
     });
   }
 }

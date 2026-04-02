@@ -36,9 +36,9 @@ export class NewsController {
 
   @Get()
   async findAll(): Promise<SuccessResponseDto<NewsResponseDto[]>> {
-    const news = await this.getAllNews.execute();
+    const items = await this.getAllNews.execute();
     return new SuccessResponseDto(
-      news.map((n) => NewsResponseDto.fromDomain(n)),
+      items.map(({ news, commentCount }) => NewsResponseDto.fromDomain(news, commentCount)),
       'News retrieved',
     );
   }
@@ -48,9 +48,9 @@ export class NewsController {
   async findByStatus(
     @Query('status') status: NewsStatus,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
-    const news = await this.getNewsByStatus.execute(status);
+    const items = await this.getNewsByStatus.execute(status);
     return new SuccessResponseDto(
-      news.map((n) => NewsResponseDto.fromDomain(n)),
+      items.map(({ news, commentCount }) => NewsResponseDto.fromDomain(news, commentCount)),
       'News retrieved',
     );
   }
@@ -59,9 +59,9 @@ export class NewsController {
   async findByCategory(
     @Param('categoryId') categoryId: string,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
-    const news = await this.getNewsByCategory.execute(categoryId);
+    const items = await this.getNewsByCategory.execute(categoryId);
     return new SuccessResponseDto(
-      news.map((n) => NewsResponseDto.fromDomain(n)),
+      items.map(({ news, commentCount }) => NewsResponseDto.fromDomain(news, commentCount)),
       'News retrieved',
     );
   }
@@ -71,9 +71,9 @@ export class NewsController {
     @Param('categoryId') categoryId: string,
     @Query('status') status: NewsStatus,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
-    const news = await this.getNewsByCategoryAndStatus.execute(categoryId, status);
+    const items = await this.getNewsByCategoryAndStatus.execute(categoryId, status);
     return new SuccessResponseDto(
-      news.map((n) => NewsResponseDto.fromDomain(n)),
+      items.map(({ news, commentCount }) => NewsResponseDto.fromDomain(news, commentCount)),
       'News retrieved',
     );
   }
@@ -83,17 +83,17 @@ export class NewsController {
     @Param('authorId') authorId: string,
     @Query('status') status: NewsStatus,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
-    const news = await this.getNewsByStatusAndAuthor.execute(authorId, status);
+    const items = await this.getNewsByStatusAndAuthor.execute(authorId, status);
     return new SuccessResponseDto(
-      news.map((n) => NewsResponseDto.fromDomain(n)),
+      items.map(({ news, commentCount }) => NewsResponseDto.fromDomain(news, commentCount)),
       'News retrieved',
     );
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<SuccessResponseDto<NewsResponseDto>> {
-    const news = await this.getNewsById.execute(id);
-    return new SuccessResponseDto(NewsResponseDto.fromDomain(news), 'News retrieved');
+    const { news, commentCount } = await this.getNewsById.execute(id);
+    return new SuccessResponseDto(NewsResponseDto.fromDomain(news, commentCount), 'News retrieved');
   }
 
   @Post()
