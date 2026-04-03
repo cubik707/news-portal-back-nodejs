@@ -22,7 +22,7 @@ export class FileStorageService {
     const fileName = `${Date.now()}-${file.originalname}`;
     const filePath = path.join(dir, fileName);
     await fs.promises.writeFile(filePath, file.buffer);
-    return `${category}/${fileName}`;
+    return `${this.uploadDir}/${category}/${fileName}`;
   }
 
   async deleteFile(category: string, fileName: string): Promise<void> {
