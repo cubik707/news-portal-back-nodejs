@@ -39,3 +39,6 @@ dev-debug.log
 # tasks/ 
 
 .mcp.json
+
+/uploads/*
+!/uploads/.gitkeep

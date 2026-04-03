@@ -1,5 +1,7 @@
 import 'reflect-metadata';
 import * as bcrypt from 'bcrypt';
+import * as fs from 'fs';
+import * as path from 'path';
 import { AppDataSource } from './data-source';
 import { RoleOrmEntity } from './typeorm/entities/role.orm-entity';
 import { UserOrmEntity } from './typeorm/entities/user.orm-entity';
@@ -16,7 +18,22 @@ import { UserRole } from '../../core/shared/enums/user-role.enum';
 import { NewsStatus } from '../../core/shared/enums/news-status.enum';
 import { ApprovalStatus } from '../../core/shared/enums/approval-status.enum';
 
+const SEED_ASSETS_DIR = 'seed-assets';
 const BASE_IMAGES_DIR = 'uploads';
+
+function copySeedAssets() {
+  const subDirs = ['avatars', 'news'];
+  for (const sub of subDirs) {
+    const src = path.join(SEED_ASSETS_DIR, sub);
+    const dest = path.join(BASE_IMAGES_DIR, sub);
+    if (!fs.existsSync(src)) continue;
+    fs.mkdirSync(dest, { recursive: true });
+    for (const file of fs.readdirSync(src)) {
+      fs.copyFileSync(path.join(src, file), path.join(dest, file));
+    }
+  }
+  console.log('Seed assets скопированы в uploads/');
+}
 
 async function cleanDb(manager: import('typeorm').EntityManager) {
   console.log('Очистка базы данных...');
@@ -43,6 +60,8 @@ async function cleanDb(manager: import('typeorm').EntityManager) {
 
 async function seed() {
   const isFresh = process.argv.includes('--fresh');
+
+  copySeedAssets();
 
   await AppDataSource.initialize();
   console.log('Подключение к БД установлено');
