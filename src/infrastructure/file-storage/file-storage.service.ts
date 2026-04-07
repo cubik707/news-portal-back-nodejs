@@ -16,17 +16,17 @@ export class FileStorageService {
     this.uploadDir = this.config.get<string>('UPLOAD_DIR') ?? './uploads';
   }
 
-  async saveFile(file: UploadedFile, category: string): Promise<string> {
-    const dir = path.join(this.uploadDir, category);
+  async saveFile(file: UploadedFile, folder: string): Promise<string> {
+    const dir = path.join(this.uploadDir, folder);
     await fs.promises.mkdir(dir, { recursive: true });
     const fileName = `${Date.now()}-${file.originalname}`;
     const filePath = path.join(dir, fileName);
     await fs.promises.writeFile(filePath, file.buffer);
-    return `${this.uploadDir}/${category}/${fileName}`;
+    return `${this.uploadDir}/${folder}/${fileName}`;
   }
 
-  async deleteFile(category: string, fileName: string): Promise<void> {
-    const filePath = path.join(this.uploadDir, category, fileName);
+  async deleteFile(folder: string, fileName: string): Promise<void> {
+    const filePath = path.join(this.uploadDir, folder, fileName);
     await fs.promises.unlink(filePath).catch(() => {});
   }
 }
