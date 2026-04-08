@@ -19,9 +19,9 @@ export class NewsCreateDto {
   categoryId!: string;
 
   @IsArray()
-  @IsNumber({}, { each: true })
+  @IsString({ each: true })
   @IsOptional()
-  tagIds?: string[];
+  tags?: string[];
 
   @IsEnum(NewsStatus)
   @IsOptional()

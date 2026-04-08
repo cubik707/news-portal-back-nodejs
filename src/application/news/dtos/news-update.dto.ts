@@ -19,8 +19,9 @@ export class NewsUpdateDto {
   categoryId?: string;
 
   @IsArray()
+  @IsString({ each: true })
   @IsOptional()
-  tagIds?: string[];
+  tags?: string[];
 
   @IsEnum(NewsStatus)
   @IsOptional()

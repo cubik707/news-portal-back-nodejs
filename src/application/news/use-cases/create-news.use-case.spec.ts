@@ -14,7 +14,6 @@ import { News } from '../../../core/domain/news/entities/news.domain';
 import { NewsStatus } from '../../../core/shared/enums/news-status.enum';
 import { UserNotFoundException } from '../../../core/domain/user/exceptions/user-not-found.exception';
 import { CategoryNotFoundException } from '../../../core/domain/category/exceptions/category-not-found.exception';
-import { TagNotFoundException } from '../../../core/domain/tag/exceptions/tag-not-found.exception';
 
 const makeUser = () =>
   User.reconstitute({
@@ -50,13 +49,13 @@ describe('CreateNewsUseCase', () => {
   let newsRepository: { save: jest.Mock };
   let userRepository: { findById: jest.Mock };
   let categoryRepository: { findById: jest.Mock };
-  let tagRepository: { findByIds: jest.Mock };
+  let tagRepository: { findOrCreateByNames: jest.Mock };
 
   beforeEach(async () => {
     newsRepository = { save: jest.fn() };
     userRepository = { findById: jest.fn() };
     categoryRepository = { findById: jest.fn() };
-    tagRepository = { findByIds: jest.fn() };
+    tagRepository = { findOrCreateByNames: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -78,7 +77,7 @@ describe('CreateNewsUseCase', () => {
 
     userRepository.findById.mockResolvedValue(author);
     categoryRepository.findById.mockResolvedValue(category);
-    tagRepository.findByIds.mockResolvedValue([]);
+    tagRepository.findOrCreateByNames.mockResolvedValue([]);
     newsRepository.save.mockResolvedValue(news);
 
     const result = await useCase.execute({
@@ -100,7 +99,7 @@ describe('CreateNewsUseCase', () => {
 
     userRepository.findById.mockResolvedValue(author);
     categoryRepository.findById.mockResolvedValue(category);
-    tagRepository.findByIds.mockResolvedValue([tag]);
+    tagRepository.findOrCreateByNames.mockResolvedValue([tag]);
     newsRepository.save.mockResolvedValue(news);
 
     const result = await useCase.execute({
@@ -108,11 +107,11 @@ describe('CreateNewsUseCase', () => {
       content: 'Test content',
       authorId: 'author-id',
       categoryId: 'cat-id',
-      tagIds: ['tag-id'],
+      tags: ['NestJS'],
     });
 
     expect(result).toBe(news);
-    expect(tagRepository.findByIds).toHaveBeenCalledWith(['tag-id']);
+    expect(tagRepository.findOrCreateByNames).toHaveBeenCalledWith(['NestJS']);
   });
 
   it('should throw UserNotFoundException when author does not exist', async () => {
@@ -134,20 +133,4 @@ describe('CreateNewsUseCase', () => {
     expect(newsRepository.save).not.toHaveBeenCalled();
   });
 
-  it('should throw TagNotFoundException when a tag does not exist', async () => {
-    userRepository.findById.mockResolvedValue(makeUser());
-    categoryRepository.findById.mockResolvedValue(makeCategory());
-    tagRepository.findByIds.mockResolvedValue([]); // no tags found but 1 requested
-
-    await expect(
-      useCase.execute({
-        title: 'T',
-        content: 'C',
-        authorId: 'author-id',
-        categoryId: 'cat-id',
-        tagIds: ['missing-tag'],
-      }),
-    ).rejects.toThrow(TagNotFoundException);
-    expect(newsRepository.save).not.toHaveBeenCalled();
-  });
 });

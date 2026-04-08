@@ -13,7 +13,6 @@ import { News } from '../../../core/domain/news/entities/news.domain';
 import { NewsStatus } from '../../../core/shared/enums/news-status.enum';
 import { NewsNotFoundException } from '../../../core/domain/news/exceptions/news-not-found.exception';
 import { CategoryNotFoundException } from '../../../core/domain/category/exceptions/category-not-found.exception';
-import { TagNotFoundException } from '../../../core/domain/tag/exceptions/tag-not-found.exception';
 
 const makeUser = () =>
   User.reconstitute({
@@ -48,12 +47,12 @@ describe('UpdateNewsUseCase', () => {
   let useCase: UpdateNewsUseCase;
   let newsRepository: { findById: jest.Mock; update: jest.Mock };
   let categoryRepository: { findById: jest.Mock };
-  let tagRepository: { findByIds: jest.Mock };
+  let tagRepository: { findOrCreateByNames: jest.Mock };
 
   beforeEach(async () => {
     newsRepository = { findById: jest.fn(), update: jest.fn() };
     categoryRepository = { findById: jest.fn() };
-    tagRepository = { findByIds: jest.fn() };
+    tagRepository = { findOrCreateByNames: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -91,16 +90,16 @@ describe('UpdateNewsUseCase', () => {
     expect(categoryRepository.findById).toHaveBeenCalledWith('new-cat-id');
   });
 
-  it('should update news tags when tagIds provided', async () => {
+  it('should update news tags when tags provided', async () => {
     const news = makeNews();
     const tag = makeTag();
     newsRepository.findById.mockResolvedValue(news);
-    tagRepository.findByIds.mockResolvedValue([tag]);
+    tagRepository.findOrCreateByNames.mockResolvedValue([tag]);
     newsRepository.update.mockResolvedValue(news);
 
-    await useCase.execute({ id: 'news-id', tagIds: ['tag-id'] });
+    await useCase.execute({ id: 'news-id', tags: ['NestJS'] });
 
-    expect(tagRepository.findByIds).toHaveBeenCalledWith(['tag-id']);
+    expect(tagRepository.findOrCreateByNames).toHaveBeenCalledWith(['NestJS']);
   });
 
   it('should throw NewsNotFoundException when news does not exist', async () => {
@@ -120,12 +119,4 @@ describe('UpdateNewsUseCase', () => {
     );
   });
 
-  it('should throw TagNotFoundException when a new tag does not exist', async () => {
-    newsRepository.findById.mockResolvedValue(makeNews());
-    tagRepository.findByIds.mockResolvedValue([]); // requested 1, found 0
-
-    await expect(useCase.execute({ id: 'news-id', tagIds: ['missing-tag'] })).rejects.toThrow(
-      TagNotFoundException,
-    );
-  });
 });

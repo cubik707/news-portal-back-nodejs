@@ -1,5 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
+import { randomUUID } from 'crypto';
 import { TagOrmEntity } from '../entities/tag.orm-entity';
 import { ITagRepository } from '../../../../core/domain/tag/repositories/tag.repository.interface';
 import { Tag } from '../../../../core/domain/tag/entities/tag.domain';
@@ -36,5 +37,25 @@ export class TagTypeormRepository implements ITagRepository {
     const entity = this.repo.create({ id: tag.id, name: tag.name });
     const saved = await this.repo.save(entity);
     return TagMapper.toDomain(saved);
+  }
+
+  async findOrCreateByNames(names: string[]): Promise<Tag[]> {
+    if (names.length === 0) return [];
+
+    const existing = await this.repo.find({ where: { name: In(names) } });
+    const existingNames = new Set(existing.map((e) => e.name));
+
+    const newEntities: TagOrmEntity[] = [];
+    for (const name of names) {
+      if (!existingNames.has(name)) {
+        newEntities.push(this.repo.create({ id: randomUUID(), name }));
+      }
+    }
+
+    if (newEntities.length > 0) {
+      await this.repo.save(newEntities);
+    }
+
+    return [...existing, ...newEntities].map((e) => TagMapper.toDomain(e));
   }
 }

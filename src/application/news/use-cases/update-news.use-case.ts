@@ -14,7 +14,6 @@ import {
 } from '../../../core/domain/tag/repositories/tag.repository.interface';
 import { NewsNotFoundException } from '../../../core/domain/news/exceptions/news-not-found.exception';
 import { CategoryNotFoundException } from '../../../core/domain/category/exceptions/category-not-found.exception';
-import { TagNotFoundException } from '../../../core/domain/tag/exceptions/tag-not-found.exception';
 import { NewsStatus } from '../../../core/shared/enums/news-status.enum';
 import { Tag } from '../../../core/domain/tag/entities/tag.domain';
 import { Category } from '../../../core/domain/category/entities/category.domain';
@@ -25,7 +24,7 @@ export interface UpdateNewsCommand {
   content?: string;
   image?: string;
   categoryId?: string;
-  tagIds?: string[];
+  tags?: string[];
   status?: NewsStatus;
 }
 
@@ -52,14 +51,8 @@ export class UpdateNewsUseCase {
     }
 
     let tags: Tag[] | undefined;
-    if (command.tagIds) {
-      const found = await this.tagRepository.findByIds(command.tagIds);
-      if (found.length !== command.tagIds.length) {
-        const foundIds = new Set(found.map((t) => t.id));
-        const missingId = command.tagIds.find((id) => !foundIds.has(id));
-        throw new TagNotFoundException(missingId);
-      }
-      tags = found;
+    if (command.tags) {
+      tags = await this.tagRepository.findOrCreateByNames(command.tags);
     }
 
     news.updateContent({

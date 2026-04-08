@@ -109,7 +109,7 @@ export class NewsController {
       image: dto.image,
       authorId: user.id,
       categoryId: dto.categoryId,
-      tagIds: dto.tagIds,
+      tags: dto.tags,
       status: dto.status,
     });
     return new SuccessResponseDto(NewsResponseDto.fromDomain(news), 'News created');
@@ -128,7 +128,7 @@ export class NewsController {
       content: dto.content,
       image: dto.image,
       categoryId: dto.categoryId,
-      tagIds: dto.tagIds,
+      tags: dto.tags,
       status: dto.status,
     });
     return new SuccessResponseDto(NewsResponseDto.fromDomain(news), 'News updated');

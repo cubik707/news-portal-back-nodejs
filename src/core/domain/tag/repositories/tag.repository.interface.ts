@@ -6,6 +6,7 @@ export interface ITagRepository {
   findByIds(ids: string[]): Promise<Tag[]>;
   findLastThree(): Promise<Tag[]>;
   save(tag: Tag): Promise<Tag>;
+  findOrCreateByNames(names: string[]): Promise<Tag[]>;
 }
 
 export const TAG_REPOSITORY = Symbol('TAG_REPOSITORY');

@@ -18,7 +18,6 @@ import {
 } from '../../../core/domain/tag/repositories/tag.repository.interface';
 import { UserNotFoundException } from '../../../core/domain/user/exceptions/user-not-found.exception';
 import { CategoryNotFoundException } from '../../../core/domain/category/exceptions/category-not-found.exception';
-import { TagNotFoundException } from '../../../core/domain/tag/exceptions/tag-not-found.exception';
 import { NewsStatus } from '../../../core/shared/enums/news-status.enum';
 
 export interface CreateNewsCommand {
@@ -27,7 +26,7 @@ export interface CreateNewsCommand {
   image?: string;
   authorId: string;
   categoryId: string;
-  tagIds?: string[];
+  tags?: string[];
   status?: NewsStatus;
 }
 
@@ -51,14 +50,7 @@ export class CreateNewsUseCase {
     const category = await this.categoryRepository.findById(command.categoryId);
     if (!category) throw new CategoryNotFoundException(command.categoryId);
 
-    const tagIds = command.tagIds ?? [];
-    const tags = tagIds.length > 0 ? await this.tagRepository.findByIds(tagIds) : [];
-
-    if (tags.length !== tagIds.length) {
-      const foundIds = new Set(tags.map((t) => t.id));
-      const missingId = tagIds.find((id) => !foundIds.has(id));
-      throw new TagNotFoundException(missingId);
-    }
+    const tags = await this.tagRepository.findOrCreateByNames(command.tags ?? []);
 
     const news = News.create({
       title: command.title,
