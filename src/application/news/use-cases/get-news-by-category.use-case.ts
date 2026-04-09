@@ -21,7 +21,12 @@ export class GetNewsByCategoryUseCase {
     @Inject(LIKE_REPOSITORY) private readonly likeRepository: ILikeRepository,
   ) {}
 
-  async execute(categoryId: string, userId: string): Promise<{ news: News; commentCount: number; likeCount: number; isLikedByCurrentUser: boolean }[]> {
+  async execute(
+    categoryId: string,
+    userId: string,
+  ): Promise<
+    { news: News; commentCount: number; likeCount: number; isLikedByCurrentUser: boolean }[]
+  > {
     const newsList = await this.newsRepository.findByCategory(categoryId);
     if (newsList.length === 0) return [];
 

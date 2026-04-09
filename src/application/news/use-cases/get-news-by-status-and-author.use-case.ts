@@ -26,7 +26,9 @@ export class GetNewsByStatusAndAuthorUseCase {
     authorId: string,
     status: NewsStatus,
     userId: string,
-  ): Promise<{ news: News; commentCount: number; likeCount: number; isLikedByCurrentUser: boolean }[]> {
+  ): Promise<
+    { news: News; commentCount: number; likeCount: number; isLikedByCurrentUser: boolean }[]
+  > {
     const newsList = await this.newsRepository.findByStatusAndAuthor(status, authorId);
     if (newsList.length === 0) return [];
 

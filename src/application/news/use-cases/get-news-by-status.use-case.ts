@@ -22,7 +22,12 @@ export class GetNewsByStatusUseCase {
     @Inject(LIKE_REPOSITORY) private readonly likeRepository: ILikeRepository,
   ) {}
 
-  async execute(status: NewsStatus, userId: string): Promise<{ news: News; commentCount: number; likeCount: number; isLikedByCurrentUser: boolean }[]> {
+  async execute(
+    status: NewsStatus,
+    userId: string,
+  ): Promise<
+    { news: News; commentCount: number; likeCount: number; isLikedByCurrentUser: boolean }[]
+  > {
     const newsList = await this.newsRepository.findByStatus(status);
     if (newsList.length === 0) return [];
 

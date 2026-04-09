@@ -24,7 +24,9 @@ export class GetLikedNewsByUserUseCase {
     private readonly commentRepository: ICommentRepository,
   ) {}
 
-  async execute(userId: string): Promise<{ news: News; commentCount: number; likeCount: number }[]> {
+  async execute(
+    userId: string,
+  ): Promise<{ news: News; commentCount: number; likeCount: number }[]> {
     const likes = await this.likeRepository.findByUser(userId);
     if (likes.length === 0) return [];
 

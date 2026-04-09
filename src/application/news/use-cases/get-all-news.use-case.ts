@@ -21,7 +21,11 @@ export class GetAllNewsUseCase {
     @Inject(LIKE_REPOSITORY) private readonly likeRepository: ILikeRepository,
   ) {}
 
-  async execute(userId: string): Promise<{ news: News; commentCount: number; likeCount: number; isLikedByCurrentUser: boolean }[]> {
+  async execute(
+    userId: string,
+  ): Promise<
+    { news: News; commentCount: number; likeCount: number; isLikedByCurrentUser: boolean }[]
+  > {
     const newsList = await this.newsRepository.findAll();
     if (newsList.length === 0) return [];
 

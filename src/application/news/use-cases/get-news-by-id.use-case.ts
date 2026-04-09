@@ -22,7 +22,15 @@ export class GetNewsByIdUseCase {
     @Inject(LIKE_REPOSITORY) private readonly likeRepository: ILikeRepository,
   ) {}
 
-  async execute(id: string, userId: string): Promise<{ news: News; commentCount: number; likeCount: number; isLikedByCurrentUser: boolean }> {
+  async execute(
+    id: string,
+    userId: string,
+  ): Promise<{
+    news: News;
+    commentCount: number;
+    likeCount: number;
+    isLikedByCurrentUser: boolean;
+  }> {
     const news = await this.newsRepository.findById(id);
     if (!news) throw new NewsNotFoundException(id);
 
