@@ -1,5 +1,4 @@
 import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import type { JwtUserPayload } from '../auth/jwt.strategy';
@@ -9,8 +8,6 @@ import { LikeToggleResponseDto } from '../../application/like/dtos/like-toggle-r
 import { NewsResponseDto } from '../../application/news/dtos/news-response.dto';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
 
-@ApiTags('likes')
-@ApiBearerAuth()
 @UseGuards(ApprovedGuard)
 @Controller()
 export class LikeController {
@@ -20,10 +17,6 @@ export class LikeController {
   ) {}
 
   @Post('news/:newsId/like')
-  @ApiOperation({ summary: 'Toggle like on a news article' })
-  @ApiParam({ name: 'newsId', type: String, description: 'UUID of the news article' })
-  @ApiResponse({ status: 200, description: 'Like toggled', type: LikeToggleResponseDto })
-  @ApiResponse({ status: 404, description: 'News not found' })
   async toggle(
     @Param('newsId') newsId: string,
     @CurrentUser() user: JwtUserPayload,
@@ -33,8 +26,6 @@ export class LikeController {
   }
 
   @Get('likes/my')
-  @ApiOperation({ summary: 'Get all news liked by the current user' })
-  @ApiResponse({ status: 200, description: 'Liked news retrieved', type: [NewsResponseDto] })
   async myLikedNews(
     @CurrentUser() user: JwtUserPayload,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {

@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { News } from '../../../core/domain/news/entities/news.domain';
 import { NewsStatus } from '../../../core/shared/enums/news-status.enum';
 import { CategoryResponseDto } from '../../category/dtos/category-response.dto';
@@ -17,10 +16,7 @@ export class NewsResponseDto {
   category!: CategoryResponseDto;
   commentCount!: number;
 
-  @ApiProperty({ example: 8, description: 'Total number of likes' })
   likeCount!: number;
-
-  @ApiProperty({ example: false, description: 'Whether the current user liked this article' })
   isLikedByCurrentUser!: boolean;
 
   static fromDomain(
