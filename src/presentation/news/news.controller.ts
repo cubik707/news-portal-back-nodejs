@@ -15,11 +15,13 @@ import { NewsStatus } from '../../core/shared/enums/news-status.enum';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
+import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { UserRole } from '../../core/shared/enums/user-role.enum';
 import type { JwtUserPayload } from '../auth/jwt.strategy';
 
+@UseGuards(JwtAuthGuard)
 @Controller('news')
 export class NewsController {
   constructor(
@@ -35,10 +37,14 @@ export class NewsController {
   ) {}
 
   @Get()
-  async findAll(): Promise<SuccessResponseDto<NewsResponseDto[]>> {
-    const items = await this.getAllNews.execute();
+  async findAll(
+    @CurrentUser() user: JwtUserPayload,
+  ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
+    const items = await this.getAllNews.execute(user.id);
     return new SuccessResponseDto(
-      items.map(({ news, commentCount }) => NewsResponseDto.fromDomain(news, commentCount)),
+      items.map(({ news, commentCount, likeCount, isLikedByCurrentUser }) =>
+        NewsResponseDto.fromDomain(news, commentCount, likeCount, isLikedByCurrentUser),
+      ),
       'News retrieved',
     );
   }
@@ -47,10 +53,13 @@ export class NewsController {
   @Get('status')
   async findByStatus(
     @Query('status') status: NewsStatus,
+    @CurrentUser() user: JwtUserPayload,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
-    const items = await this.getNewsByStatus.execute(status);
+    const items = await this.getNewsByStatus.execute(status, user.id);
     return new SuccessResponseDto(
-      items.map(({ news, commentCount }) => NewsResponseDto.fromDomain(news, commentCount)),
+      items.map(({ news, commentCount, likeCount, isLikedByCurrentUser }) =>
+        NewsResponseDto.fromDomain(news, commentCount, likeCount, isLikedByCurrentUser),
+      ),
       'News retrieved',
     );
   }
@@ -58,10 +67,13 @@ export class NewsController {
   @Get('category/:categoryId')
   async findByCategory(
     @Param('categoryId') categoryId: string,
+    @CurrentUser() user: JwtUserPayload,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
-    const items = await this.getNewsByCategory.execute(categoryId);
+    const items = await this.getNewsByCategory.execute(categoryId, user.id);
     return new SuccessResponseDto(
-      items.map(({ news, commentCount }) => NewsResponseDto.fromDomain(news, commentCount)),
+      items.map(({ news, commentCount, likeCount, isLikedByCurrentUser }) =>
+        NewsResponseDto.fromDomain(news, commentCount, likeCount, isLikedByCurrentUser),
+      ),
       'News retrieved',
     );
   }
@@ -70,10 +82,13 @@ export class NewsController {
   async findByCategoryAndStatus(
     @Param('categoryId') categoryId: string,
     @Query('status') status: NewsStatus,
+    @CurrentUser() user: JwtUserPayload,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
-    const items = await this.getNewsByCategoryAndStatus.execute(categoryId, status);
+    const items = await this.getNewsByCategoryAndStatus.execute(categoryId, status, user.id);
     return new SuccessResponseDto(
-      items.map(({ news, commentCount }) => NewsResponseDto.fromDomain(news, commentCount)),
+      items.map(({ news, commentCount, likeCount, isLikedByCurrentUser }) =>
+        NewsResponseDto.fromDomain(news, commentCount, likeCount, isLikedByCurrentUser),
+      ),
       'News retrieved',
     );
   }
@@ -82,18 +97,28 @@ export class NewsController {
   async findByStatusAndAuthor(
     @Param('authorId') authorId: string,
     @Query('status') status: NewsStatus,
+    @CurrentUser() user: JwtUserPayload,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
-    const items = await this.getNewsByStatusAndAuthor.execute(authorId, status);
+    const items = await this.getNewsByStatusAndAuthor.execute(authorId, status, user.id);
     return new SuccessResponseDto(
-      items.map(({ news, commentCount }) => NewsResponseDto.fromDomain(news, commentCount)),
+      items.map(({ news, commentCount, likeCount, isLikedByCurrentUser }) =>
+        NewsResponseDto.fromDomain(news, commentCount, likeCount, isLikedByCurrentUser),
+      ),
       'News retrieved',
     );
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<SuccessResponseDto<NewsResponseDto>> {
-    const { news, commentCount } = await this.getNewsById.execute(id);
-    return new SuccessResponseDto(NewsResponseDto.fromDomain(news, commentCount), 'News retrieved');
+  async findOne(
+    @Param('id') id: string,
+    @CurrentUser() user: JwtUserPayload,
+  ): Promise<SuccessResponseDto<NewsResponseDto>> {
+    const { news, commentCount, likeCount, isLikedByCurrentUser } =
+      await this.getNewsById.execute(id, user.id);
+    return new SuccessResponseDto(
+      NewsResponseDto.fromDomain(news, commentCount, likeCount, isLikedByCurrentUser),
+      'News retrieved',
+    );
   }
 
   @Post()
