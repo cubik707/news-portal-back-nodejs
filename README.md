@@ -196,6 +196,36 @@ All comment endpoints require **JWT + Approved** (registered and approved accoun
 
 ---
 
+### Likes
+
+All like endpoints require **JWT + Approved**. All `GET /news` responses now include `likeCount` and `isLikedByCurrentUser` fields.
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `POST` | `/news/:newsId/like` | JWT + Approved | Toggle like on a news article (like/unlike) |
+| `GET` | `/likes/my` | JWT + Approved | Get all news articles liked by the current user |
+
+**Toggle like response shape:**
+```json
+{
+  "data": { "isLiked": true, "likeCount": 42 },
+  "message": "Like toggled",
+  "status": 200
+}
+```
+
+**Enriched news response (new fields):**
+```json
+{
+  "likeCount": 12,
+  "isLikedByCurrentUser": false
+}
+```
+
+**Migration note:** Run `npm run migration:run` after pulling this feature — migration `1000000000004-LikesUuidAndUniqueConstraint` drops and recreates the `likes` table with UUID PK, foreign key constraints, unique constraint `(news_id, user_id)`, and index on `user_id`.
+
+---
+
 ### Categories
 
 | Method | Path | Auth | Description |
