@@ -24,6 +24,8 @@ import { CATEGORY_REPOSITORY } from '../../core/domain/category/repositories/cat
 import { TAG_REPOSITORY } from '../../core/domain/tag/repositories/tag.repository.interface';
 import { NEWS_APPROVAL_REPOSITORY } from '../../core/domain/news-approval/repositories/news-approval.repository.interface';
 import { COMMENT_REPOSITORY } from '../../core/domain/comment/repositories/comment.repository.interface';
+import { LikeTypeormRepository } from './typeorm/repositories/like.typeorm-repository';
+import { LIKE_REPOSITORY } from '../../core/domain/like/repositories/like.repository.interface';
 
 const ALL_ENTITIES = [
   UserOrmEntity,
@@ -66,6 +68,7 @@ const ALL_ENTITIES = [
     { provide: TAG_REPOSITORY, useClass: TagTypeormRepository },
     { provide: NEWS_APPROVAL_REPOSITORY, useClass: NewsApprovalTypeormRepository },
     { provide: COMMENT_REPOSITORY, useClass: CommentTypeormRepository },
+    { provide: LIKE_REPOSITORY, useClass: LikeTypeormRepository },
   ],
   exports: [
     TypeOrmModule,
@@ -75,6 +78,7 @@ const ALL_ENTITIES = [
     TAG_REPOSITORY,
     NEWS_APPROVAL_REPOSITORY,
     COMMENT_REPOSITORY,
+    LIKE_REPOSITORY,
   ],
 })
 export class DatabaseModule {}
