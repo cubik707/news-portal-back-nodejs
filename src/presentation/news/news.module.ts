@@ -10,9 +10,12 @@ import { GetNewsByCategoryUseCase } from '../../application/news/use-cases/get-n
 import { GetNewsByStatusUseCase } from '../../application/news/use-cases/get-news-by-status.use-case';
 import { GetNewsByStatusAndAuthorUseCase } from '../../application/news/use-cases/get-news-by-status-and-author.use-case';
 import { GetNewsByCategoryAndStatusUseCase } from '../../application/news/use-cases/get-news-by-category-and-status.use-case';
+import { SubmitNewsForApprovalUseCase } from '../../application/news-approval/use-cases/submit-news-for-approval.use-case';
+import { PublishApprovedNewsUseCase } from '../../application/news/use-cases/publish-approved-news.use-case';
+import { ApprovalsGatewayModule } from '../approvals-gateway/approvals-gateway.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, ApprovalsGatewayModule],
   controllers: [NewsController],
   providers: [
     CreateNewsUseCase,
@@ -24,6 +27,8 @@ import { GetNewsByCategoryAndStatusUseCase } from '../../application/news/use-ca
     GetNewsByStatusUseCase,
     GetNewsByStatusAndAuthorUseCase,
     GetNewsByCategoryAndStatusUseCase,
+    SubmitNewsForApprovalUseCase,
+    PublishApprovedNewsUseCase,
   ],
 })
 export class NewsModule {}

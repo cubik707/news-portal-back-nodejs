@@ -5,6 +5,7 @@ import { CreateUserUseCase } from '../../application/user/use-cases/create-user.
 import { UpdateUserUseCase } from '../../application/user/use-cases/update-user.use-case';
 import { UpdateUserFieldUseCase } from '../../application/user/use-cases/update-user-field.use-case';
 import { DeleteUserUseCase } from '../../application/user/use-cases/delete-user.use-case';
+import { GetUsersByRoleUseCase } from '../../application/user/use-cases/get-users-by-role.use-case';
 import { UserRegistrationDto } from '../../application/user/dtos/user-registration.dto';
 import { UserResponseDto } from '../../application/user/dtos/user-response.dto';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
@@ -23,6 +24,7 @@ export class UsersController {
     private readonly updateUser: UpdateUserUseCase,
     private readonly updateUserField: UpdateUserFieldUseCase,
     private readonly deleteUser: DeleteUserUseCase,
+    private readonly getUsersByRole: GetUsersByRoleUseCase,
   ) {}
 
   @Get()
@@ -34,6 +36,13 @@ export class UsersController {
       users.map((u) => UserResponseDto.fromDomain(u)),
       'Users retrieved',
     );
+  }
+
+  // Must be declared BEFORE @Get(':id') to avoid route conflict
+  @Get('admins')
+  async findAdmins(): Promise<SuccessResponseDto<UserResponseDto[]>> {
+    const users = await this.getUsersByRole.execute(UserRole.ADMIN);
+    return new SuccessResponseDto(users.map((u) => UserResponseDto.fromDomain(u)), 'Admins retrieved');
   }
 
   @Get(':id')
