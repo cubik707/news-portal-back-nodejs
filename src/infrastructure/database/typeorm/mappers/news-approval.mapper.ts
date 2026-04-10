@@ -7,9 +7,14 @@ export class NewsApprovalMapper {
       id: orm.id,
       newsId: orm.news.id,
       editorId: orm.editor.id,
+      submittedToAdminId: orm.submittedToAdmin?.id ?? null,
+      adminId: orm.admin?.id ?? null,
       status: orm.status,
       comment: orm.comment ?? null,
-      reviewedAt: orm.reviewedAt,
+      seenByAdminAt: orm.seenByAdminAt ?? null,
+      seenByEditorAt: orm.seenByEditorAt ?? null,
+      reviewedAt: orm.reviewedAt ?? null,
+      createdAt: orm.createdAt,
     });
   }
 }
