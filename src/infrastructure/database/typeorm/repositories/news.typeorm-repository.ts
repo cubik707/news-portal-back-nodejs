@@ -27,7 +27,12 @@ export class NewsTypeormRepository implements INewsRepository {
   }
 
   async findAll(): Promise<News[]> {
-    const entities = await this.repo.find({ relations: this.relations });
+    // Only return published news for the public feed
+    // pending_review and approved articles are hidden from public
+    const entities = await this.repo.find({
+      where: { status: NewsStatus.published },
+      relations: this.relations,
+    });
     return entities.map((e) => NewsMapper.toDomain(e));
   }
 
