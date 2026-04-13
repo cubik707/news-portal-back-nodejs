@@ -1,5 +1,6 @@
 import { Inject, Injectable, ForbiddenException } from '@nestjs/common';
-import { INewsApprovalRepository, NEWS_APPROVAL_REPOSITORY } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
+import type { INewsApprovalRepository } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
+import { NEWS_APPROVAL_REPOSITORY } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
 import { NewsApprovalNotFoundException } from '../../../core/domain/news-approval/exceptions/news-approval-not-found.exception';
 import { UserRole } from '../../../core/shared/enums/user-role.enum';
 

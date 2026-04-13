@@ -15,6 +15,7 @@
     "outDir": "./dist",
     "incremental": true,
     "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types"],
     "types": ["jest", "node", "multer"],
     "strict": true,
     "strictNullChecks": true,

@@ -1,5 +1,6 @@
 import { Inject, Injectable, ForbiddenException } from '@nestjs/common';
-import { INewsRepository, NEWS_REPOSITORY } from '../../../core/domain/news/repositories/news.repository.interface';
+import type { INewsRepository } from '../../../core/domain/news/repositories/news.repository.interface';
+import { NEWS_REPOSITORY } from '../../../core/domain/news/repositories/news.repository.interface';
 import { NewsNotFoundException } from '../../../core/domain/news/exceptions/news-not-found.exception';
 import { News } from '../../../core/domain/news/entities/news.domain';
 

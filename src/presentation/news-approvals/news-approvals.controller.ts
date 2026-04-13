@@ -22,7 +22,7 @@ export class NewsApprovalsController {
   constructor(
     private readonly processApproval: ProcessNewsApprovalUseCase,
     private readonly getPendingApprovals: GetPendingApprovalsUseCase,
-    private readonly getMyActivity: GetMyApprovalActivityUseCase,
+    private readonly getMyApprovalActivity: GetMyApprovalActivityUseCase,
     private readonly getBadgeCount: GetApprovalBadgeCountUseCase,
     private readonly markSeen: MarkApprovalSeenUseCase,
     private readonly getApprovalById: GetApprovalByIdUseCase,
@@ -69,7 +69,7 @@ export class NewsApprovalsController {
   async getMyActivity(
     @CurrentUser() user: JwtUserPayload,
   ): Promise<SuccessResponseDto<NewsApprovalResponseDto[]>> {
-    const approvals = await this.getMyActivity.execute(user.id);
+    const approvals = await this.getMyApprovalActivity.execute(user.id);
     return new SuccessResponseDto(approvals.map(NewsApprovalResponseDto.fromDomain), 'Activity retrieved');
   }
 

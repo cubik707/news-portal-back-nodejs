@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { INewsApprovalRepository, NEWS_APPROVAL_REPOSITORY } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
+import type { INewsApprovalRepository } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
+import { NEWS_APPROVAL_REPOSITORY } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
 import { NewsApproval } from '../../../core/domain/news-approval/entities/news-approval.entity';
 
 @Injectable()

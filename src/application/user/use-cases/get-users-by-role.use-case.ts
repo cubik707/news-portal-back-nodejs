@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IUserRepository, USER_REPOSITORY } from '../../../core/domain/user/repositories/user.repository.interface';
+import type { IUserRepository } from '../../../core/domain/user/repositories/user.repository.interface';
+import { USER_REPOSITORY } from '../../../core/domain/user/repositories/user.repository.interface';
 import { User } from '../../../core/domain/user/entities/user.domain';
 import { UserRole } from '../../../core/shared/enums/user-role.enum';
 

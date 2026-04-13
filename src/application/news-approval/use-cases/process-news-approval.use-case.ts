@@ -1,8 +1,10 @@
 import { Inject, Injectable, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { ApprovalStatus } from '../../../core/shared/enums/approval-status.enum';
-import { INewsApprovalRepository, NEWS_APPROVAL_REPOSITORY } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
-import { INewsRepository, NEWS_REPOSITORY } from '../../../core/domain/news/repositories/news.repository.interface';
+import type { INewsApprovalRepository } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
+import { NEWS_APPROVAL_REPOSITORY } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
+import type { INewsRepository } from '../../../core/domain/news/repositories/news.repository.interface';
+import { NEWS_REPOSITORY } from '../../../core/domain/news/repositories/news.repository.interface';
 import { NewsApprovalNotFoundException } from '../../../core/domain/news-approval/exceptions/news-approval-not-found.exception';
 import { NewsNotFoundException } from '../../../core/domain/news/exceptions/news-not-found.exception';
 import { NewsApproval } from '../../../core/domain/news-approval/entities/news-approval.entity';

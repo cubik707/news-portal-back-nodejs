@@ -1,9 +1,12 @@
 import { Inject, Injectable, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { NewsApproval } from '../../../core/domain/news-approval/entities/news-approval.entity';
-import { INewsApprovalRepository, NEWS_APPROVAL_REPOSITORY } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
-import { INewsRepository, NEWS_REPOSITORY } from '../../../core/domain/news/repositories/news.repository.interface';
-import { IUserRepository, USER_REPOSITORY } from '../../../core/domain/user/repositories/user.repository.interface';
+import type { INewsApprovalRepository } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
+import { NEWS_APPROVAL_REPOSITORY } from '../../../core/domain/news-approval/repositories/news-approval.repository.interface';
+import type { INewsRepository } from '../../../core/domain/news/repositories/news.repository.interface';
+import { NEWS_REPOSITORY } from '../../../core/domain/news/repositories/news.repository.interface';
+import type { IUserRepository } from '../../../core/domain/user/repositories/user.repository.interface';
+import { USER_REPOSITORY } from '../../../core/domain/user/repositories/user.repository.interface';
 import { NewsNotFoundException } from '../../../core/domain/news/exceptions/news-not-found.exception';
 import { UserRole } from '../../../core/shared/enums/user-role.enum';
 
