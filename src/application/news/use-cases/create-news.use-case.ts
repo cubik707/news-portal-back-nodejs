@@ -18,8 +18,6 @@ import {
 } from '../../../core/domain/tag/repositories/tag.repository.interface';
 import { UserNotFoundException } from '../../../core/domain/user/exceptions/user-not-found.exception';
 import { CategoryNotFoundException } from '../../../core/domain/category/exceptions/category-not-found.exception';
-import { NewsStatus } from '../../../core/shared/enums/news-status.enum';
-
 export interface CreateNewsCommand {
   title: string;
   content: string;
@@ -27,7 +25,6 @@ export interface CreateNewsCommand {
   authorId: string;
   categoryId: string;
   tags?: string[];
-  status?: NewsStatus;
 }
 
 @Injectable()
@@ -59,7 +56,6 @@ export class CreateNewsUseCase {
       author,
       category,
       tags,
-      status: command.status,
     });
 
     return this.newsRepository.save(news);
