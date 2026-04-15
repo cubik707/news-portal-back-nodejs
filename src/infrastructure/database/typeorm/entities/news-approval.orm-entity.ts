@@ -1,11 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { NewsOrmEntity } from './news.orm-entity';
 import { UserOrmEntity } from './user.orm-entity';
 import { ApprovalStatus } from '../../../../core/shared/enums/approval-status.enum';

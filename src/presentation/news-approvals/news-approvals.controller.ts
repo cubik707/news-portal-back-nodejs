@@ -49,7 +49,10 @@ export class NewsApprovalsController {
       status: approval.status,
       comment: approval.comment,
     });
-    return new SuccessResponseDto(NewsApprovalResponseDto.fromDomain(approval), 'Approval processed');
+    return new SuccessResponseDto(
+      NewsApprovalResponseDto.fromDomain(approval),
+      'Approval processed',
+    );
   }
 
   // Static routes BEFORE parameterized :id routes
@@ -60,7 +63,10 @@ export class NewsApprovalsController {
     @CurrentUser() user: JwtUserPayload,
   ): Promise<SuccessResponseDto<NewsApprovalResponseDto[]>> {
     const approvals = await this.getPendingApprovals.execute(user.id);
-    return new SuccessResponseDto(approvals.map(NewsApprovalResponseDto.fromDomain), 'Pending approvals');
+    return new SuccessResponseDto(
+      approvals.map(NewsApprovalResponseDto.fromDomain),
+      'Pending approvals',
+    );
   }
 
   @Get('my-activity')
@@ -70,7 +76,10 @@ export class NewsApprovalsController {
     @CurrentUser() user: JwtUserPayload,
   ): Promise<SuccessResponseDto<NewsApprovalResponseDto[]>> {
     const approvals = await this.getMyApprovalActivity.execute(user.id);
-    return new SuccessResponseDto(approvals.map(NewsApprovalResponseDto.fromDomain), 'Activity retrieved');
+    return new SuccessResponseDto(
+      approvals.map(NewsApprovalResponseDto.fromDomain),
+      'Activity retrieved',
+    );
   }
 
   @Get('badge')
@@ -82,11 +91,12 @@ export class NewsApprovalsController {
   }
 
   @Get(':id')
-  async getById(
-    @Param('id') id: string,
-  ): Promise<SuccessResponseDto<NewsApprovalResponseDto>> {
+  async getById(@Param('id') id: string): Promise<SuccessResponseDto<NewsApprovalResponseDto>> {
     const approval = await this.getApprovalById.execute(id);
-    return new SuccessResponseDto(NewsApprovalResponseDto.fromDomain(approval), 'Approval retrieved');
+    return new SuccessResponseDto(
+      NewsApprovalResponseDto.fromDomain(approval),
+      'Approval retrieved',
+    );
   }
 
   @Patch(':id/seen')

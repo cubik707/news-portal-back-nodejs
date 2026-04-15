@@ -42,17 +42,39 @@ export class NewsApproval {
     return new NewsApproval(props);
   }
 
-  get id(): string { return this.props.id; }
-  get newsId(): string { return this.props.newsId; }
-  get editorId(): string { return this.props.editorId; }
-  get submittedToAdminId(): string | null { return this.props.submittedToAdminId; }
-  get adminId(): string | null { return this.props.adminId; }
-  get status(): ApprovalStatus { return this.props.status; }
-  get comment(): string | null { return this.props.comment; }
-  get seenByAdminAt(): Date | null { return this.props.seenByAdminAt; }
-  get seenByEditorAt(): Date | null { return this.props.seenByEditorAt; }
-  get reviewedAt(): Date | null { return this.props.reviewedAt; }
-  get createdAt(): Date { return this.props.createdAt; }
+  get id(): string {
+    return this.props.id;
+  }
+  get newsId(): string {
+    return this.props.newsId;
+  }
+  get editorId(): string {
+    return this.props.editorId;
+  }
+  get submittedToAdminId(): string | null {
+    return this.props.submittedToAdminId;
+  }
+  get adminId(): string | null {
+    return this.props.adminId;
+  }
+  get status(): ApprovalStatus {
+    return this.props.status;
+  }
+  get comment(): string | null {
+    return this.props.comment;
+  }
+  get seenByAdminAt(): Date | null {
+    return this.props.seenByAdminAt;
+  }
+  get seenByEditorAt(): Date | null {
+    return this.props.seenByEditorAt;
+  }
+  get reviewedAt(): Date | null {
+    return this.props.reviewedAt;
+  }
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
 
   process(adminId: string, status: ApprovalStatus, comment?: string): void {
     this.props.adminId = adminId;

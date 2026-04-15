@@ -55,7 +55,9 @@ export class ProcessNewsApprovalUseCase {
     }
 
     await this.dataSource.transaction(async (manager) => {
-      await manager.getRepository('NewsOrmEntity').update(news.id, { status: news.status, updatedAt: news.updatedAt });
+      await manager
+        .getRepository('NewsOrmEntity')
+        .update(news.id, { status: news.status, updatedAt: news.updatedAt });
       await manager.getRepository('NewsApprovalOrmEntity').update(approval.id, {
         admin: { id: approval.adminId },
         status: approval.status,
@@ -64,7 +66,7 @@ export class ProcessNewsApprovalUseCase {
       });
     });
 
-    const saved = await this.approvalRepository.findById(approval.id) as NewsApproval;
+    const saved = (await this.approvalRepository.findById(approval.id)) as NewsApproval;
     return { approval: saved, editorId: approval.editorId };
   }
 }

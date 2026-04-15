@@ -132,5 +132,4 @@ describe('CreateNewsUseCase', () => {
     ).rejects.toThrow(CategoryNotFoundException);
     expect(newsRepository.save).not.toHaveBeenCalled();
   });
-
 });

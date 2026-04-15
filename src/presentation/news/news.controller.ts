@@ -169,7 +169,10 @@ export class NewsController {
       newsTitle: '—',
       editorName: user.username,
     });
-    return new SuccessResponseDto(NewsApprovalResponseDto.fromDomain(approval), 'Submitted for approval');
+    return new SuccessResponseDto(
+      NewsApprovalResponseDto.fromDomain(approval),
+      'Submitted for approval',
+    );
   }
 
   @Post(':id/publish')

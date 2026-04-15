@@ -42,7 +42,10 @@ export class UsersController {
   @Get('admins')
   async findAdmins(): Promise<SuccessResponseDto<UserResponseDto[]>> {
     const users = await this.getUsersByRole.execute(UserRole.ADMIN);
-    return new SuccessResponseDto(users.map((u) => UserResponseDto.fromDomain(u)), 'Admins retrieved');
+    return new SuccessResponseDto(
+      users.map((u) => UserResponseDto.fromDomain(u)),
+      'Admins retrieved',
+    );
   }
 
   @Get(':id')

@@ -66,7 +66,7 @@ export class SubmitNewsForApprovalUseCase {
       await manager.getRepository('NewsApprovalOrmEntity').save(entity);
     });
 
-    const savedApproval = await this.approvalRepository.findById(approval.id) as NewsApproval;
+    const savedApproval = (await this.approvalRepository.findById(approval.id)) as NewsApproval;
 
     // Determine which admins to notify
     let targetAdminIds: string[];

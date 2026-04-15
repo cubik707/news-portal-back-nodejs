@@ -63,7 +63,11 @@ export class NewsApprovalTypeormRepository implements INewsApprovalRepository {
     return this.repo.count({
       where: [
         { status: ApprovalStatus.pending, submittedToAdmin: IsNull(), seenByAdminAt: IsNull() },
-        { status: ApprovalStatus.pending, submittedToAdmin: { id: adminId }, seenByAdminAt: IsNull() },
+        {
+          status: ApprovalStatus.pending,
+          submittedToAdmin: { id: adminId },
+          seenByAdminAt: IsNull(),
+        },
       ],
     });
   }
@@ -91,7 +95,10 @@ export class NewsApprovalTypeormRepository implements INewsApprovalRepository {
       reviewedAt: approval.reviewedAt,
     });
     await this.repo.save(entity);
-    const saved = await this.repo.findOne({ where: { id: approval.id }, relations: this.relations });
+    const saved = await this.repo.findOne({
+      where: { id: approval.id },
+      relations: this.relations,
+    });
     return NewsApprovalMapper.toDomain(saved!);
   }
 
@@ -104,7 +111,10 @@ export class NewsApprovalTypeormRepository implements INewsApprovalRepository {
       seenByEditorAt: approval.seenByEditorAt ?? undefined,
       reviewedAt: approval.reviewedAt ?? undefined,
     });
-    const updated = await this.repo.findOne({ where: { id: approval.id }, relations: this.relations });
+    const updated = await this.repo.findOne({
+      where: { id: approval.id },
+      relations: this.relations,
+    });
     return NewsApprovalMapper.toDomain(updated!);
   }
 }
