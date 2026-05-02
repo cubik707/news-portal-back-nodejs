@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { CreateAmendmentUseCase } from '../../application/amendment/use-cases/create-amendment.use-case';
 import { GetAmendmentsUseCase } from '../../application/amendment/use-cases/get-amendments.use-case';
 import { GetMyUnseenAmendmentUseCase } from '../../application/amendment/use-cases/get-my-unseen-amendment.use-case';
@@ -31,6 +31,7 @@ export class AmendmentsController {
   // ── Static routes first ────────────────────────────────────────────────────
 
   @Post()
+  @HttpCode(201)
   async create(
     @Body() dto: AmendmentCreateDto,
     @CurrentUser() user: JwtUserPayload,

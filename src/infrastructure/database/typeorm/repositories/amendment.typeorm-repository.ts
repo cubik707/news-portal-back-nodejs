@@ -84,6 +84,7 @@ export class AmendmentTypeormRepository implements IAmendmentRepository {
         { userId, status: AmendmentStatus.REJECTED, seenByUser: false },
       ],
       order: { reviewedAt: 'DESC' },
+      relations: this.relations,
     });
     return entity ? AmendmentMapper.toDomain(entity) : null;
   }

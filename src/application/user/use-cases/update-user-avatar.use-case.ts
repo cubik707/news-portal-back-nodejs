@@ -22,7 +22,7 @@ export class UpdateUserAvatarUseCase {
     const user = await this.userRepository.findById(input.userId);
     if (!user) throw new UserNotFoundException(input.userId);
 
-    user.updateProfile({ avatarUrl: input.avatarUrl ?? '' });
+    user.updateProfile({ avatarUrl: input.avatarUrl });
     return this.userRepository.update(input.userId, user);
   }
 }
