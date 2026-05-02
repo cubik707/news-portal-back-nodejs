@@ -18,7 +18,16 @@ export class NewsResponseDto {
   createdAt!: Date;
   updatedAt!: Date;
 
-  static fromDomain(this: void, news: News, commentCount = 0): NewsResponseDto {
+  likeCount!: number;
+  isLikedByCurrentUser!: boolean;
+
+  static fromDomain(
+    this: void,
+    news: News,
+    commentCount = 0,
+    likeCount = 0,
+    isLikedByCurrentUser = false,
+  ): NewsResponseDto {
     const dto = new NewsResponseDto();
     dto.id = news.id;
     dto.title = news.title;
@@ -30,6 +39,8 @@ export class NewsResponseDto {
     dto.publishedAt = news.publishedAt;
     dto.category = CategoryResponseDto.fromDomain(news.category);
     dto.commentCount = commentCount;
+    dto.likeCount = likeCount;
+    dto.isLikedByCurrentUser = isLikedByCurrentUser;
     dto.createdAt = news.createdAt;
     dto.updatedAt = news.updatedAt;
     return dto;

@@ -490,10 +490,10 @@ async function seedData(manager: import('typeorm').EntityManager) {
 
   for (const data of likePairs) {
     const existing = await likeRepo.findOne({
-      where: { news: { id: data.news.id }, user: { id: data.user.id } },
+      where: { newsId: data.news.id, userId: data.user.id },
     });
     if (!existing) {
-      const like = likeRepo.create(data);
+      const like = likeRepo.create({ newsId: data.news.id, userId: data.user.id });
       await likeRepo.save(like);
     }
   }

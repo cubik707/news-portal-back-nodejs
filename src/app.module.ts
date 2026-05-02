@@ -16,6 +16,7 @@ import { SubscriptionsModule } from './presentation/subscriptions/subscriptions.
 import { FilesModule } from './presentation/files/files.module';
 import { NewsApprovalsModule } from './presentation/news-approvals/news-approvals.module';
 import { CommentsModule } from './presentation/comments/comments.module';
+import { LikeModule } from './presentation/like/like.module';
 import { ApprovalsGatewayModule } from './presentation/approvals-gateway/approvals-gateway.module';
 import { GlobalExceptionFilter } from './presentation/shared/filters/global-exception.filter';
 
@@ -36,6 +37,7 @@ import { GlobalExceptionFilter } from './presentation/shared/filters/global-exce
     FilesModule,
     NewsApprovalsModule,
     CommentsModule,
+    LikeModule,
     ApprovalsGatewayModule,
   ],
   providers: [
