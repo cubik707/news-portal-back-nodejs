@@ -1,5 +1,4 @@
-import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { NewsStatus } from '../../../core/shared/enums/news-status.enum';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class NewsCreateDto {
   @IsString()
@@ -22,8 +21,4 @@ export class NewsCreateDto {
   @IsString({ each: true })
   @IsOptional()
   tags?: string[];
-
-  @IsEnum(NewsStatus)
-  @IsOptional()
-  status?: NewsStatus;
 }

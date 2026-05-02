@@ -223,6 +223,57 @@ All like endpoints require **JWT + Approved**. All `GET /news` responses now inc
 ```
 
 **Migration note:** Run `npm run migration:run` after pulling this feature — migration `1000000000004-LikesUuidAndUniqueConstraint` drops and recreates the `likes` table with UUID PK, foreign key constraints, unique constraint `(news_id, user_id)`, and index on `user_id`.
+### News Approval Workflow
+
+Editors submit drafts to admins for review. Admins approve or reject with a comment. Approved articles can be published by the editor.
+
+**News Status Flow:**
+```
+draft → pending_review → approved → published
+              ↓
+           draft  (rejected → editor fixes and can resubmit)
+```
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `POST` | `/news/:id/submit-for-approval` | JWT + Approved + Editor | Submit draft for review; body `{ adminId?: string }` |
+| `POST` | `/news/:id/publish` | JWT + Approved + Editor | Publish an approved article |
+| `GET` | `/news-approvals/pending` | JWT + Approved + Admin | List pending approvals visible to this admin |
+| `GET` | `/news-approvals/my-activity` | JWT + Approved + Editor | Editor's own submission history |
+| `GET` | `/news-approvals/badge` | JWT + Approved | `{ count: number }` — unread approval count for badge |
+| `GET` | `/news-approvals/:id` | JWT + Approved | Get approval by ID |
+| `POST` | `/news-approvals/:id/process` | JWT + Approved + Admin | Approve or reject; body `{ status: "approved"|"rejected", comment?: string }` |
+| `PATCH` | `/news-approvals/:id/seen` | JWT + Approved | Mark approval as seen (clears badge for that item) |
+| `GET` | `/users/admins` | JWT + Approved | List all admin users (for editor admin picker) |
+
+**Badge logic:**
+- Admin badge = count of pending approvals submitted to this admin (or broadcast) with `seenByAdminAt IS NULL`
+- Editor badge = count of decided approvals (`approved` or `rejected`) with `seenByEditorAt IS NULL`
+
+**Migration:** Run `npm run migration:run` — migration `1000000000005-NewsApprovalWorkflow` adds columns `submitted_to_admin_id`, `admin_id`, `seen_by_admin_at`, `seen_by_editor_at`, `created_at` to `news_approval` table.
+
+---
+
+### WebSocket — Approval Notifications
+
+**Namespace:** `/approvals`
+
+Connect with JWT authentication:
+```js
+import { io } from 'socket.io-client';
+const socket = io('http://localhost:3000/approvals', {
+  auth: { token: '<jwt_access_token>' },
+});
+```
+
+| Event | Direction | Payload | Trigger |
+|-------|-----------|---------|---------|
+| `approval:new` | Server → Admin room | `{ approvalId, newsId, newsTitle, editorName }` | Editor submits article for review |
+| `approval:decided` | Server → Editor room | `{ approvalId, newsId, status, comment }` | Admin approves or rejects |
+
+Each authenticated client joins a room keyed by their user ID. Unauthenticated connections are immediately disconnected.
+
+**Environment variable required:** `JWT_SECRET` must be set (already required for HTTP auth).
 
 ---
 

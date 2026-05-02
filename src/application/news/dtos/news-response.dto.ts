@@ -15,6 +15,8 @@ export class NewsResponseDto {
   publishedAt?: Date;
   category!: CategoryResponseDto;
   commentCount!: number;
+  createdAt!: Date;
+  updatedAt!: Date;
 
   likeCount!: number;
   isLikedByCurrentUser!: boolean;
@@ -39,6 +41,8 @@ export class NewsResponseDto {
     dto.commentCount = commentCount;
     dto.likeCount = likeCount;
     dto.isLikedByCurrentUser = isLikedByCurrentUser;
+    dto.createdAt = news.createdAt;
+    dto.updatedAt = news.updatedAt;
     return dto;
   }
 }
