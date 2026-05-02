@@ -13,6 +13,7 @@ import {
   PASSWORD_HASHER,
 } from '../../../core/shared/ports/password-hasher.port';
 import { EmailService } from '../../../infrastructure/email/email.service';
+import { UserRole } from '../../../core/shared/enums/user-role.enum';
 
 export interface RegisterUserCommand {
   username: string;
@@ -23,6 +24,7 @@ export interface RegisterUserCommand {
   surname?: string;
   position?: string;
   department?: string;
+  avatarUrl?: string;
 }
 
 @Injectable()
@@ -35,7 +37,7 @@ export class RegisterUserUseCase {
     private readonly emailService: EmailService,
   ) {}
 
-  async execute(command: RegisterUserCommand): Promise<User> {
+  async execute(command: RegisterUserCommand): Promise<{ user: User; adminIds: string[] }> {
     const existingByUsername = await this.userRepository.findByUsername(command.username);
     if (existingByUsername) {
       throw new UserAlreadyExistsException(command.username);
@@ -57,6 +59,7 @@ export class RegisterUserUseCase {
       surname: command.surname,
       position: command.position,
       department: command.department,
+      avatarUrl: command.avatarUrl,
     });
 
     const saved = await this.userRepository.save(user);
@@ -67,6 +70,9 @@ export class RegisterUserUseCase {
       `<p>Hello ${command.firstName}, your account has been created. Please wait for admin approval.</p>`,
     );
 
-    return saved;
+    const admins = await this.userRepository.findAllByRole(UserRole.ADMIN);
+    const adminIds = admins.map((a) => a.id);
+
+    return { user: saved, adminIds };
   }
 }

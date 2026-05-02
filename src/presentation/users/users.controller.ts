@@ -6,13 +6,18 @@ import { UpdateUserUseCase } from '../../application/user/use-cases/update-user.
 import { UpdateUserFieldUseCase } from '../../application/user/use-cases/update-user-field.use-case';
 import { DeleteUserUseCase } from '../../application/user/use-cases/delete-user.use-case';
 import { GetUsersByRoleUseCase } from '../../application/user/use-cases/get-users-by-role.use-case';
+import { UpdateUserAvatarUseCase } from '../../application/user/use-cases/update-user-avatar.use-case';
+import { GetPendingUsersCountUseCase } from '../../application/user/use-cases/get-pending-users-count.use-case';
 import { UserRegistrationDto } from '../../application/user/dtos/user-registration.dto';
+import { UserAvatarUpdateDto } from '../../application/user/dtos/user-avatar-update.dto';
 import { UserResponseDto } from '../../application/user/dtos/user-response.dto';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
+import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { UserRole } from '../../core/shared/enums/user-role.enum';
+import type { JwtUserPayload } from '../auth/jwt.strategy';
 
 @Controller('users')
 @UseGuards(ApprovedGuard)
@@ -25,6 +30,8 @@ export class UsersController {
     private readonly updateUserField: UpdateUserFieldUseCase,
     private readonly deleteUser: DeleteUserUseCase,
     private readonly getUsersByRole: GetUsersByRoleUseCase,
+    private readonly updateUserAvatar: UpdateUserAvatarUseCase,
+    private readonly getPendingUsersCount: GetPendingUsersCountUseCase,
   ) {}
 
   @Get()
@@ -46,6 +53,28 @@ export class UsersController {
       users.map((u) => UserResponseDto.fromDomain(u)),
       'Admins retrieved',
     );
+  }
+
+  // Must be declared BEFORE @Get(':id') to avoid route conflict
+  @Get('pending/count')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async getPendingCount(): Promise<SuccessResponseDto<{ count: number }>> {
+    const count = await this.getPendingUsersCount.execute();
+    return new SuccessResponseDto({ count }, 'Pending users count');
+  }
+
+  // Must be declared BEFORE @Patch(':id') to avoid route conflict
+  @Patch('me/avatar')
+  async updateMyAvatar(
+    @Body() dto: UserAvatarUpdateDto,
+    @CurrentUser() user: JwtUserPayload,
+  ): Promise<SuccessResponseDto<UserResponseDto>> {
+    const updatedUser = await this.updateUserAvatar.execute({
+      userId: user.id,
+      avatarUrl: dto.avatarUrl,
+    });
+    return new SuccessResponseDto(UserResponseDto.fromDomain(updatedUser), 'Avatar updated');
   }
 
   @Get(':id')
@@ -72,6 +101,8 @@ export class UsersController {
   }
 
   @Put(':id')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   async update(
     @Param('id') id: string,
     @Body() dto: UserRegistrationDto,
@@ -91,6 +122,8 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   async updateField(
     @Param('id') id: string,
     @Body() fields: Record<string, unknown>,

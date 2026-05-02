@@ -14,6 +14,7 @@ export interface IUserRepository {
   assignRole(id: string, role: UserRole): Promise<User>;
   removeRole(id: string, role: UserRole): Promise<User>;
   findAllByRole(role: UserRole): Promise<User[]>;
+  countPending(): Promise<number>;
   findSubscriptions(userId: string): Promise<Category[]>;
   addSubscription(userId: string, categoryId: string): Promise<void>;
   removeSubscription(userId: string, categoryId: string): Promise<void>;
