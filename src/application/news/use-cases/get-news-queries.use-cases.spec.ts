@@ -132,12 +132,18 @@ describe('GetNewsByIdUseCase', () => {
 describe('GetNewsByCategoryUseCase', () => {
   let useCase: GetNewsByCategoryUseCase;
   let newsRepository: { findByCategory: jest.Mock };
+  let commentRepository: { countByNewsId: jest.Mock };
 
   beforeEach(async () => {
     newsRepository = { findByCategory: jest.fn() };
+    commentRepository = { countByNewsId: jest.fn().mockResolvedValue(0) };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [GetNewsByCategoryUseCase, { provide: NEWS_REPOSITORY, useValue: newsRepository }],
+      providers: [
+        GetNewsByCategoryUseCase,
+        { provide: NEWS_REPOSITORY, useValue: newsRepository },
+        { provide: COMMENT_REPOSITORY, useValue: commentRepository },
+      ],
     }).compile();
 
     useCase = module.get(GetNewsByCategoryUseCase);
@@ -149,7 +155,7 @@ describe('GetNewsByCategoryUseCase', () => {
 
     const result = await useCase.execute('cat-id');
 
-    expect(result).toEqual(news);
+    expect(result).toEqual([{ news: news[0], commentCount: 0 }]);
     expect(newsRepository.findByCategory).toHaveBeenCalledWith('cat-id');
   });
 });
@@ -159,12 +165,18 @@ describe('GetNewsByCategoryUseCase', () => {
 describe('GetNewsByStatusUseCase', () => {
   let useCase: GetNewsByStatusUseCase;
   let newsRepository: { findByStatus: jest.Mock };
+  let commentRepository: { countByNewsId: jest.Mock };
 
   beforeEach(async () => {
     newsRepository = { findByStatus: jest.fn() };
+    commentRepository = { countByNewsId: jest.fn().mockResolvedValue(0) };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [GetNewsByStatusUseCase, { provide: NEWS_REPOSITORY, useValue: newsRepository }],
+      providers: [
+        GetNewsByStatusUseCase,
+        { provide: NEWS_REPOSITORY, useValue: newsRepository },
+        { provide: COMMENT_REPOSITORY, useValue: commentRepository },
+      ],
     }).compile();
 
     useCase = module.get(GetNewsByStatusUseCase);
@@ -176,7 +188,7 @@ describe('GetNewsByStatusUseCase', () => {
 
     const result = await useCase.execute(NewsStatus.published);
 
-    expect(result).toEqual(news);
+    expect(result).toEqual([{ news: news[0], commentCount: 0 }]);
     expect(newsRepository.findByStatus).toHaveBeenCalledWith(NewsStatus.published);
   });
 });
@@ -186,14 +198,17 @@ describe('GetNewsByStatusUseCase', () => {
 describe('GetNewsByStatusAndAuthorUseCase', () => {
   let useCase: GetNewsByStatusAndAuthorUseCase;
   let newsRepository: { findByStatusAndAuthor: jest.Mock };
+  let commentRepository: { countByNewsId: jest.Mock };
 
   beforeEach(async () => {
     newsRepository = { findByStatusAndAuthor: jest.fn() };
+    commentRepository = { countByNewsId: jest.fn().mockResolvedValue(0) };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GetNewsByStatusAndAuthorUseCase,
         { provide: NEWS_REPOSITORY, useValue: newsRepository },
+        { provide: COMMENT_REPOSITORY, useValue: commentRepository },
       ],
     }).compile();
 
@@ -206,7 +221,7 @@ describe('GetNewsByStatusAndAuthorUseCase', () => {
 
     const result = await useCase.execute('author-id', NewsStatus.published);
 
-    expect(result).toEqual(news);
+    expect(result).toEqual([{ news: news[0], commentCount: 0 }]);
     expect(newsRepository.findByStatusAndAuthor).toHaveBeenCalledWith(
       NewsStatus.published,
       'author-id',
@@ -219,14 +234,17 @@ describe('GetNewsByStatusAndAuthorUseCase', () => {
 describe('GetNewsByCategoryAndStatusUseCase', () => {
   let useCase: GetNewsByCategoryAndStatusUseCase;
   let newsRepository: { findByCategoryAndStatus: jest.Mock };
+  let commentRepository: { countByNewsId: jest.Mock };
 
   beforeEach(async () => {
     newsRepository = { findByCategoryAndStatus: jest.fn() };
+    commentRepository = { countByNewsId: jest.fn().mockResolvedValue(0) };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GetNewsByCategoryAndStatusUseCase,
         { provide: NEWS_REPOSITORY, useValue: newsRepository },
+        { provide: COMMENT_REPOSITORY, useValue: commentRepository },
       ],
     }).compile();
 
@@ -239,7 +257,7 @@ describe('GetNewsByCategoryAndStatusUseCase', () => {
 
     const result = await useCase.execute('cat-id', NewsStatus.published);
 
-    expect(result).toEqual(news);
+    expect(result).toEqual([{ news: news[0], commentCount: 0 }]);
     expect(newsRepository.findByCategoryAndStatus).toHaveBeenCalledWith(
       'cat-id',
       NewsStatus.published,

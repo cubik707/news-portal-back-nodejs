@@ -102,23 +102,35 @@ export class News {
 
   // ── Business methods ───────────────────────────────────────────────────────
 
-  approve(): void {
+  submitForReview(): void {
     if (this.props.status !== NewsStatus.draft) {
+      throw new Error(`Cannot submit news with status "${this.props.status}" for review`);
+    }
+    this.props.status = NewsStatus.pending_review;
+    this.props.updatedAt = new Date();
+  }
+
+  approve(): void {
+    if (this.props.status !== NewsStatus.pending_review) {
       throw new Error(`Cannot approve news with status "${this.props.status}"`);
     }
-    this.props.status = NewsStatus.published;
-    this.props.publishedAt = new Date();
+    this.props.status = NewsStatus.approved;
+    // NOTE: publishedAt is NOT set here — editor sets it on publish()
     this.props.updatedAt = new Date();
   }
 
   reject(): void {
-    if (this.props.status !== NewsStatus.draft) {
+    if (this.props.status !== NewsStatus.pending_review) {
       throw new Error(`Cannot reject news with status "${this.props.status}"`);
     }
+    this.props.status = NewsStatus.draft;
     this.props.updatedAt = new Date();
   }
 
   publish(): void {
+    if (this.props.status !== NewsStatus.approved) {
+      throw new Error(`Cannot publish news with status "${this.props.status}"`);
+    }
     this.props.status = NewsStatus.published;
     this.props.publishedAt = new Date();
     this.props.updatedAt = new Date();

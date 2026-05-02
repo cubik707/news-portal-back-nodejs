@@ -13,6 +13,7 @@ export interface IUserRepository {
   approve(id: string): Promise<User>;
   assignRole(id: string, role: UserRole): Promise<User>;
   removeRole(id: string, role: UserRole): Promise<User>;
+  findAllByRole(role: UserRole): Promise<User[]>;
   findSubscriptions(userId: string): Promise<Category[]>;
   addSubscription(userId: string, categoryId: string): Promise<void>;
   removeSubscription(userId: string, categoryId: string): Promise<void>;

@@ -14,7 +14,6 @@ import {
 } from '../../../core/domain/tag/repositories/tag.repository.interface';
 import { NewsNotFoundException } from '../../../core/domain/news/exceptions/news-not-found.exception';
 import { CategoryNotFoundException } from '../../../core/domain/category/exceptions/category-not-found.exception';
-import { NewsStatus } from '../../../core/shared/enums/news-status.enum';
 import { Tag } from '../../../core/domain/tag/entities/tag.domain';
 import { Category } from '../../../core/domain/category/entities/category.domain';
 
@@ -25,7 +24,6 @@ export interface UpdateNewsCommand {
   image?: string;
   categoryId?: string;
   tags?: string[];
-  status?: NewsStatus;
 }
 
 @Injectable()
@@ -61,7 +59,6 @@ export class UpdateNewsUseCase {
       image: command.image,
       category,
       tags,
-      status: command.status,
     });
 
     return this.newsRepository.update(command.id, news);

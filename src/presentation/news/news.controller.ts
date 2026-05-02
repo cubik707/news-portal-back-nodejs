@@ -8,9 +8,13 @@ import { GetNewsByCategoryUseCase } from '../../application/news/use-cases/get-n
 import { GetNewsByStatusUseCase } from '../../application/news/use-cases/get-news-by-status.use-case';
 import { GetNewsByStatusAndAuthorUseCase } from '../../application/news/use-cases/get-news-by-status-and-author.use-case';
 import { GetNewsByCategoryAndStatusUseCase } from '../../application/news/use-cases/get-news-by-category-and-status.use-case';
+import { SubmitNewsForApprovalUseCase } from '../../application/news-approval/use-cases/submit-news-for-approval.use-case';
+import { PublishApprovedNewsUseCase } from '../../application/news/use-cases/publish-approved-news.use-case';
 import { NewsCreateDto } from '../../application/news/dtos/news-create.dto';
 import { NewsUpdateDto } from '../../application/news/dtos/news-update.dto';
 import { NewsResponseDto } from '../../application/news/dtos/news-response.dto';
+import { NewsApprovalResponseDto } from '../../application/news-approval/dtos/news-approval-response.dto';
+import { SubmitNewsApprovalDto } from '../../application/news-approval/dtos/submit-news-approval.dto';
 import { NewsStatus } from '../../core/shared/enums/news-status.enum';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
 import { RolesGuard } from '../shared/guards/roles.guard';
@@ -19,6 +23,7 @@ import { Roles } from '../shared/decorators/roles.decorator';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { UserRole } from '../../core/shared/enums/user-role.enum';
 import type { JwtUserPayload } from '../auth/jwt.strategy';
+import { ApprovalsGateway } from '../approvals-gateway/approvals.gateway';
 
 @Controller('news')
 export class NewsController {
@@ -32,6 +37,9 @@ export class NewsController {
     private readonly createNews: CreateNewsUseCase,
     private readonly updateNews: UpdateNewsUseCase,
     private readonly deleteNews: DeleteNewsUseCase,
+    private readonly submitForApproval: SubmitNewsForApprovalUseCase,
+    private readonly publishApprovedNews: PublishApprovedNewsUseCase,
+    private readonly gateway: ApprovalsGateway,
   ) {}
 
   @Get()
@@ -110,7 +118,6 @@ export class NewsController {
       authorId: user.id,
       categoryId: dto.categoryId,
       tags: dto.tags,
-      status: dto.status,
     });
     return new SuccessResponseDto(NewsResponseDto.fromDomain(news), 'News created');
   }
@@ -129,7 +136,6 @@ export class NewsController {
       image: dto.image,
       categoryId: dto.categoryId,
       tags: dto.tags,
-      status: dto.status,
     });
     return new SuccessResponseDto(NewsResponseDto.fromDomain(news), 'News updated');
   }
@@ -140,5 +146,41 @@ export class NewsController {
   async remove(@Param('id') id: string): Promise<SuccessResponseDto<null>> {
     await this.deleteNews.execute(id);
     return new SuccessResponseDto(null, 'News deleted');
+  }
+
+  @Post(':id/submit-for-approval')
+  @UseGuards(ApprovedGuard, RolesGuard)
+  @Roles(UserRole.EDITOR)
+  async submitNewsForApproval(
+    @Param('id') id: string,
+    @Body() dto: SubmitNewsApprovalDto,
+    @CurrentUser() user: JwtUserPayload,
+  ): Promise<SuccessResponseDto<NewsApprovalResponseDto>> {
+    const { approval, targetAdminIds } = await this.submitForApproval.execute({
+      newsId: id,
+      editorId: user.id,
+      adminId: dto.adminId,
+    });
+    this.gateway.emitApprovalNew(targetAdminIds, {
+      approvalId: approval.id,
+      newsId: approval.newsId,
+      newsTitle: '—',
+      editorName: user.username,
+    });
+    return new SuccessResponseDto(
+      NewsApprovalResponseDto.fromDomain(approval),
+      'Submitted for approval',
+    );
+  }
+
+  @Post(':id/publish')
+  @UseGuards(ApprovedGuard, RolesGuard)
+  @Roles(UserRole.EDITOR)
+  async publish(
+    @Param('id') id: string,
+    @CurrentUser() user: JwtUserPayload,
+  ): Promise<SuccessResponseDto<NewsResponseDto>> {
+    const news = await this.publishApprovedNews.execute(id, user.id);
+    return new SuccessResponseDto(NewsResponseDto.fromDomain(news), 'News published');
   }
 }

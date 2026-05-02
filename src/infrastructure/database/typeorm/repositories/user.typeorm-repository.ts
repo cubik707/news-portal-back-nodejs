@@ -172,4 +172,14 @@ export class UserTypeormRepository implements IUserRepository {
     entity.subscribedCategories = entity.subscribedCategories.filter((c) => c.id !== categoryId);
     await this.repo.save(entity);
   }
+
+  async findAllByRole(role: UserRole): Promise<User[]> {
+    const entities = await this.repo
+      .createQueryBuilder('user')
+      .innerJoin('user.roles', 'role', 'role.name = :role', { role })
+      .leftJoinAndSelect('user.roles', 'roles')
+      .leftJoinAndSelect('user.userInfo', 'userInfo')
+      .getMany();
+    return entities.map(UserMapper.toDomain);
+  }
 }

@@ -15,6 +15,8 @@ export class NewsResponseDto {
   publishedAt?: Date;
   category!: CategoryResponseDto;
   commentCount!: number;
+  createdAt!: Date;
+  updatedAt!: Date;
 
   static fromDomain(this: void, news: News, commentCount = 0): NewsResponseDto {
     const dto = new NewsResponseDto();
@@ -28,6 +30,8 @@ export class NewsResponseDto {
     dto.publishedAt = news.publishedAt;
     dto.category = CategoryResponseDto.fromDomain(news.category);
     dto.commentCount = commentCount;
+    dto.createdAt = news.createdAt;
+    dto.updatedAt = news.updatedAt;
     return dto;
   }
 }
