@@ -14,6 +14,7 @@ import { LikeOrmEntity } from './typeorm/entities/like.orm-entity';
 import { NotificationOrmEntity } from './typeorm/entities/notification.orm-entity';
 import { UserNotificationOrmEntity } from './typeorm/entities/user-notification.orm-entity';
 import { NewsApprovalOrmEntity } from './typeorm/entities/news-approval.orm-entity';
+import { NewsViewOrmEntity } from './typeorm/entities/news-view.orm-entity';
 import { UserRole } from '../../core/shared/enums/user-role.enum';
 import { NewsStatus } from '../../core/shared/enums/news-status.enum';
 import { ApprovalStatus } from '../../core/shared/enums/approval-status.enum';
@@ -42,6 +43,7 @@ async function cleanDb(manager: import('typeorm').EntityManager) {
       user_notifications,
       notifications,
       news_approval,
+      news_views,
       likes,
       comments,
       news_tags,
@@ -109,6 +111,7 @@ async function seedData(manager: import('typeorm').EntityManager) {
   const notificationRepo = manager.getRepository(NotificationOrmEntity);
   const userNotificationRepo = manager.getRepository(UserNotificationOrmEntity);
   const approvalRepo = manager.getRepository(NewsApprovalOrmEntity);
+  const newsViewRepo = manager.getRepository(NewsViewOrmEntity);
 
   // --- Роли ---
   console.log('Создание ролей...');
@@ -495,6 +498,35 @@ async function seedData(manager: import('typeorm').EntityManager) {
     if (!existing) {
       const like = likeRepo.create({ newsId: data.news.id, userId: data.user.id });
       await likeRepo.save(like);
+    }
+  }
+
+  // --- Просмотры (история для рекомендаций) ---
+  console.log('Создание просмотров новостей...');
+  // sokolova_dev (user1): читает про разработку и продукты
+  // nikitin_dev (user2): читает про разработку и безопасность
+  // lebedeva_qa (user3): читает про безопасность, продукты и события
+  // orlov_devops (user4): читает про DevOps и безопасность
+  const viewPairs = [
+    { news: savedNews[0], user: user1 }, // NestJS migration → sokolova
+    { news: savedNews[1], user: user1 }, // Kubernetes → sokolova
+    { news: savedNews[3], user: user1 }, // Security audit → sokolova
+    { news: savedNews[0], user: user2 }, // NestJS migration → nikitin
+    { news: savedNews[3], user: user2 }, // Security audit → nikitin
+    { news: savedNews[5], user: user2 }, // Code review guidelines → nikitin
+    { news: savedNews[3], user: user3 }, // Security audit → lebedeva
+    { news: savedNews[4], user: user3 }, // Hackathon → lebedeva
+    { news: savedNews[1], user: user4 }, // Kubernetes → orlov
+    { news: savedNews[3], user: user4 }, // Security audit → orlov
+  ];
+
+  for (const data of viewPairs) {
+    const existing = await newsViewRepo.findOne({
+      where: { newsId: data.news.id, userId: data.user.id },
+    });
+    if (!existing) {
+      const view = newsViewRepo.create({ newsId: data.news.id, userId: data.user.id });
+      await newsViewRepo.save(view);
     }
   }
 
