@@ -4,6 +4,7 @@ import { News } from '../entities/news.domain';
 export interface INewsRepository {
   findAll(): Promise<News[]>;
   findById(id: string): Promise<News | null>;
+  findByIds(ids: string[]): Promise<News[]>;
   findByCategory(categoryId: string): Promise<News[]>;
   findByStatus(status: NewsStatus): Promise<News[]>;
   findByStatusAndAuthor(status: NewsStatus, authorId: string): Promise<News[]>;

@@ -29,6 +29,9 @@ import { NEWS_APPROVAL_REPOSITORY } from '../../core/domain/news-approval/reposi
 import { COMMENT_REPOSITORY } from '../../core/domain/comment/repositories/comment.repository.interface';
 import { LikeTypeormRepository } from './typeorm/repositories/like.typeorm-repository';
 import { LIKE_REPOSITORY } from '../../core/domain/like/repositories/like.repository.interface';
+import { NewsViewOrmEntity } from './typeorm/entities/news-view.orm-entity';
+import { NewsViewTypeormRepository } from './typeorm/repositories/news-view.typeorm-repository';
+import { NEWS_VIEW_REPOSITORY } from '../../core/domain/news-view/repositories/news-view.repository.interface';
 
 const ALL_ENTITIES = [
   UserOrmEntity,
@@ -43,6 +46,7 @@ const ALL_ENTITIES = [
   UserNotificationOrmEntity,
   NewsApprovalOrmEntity,
   AmendmentOrmEntity,
+  NewsViewOrmEntity,
 ];
 
 @Module({
@@ -74,6 +78,7 @@ const ALL_ENTITIES = [
     { provide: COMMENT_REPOSITORY, useClass: CommentTypeormRepository },
     { provide: LIKE_REPOSITORY, useClass: LikeTypeormRepository },
     { provide: AMENDMENT_REPOSITORY, useClass: AmendmentTypeormRepository },
+    { provide: NEWS_VIEW_REPOSITORY, useClass: NewsViewTypeormRepository },
   ],
   exports: [
     TypeOrmModule,
@@ -85,6 +90,7 @@ const ALL_ENTITIES = [
     COMMENT_REPOSITORY,
     LIKE_REPOSITORY,
     AMENDMENT_REPOSITORY,
+    NEWS_VIEW_REPOSITORY,
   ],
 })
 export class DatabaseModule {}

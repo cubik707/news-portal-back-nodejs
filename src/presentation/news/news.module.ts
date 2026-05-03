@@ -13,6 +13,7 @@ import { GetNewsByCategoryAndStatusUseCase } from '../../application/news/use-ca
 import { SubmitNewsForApprovalUseCase } from '../../application/news-approval/use-cases/submit-news-for-approval.use-case';
 import { PublishApprovedNewsUseCase } from '../../application/news/use-cases/publish-approved-news.use-case';
 import { ApprovalsGatewayModule } from '../approvals-gateway/approvals-gateway.module';
+import { TrackNewsViewUseCase } from '../../application/news-view/use-cases/track-news-view.use-case';
 
 @Module({
   imports: [DatabaseModule, ApprovalsGatewayModule],
@@ -29,6 +30,7 @@ import { ApprovalsGatewayModule } from '../approvals-gateway/approvals-gateway.m
     GetNewsByCategoryAndStatusUseCase,
     SubmitNewsForApprovalUseCase,
     PublishApprovedNewsUseCase,
+    TrackNewsViewUseCase,
   ],
 })
 export class NewsModule {}
