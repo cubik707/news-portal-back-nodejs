@@ -14,6 +14,7 @@ import {
 } from '../../infrastructure/file-storage/file-storage.service';
 import { SuccessResponseDto } from '../shared/response/success-response.dto';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
+import { Public } from '../shared/decorators/public.decorator';
 
 interface DeleteImageBody {
   folder: string;
@@ -33,6 +34,16 @@ export class FilesController {
   ): Promise<SuccessResponseDto<string>> {
     const filePath = await this.fileStorage.saveFile(file as IUploadedFile, folder);
     return new SuccessResponseDto(filePath, 'File uploaded successfully');
+  }
+
+  @Public()
+  @Post('upload/avatar')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadAvatar(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<SuccessResponseDto<string>> {
+    const filePath = await this.fileStorage.saveFile(file as IUploadedFile, 'avatars');
+    return new SuccessResponseDto(filePath, 'Avatar uploaded successfully');
   }
 
   @Delete('delete-image')

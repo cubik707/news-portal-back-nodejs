@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { User } from '../../../core/domain/user/entities/user.domain';
 import {
   type IUserRepository,
@@ -13,6 +13,7 @@ import {
   PASSWORD_HASHER,
 } from '../../../core/shared/ports/password-hasher.port';
 import { EmailService } from '../../../infrastructure/email/email.service';
+import { UserRole } from '../../../core/shared/enums/user-role.enum';
 
 export interface RegisterUserCommand {
   username: string;
@@ -23,10 +24,13 @@ export interface RegisterUserCommand {
   surname?: string;
   position?: string;
   department?: string;
+  avatarUrl?: string;
 }
 
 @Injectable()
 export class RegisterUserUseCase {
+  private readonly logger = new Logger(RegisterUserUseCase.name);
+
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
@@ -35,7 +39,7 @@ export class RegisterUserUseCase {
     private readonly emailService: EmailService,
   ) {}
 
-  async execute(command: RegisterUserCommand): Promise<User> {
+  async execute(command: RegisterUserCommand): Promise<{ user: User; adminIds: string[] }> {
     const existingByUsername = await this.userRepository.findByUsername(command.username);
     if (existingByUsername) {
       throw new UserAlreadyExistsException(command.username);
@@ -57,16 +61,24 @@ export class RegisterUserUseCase {
       surname: command.surname,
       position: command.position,
       department: command.department,
+      avatarUrl: command.avatarUrl,
     });
 
     const saved = await this.userRepository.save(user);
 
-    await this.emailService.sendHtmlMessage(
-      command.email,
-      'Registration Successful',
-      `<p>Hello ${command.firstName}, your account has been created. Please wait for admin approval.</p>`,
-    );
+    try {
+      await this.emailService.sendHtmlMessage(
+        command.email,
+        'Registration Successful',
+        `<p>Hello ${command.firstName}, your account has been created. Please wait for admin approval.</p>`,
+      );
+    } catch (err) {
+      this.logger.warn(`Failed to send registration email to ${command.email}: ${(err as Error).message}`);
+    }
 
-    return saved;
+    const admins = await this.userRepository.findAllByRole(UserRole.ADMIN);
+    const adminIds = admins.map((a) => a.id);
+
+    return { user: saved, adminIds };
   }
 }

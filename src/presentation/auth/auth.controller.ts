@@ -10,6 +10,7 @@ import { SuccessResponseDto } from '../shared/response/success-response.dto';
 import { ApprovedGuard } from '../shared/guards/approved.guard';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { Public } from '../shared/decorators/public.decorator';
+import { ApprovalsGateway } from '../approvals-gateway/approvals.gateway';
 import type { JwtUserPayload } from './jwt.strategy';
 
 @Controller()
@@ -19,6 +20,7 @@ export class AuthController {
     private readonly registerUser: RegisterUserUseCase,
     private readonly verifyToken: VerifyTokenUseCase,
     private readonly getUser: GetUserUseCase,
+    private readonly gateway: ApprovalsGateway,
   ) {}
 
   @Public()
@@ -31,7 +33,7 @@ export class AuthController {
   @Public()
   @Post('register')
   async register(@Body() dto: UserRegistrationDto): Promise<SuccessResponseDto<UserResponseDto>> {
-    const user = await this.registerUser.execute({
+    const { user, adminIds } = await this.registerUser.execute({
       username: dto.username,
       email: dto.email,
       password: dto.password,
@@ -40,7 +42,9 @@ export class AuthController {
       surname: dto.surname,
       position: dto.position,
       department: dto.department,
+      avatarUrl: dto.avatarUrl,
     });
+    this.gateway.emitUserRegistered(adminIds);
     return new SuccessResponseDto(UserResponseDto.fromDomain(user), 'User registered successfully');
   }
 

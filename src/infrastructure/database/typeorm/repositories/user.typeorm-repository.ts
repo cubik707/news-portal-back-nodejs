@@ -173,6 +173,10 @@ export class UserTypeormRepository implements IUserRepository {
     await this.repo.save(entity);
   }
 
+  async countPending(): Promise<number> {
+    return this.repo.count({ where: { isApproved: false } });
+  }
+
   async findAllByRole(role: UserRole): Promise<User[]> {
     const entities = await this.repo
       .createQueryBuilder('user')

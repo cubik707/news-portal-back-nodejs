@@ -32,4 +32,8 @@ export class UserRegistrationDto {
   @IsString()
   @IsOptional()
   department?: string;
+
+  @IsString()
+  @IsOptional()
+  avatarUrl?: string;
 }

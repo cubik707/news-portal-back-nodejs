@@ -48,4 +48,10 @@ export class ApprovalsGateway implements OnGatewayConnection, OnGatewayDisconnec
   ): void {
     this.server.to(editorId).emit('approval:decided', payload);
   }
+
+  emitUserRegistered(targetAdminIds: string[]): void {
+    for (const adminId of targetAdminIds) {
+      this.server.to(adminId).emit('user:registered', {});
+    }
+  }
 }

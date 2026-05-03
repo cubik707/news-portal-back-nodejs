@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '../../infrastructure/database/database.module';
 import { EmailModule } from '../../infrastructure/email/email.module';
+import { ApprovalsGatewayModule } from '../approvals-gateway/approvals-gateway.module';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { AuthenticateUserUseCase } from '../../application/auth/use-cases/authenticate-user.use-case';
@@ -19,6 +20,7 @@ import { PASSWORD_HASHER } from '../../core/shared/ports/password-hasher.port';
   imports: [
     DatabaseModule,
     EmailModule,
+    ApprovalsGatewayModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

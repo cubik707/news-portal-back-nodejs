@@ -8,6 +8,9 @@ import { UpdateUserUseCase } from '../../application/user/use-cases/update-user.
 import { UpdateUserFieldUseCase } from '../../application/user/use-cases/update-user-field.use-case';
 import { DeleteUserUseCase } from '../../application/user/use-cases/delete-user.use-case';
 import { GetUsersByRoleUseCase } from '../../application/user/use-cases/get-users-by-role.use-case';
+import { UpdateUserAvatarUseCase } from '../../application/user/use-cases/update-user-avatar.use-case';
+import { GetPendingUsersCountUseCase } from '../../application/user/use-cases/get-pending-users-count.use-case';
+import { ApproveUserUseCase } from '../../application/user/use-cases/approve-user.use-case';
 import { BcryptPasswordHasher } from '../../infrastructure/security/bcrypt-password-hasher';
 import { PASSWORD_HASHER } from '../../core/shared/ports/password-hasher.port';
 
@@ -23,6 +26,9 @@ import { PASSWORD_HASHER } from '../../core/shared/ports/password-hasher.port';
     UpdateUserFieldUseCase,
     DeleteUserUseCase,
     GetUsersByRoleUseCase,
+    UpdateUserAvatarUseCase,
+    GetPendingUsersCountUseCase,
+    ApproveUserUseCase,
   ],
 })
 export class UsersModule {}
