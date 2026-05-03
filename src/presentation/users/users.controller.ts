@@ -8,6 +8,7 @@ import { DeleteUserUseCase } from '../../application/user/use-cases/delete-user.
 import { GetUsersByRoleUseCase } from '../../application/user/use-cases/get-users-by-role.use-case';
 import { UpdateUserAvatarUseCase } from '../../application/user/use-cases/update-user-avatar.use-case';
 import { GetPendingUsersCountUseCase } from '../../application/user/use-cases/get-pending-users-count.use-case';
+import { ApproveUserUseCase } from '../../application/user/use-cases/approve-user.use-case';
 import { UserRegistrationDto } from '../../application/user/dtos/user-registration.dto';
 import { UserAvatarUpdateDto } from '../../application/user/dtos/user-avatar-update.dto';
 import { UserResponseDto } from '../../application/user/dtos/user-response.dto';
@@ -32,6 +33,7 @@ export class UsersController {
     private readonly getUsersByRole: GetUsersByRoleUseCase,
     private readonly updateUserAvatar: UpdateUserAvatarUseCase,
     private readonly getPendingUsersCount: GetPendingUsersCountUseCase,
+    private readonly approveUser: ApproveUserUseCase,
   ) {}
 
   @Get()
@@ -119,6 +121,15 @@ export class UsersController {
       department: dto.department,
     });
     return new SuccessResponseDto(UserResponseDto.fromDomain(user), 'User updated');
+  }
+
+  // Must be declared BEFORE @Patch(':id') to avoid route conflict
+  @Patch(':id/approve')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async approve(@Param('id') id: string): Promise<SuccessResponseDto<UserResponseDto>> {
+    const user = await this.approveUser.execute(id);
+    return new SuccessResponseDto(UserResponseDto.fromDomain(user), 'User approved');
   }
 
   @Patch(':id')

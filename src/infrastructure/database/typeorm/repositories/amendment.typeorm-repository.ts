@@ -95,4 +95,8 @@ export class AmendmentTypeormRepository implements IAmendmentRepository {
     });
     return entity ? AmendmentMapper.toDomain(entity) : null;
   }
+
+  async countPending(): Promise<number> {
+    return this.repo.count({ where: { status: AmendmentStatus.PENDING } });
+  }
 }

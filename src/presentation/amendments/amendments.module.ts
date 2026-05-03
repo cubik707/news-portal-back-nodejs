@@ -7,6 +7,7 @@ import { GetMyUnseenAmendmentUseCase } from '../../application/amendment/use-cas
 import { ApproveAmendmentUseCase } from '../../application/amendment/use-cases/approve-amendment.use-case';
 import { RejectAmendmentUseCase } from '../../application/amendment/use-cases/reject-amendment.use-case';
 import { MarkAmendmentSeenUseCase } from '../../application/amendment/use-cases/mark-amendment-seen.use-case';
+import { GetPendingAmendmentsCountUseCase } from '../../application/amendment/use-cases/get-pending-amendments-count.use-case';
 
 @Module({
   imports: [DatabaseModule],
@@ -18,6 +19,7 @@ import { MarkAmendmentSeenUseCase } from '../../application/amendment/use-cases/
     ApproveAmendmentUseCase,
     RejectAmendmentUseCase,
     MarkAmendmentSeenUseCase,
+    GetPendingAmendmentsCountUseCase,
   ],
 })
 export class AmendmentsModule {}

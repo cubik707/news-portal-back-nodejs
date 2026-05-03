@@ -5,6 +5,7 @@ import { GetMyUnseenAmendmentUseCase } from '../../application/amendment/use-cas
 import { ApproveAmendmentUseCase } from '../../application/amendment/use-cases/approve-amendment.use-case';
 import { RejectAmendmentUseCase } from '../../application/amendment/use-cases/reject-amendment.use-case';
 import { MarkAmendmentSeenUseCase } from '../../application/amendment/use-cases/mark-amendment-seen.use-case';
+import { GetPendingAmendmentsCountUseCase } from '../../application/amendment/use-cases/get-pending-amendments-count.use-case';
 import { AmendmentCreateDto } from '../../application/amendment/dtos/amendment-create.dto';
 import { AmendmentRejectDto } from '../../application/amendment/dtos/amendment-reject.dto';
 import { AmendmentResponseDto } from '../../application/amendment/dtos/amendment-response.dto';
@@ -26,9 +27,18 @@ export class AmendmentsController {
     private readonly approveAmendment: ApproveAmendmentUseCase,
     private readonly rejectAmendment: RejectAmendmentUseCase,
     private readonly markAmendmentSeen: MarkAmendmentSeenUseCase,
+    private readonly getPendingAmendmentsCount: GetPendingAmendmentsCountUseCase,
   ) {}
 
   // ── Static routes first ────────────────────────────────────────────────────
+
+  @Get('pending/count')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async getPendingCount(): Promise<SuccessResponseDto<{ count: number }>> {
+    const count = await this.getPendingAmendmentsCount.execute();
+    return new SuccessResponseDto({ count }, 'Pending amendments count');
+  }
 
   @Post()
   @HttpCode(201)

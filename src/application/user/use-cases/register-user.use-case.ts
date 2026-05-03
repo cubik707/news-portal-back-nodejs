@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { User } from '../../../core/domain/user/entities/user.domain';
 import {
   type IUserRepository,
@@ -29,6 +29,8 @@ export interface RegisterUserCommand {
 
 @Injectable()
 export class RegisterUserUseCase {
+  private readonly logger = new Logger(RegisterUserUseCase.name);
+
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
@@ -64,11 +66,15 @@ export class RegisterUserUseCase {
 
     const saved = await this.userRepository.save(user);
 
-    await this.emailService.sendHtmlMessage(
-      command.email,
-      'Registration Successful',
-      `<p>Hello ${command.firstName}, your account has been created. Please wait for admin approval.</p>`,
-    );
+    try {
+      await this.emailService.sendHtmlMessage(
+        command.email,
+        'Registration Successful',
+        `<p>Hello ${command.firstName}, your account has been created. Please wait for admin approval.</p>`,
+      );
+    } catch (err) {
+      this.logger.warn(`Failed to send registration email to ${command.email}: ${(err as Error).message}`);
+    }
 
     const admins = await this.userRepository.findAllByRole(UserRole.ADMIN);
     const adminIds = admins.map((a) => a.id);
