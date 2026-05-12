@@ -27,7 +27,7 @@ export class NewsApprovalTypeormRepository implements INewsApprovalRepository {
       relations: this.relations,
       order: { createdAt: 'DESC' },
     });
-    return entities.map(NewsApprovalMapper.toDomain);
+    return entities.map((e) => NewsApprovalMapper.toDomain(e));
   }
 
   async findPendingForAdmin(adminId: string): Promise<NewsApproval[]> {
@@ -39,7 +39,7 @@ export class NewsApprovalTypeormRepository implements INewsApprovalRepository {
       relations: this.relations,
       order: { createdAt: 'DESC' },
     });
-    return entities.map(NewsApprovalMapper.toDomain);
+    return entities.map((e) => NewsApprovalMapper.toDomain(e));
   }
 
   async findByEditorId(editorId: string): Promise<NewsApproval[]> {
@@ -48,7 +48,7 @@ export class NewsApprovalTypeormRepository implements INewsApprovalRepository {
       relations: this.relations,
       order: { createdAt: 'DESC' },
     });
-    return entities.map(NewsApprovalMapper.toDomain);
+    return entities.map((e) => NewsApprovalMapper.toDomain(e));
   }
 
   async findActiveForNews(newsId: string): Promise<NewsApproval | null> {

@@ -58,7 +58,7 @@ describe('Auth (E2E)', () => {
       .overrideGuard(JwtAuthGuard)
       .useValue({
         canActivate: (ctx: ExecutionContext) => {
-          const req = ctx.switchToHttp().getRequest();
+          const req = ctx.switchToHttp().getRequest<Record<string, unknown>>();
           req.user = jwtUserPayload;
           return true;
         },

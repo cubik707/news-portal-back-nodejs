@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe, ExecutionContext } from '@nestjs/common';
+import {
+  INestApplication,
+  ValidationPipe,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import request from 'supertest';
 import { GlobalExceptionFilter } from '../src/presentation/shared/filters/global-exception.filter';
 import { CommentsController } from '../src/presentation/comments/comments.controller';
@@ -44,7 +49,7 @@ const makeComment = (id = 'comment-id', authorId = 'user-id') =>
 
 const makeApprovedGuard = (userId = 'user-id', roles: UserRole[] = [UserRole.USER]) => ({
   canActivate: (ctx: ExecutionContext) => {
-    const req = ctx.switchToHttp().getRequest();
+    const req = ctx.switchToHttp().getRequest<Record<string, unknown>>();
     req.user = { id: userId, username: 'nikitin_dev', roles, isApproved: true };
     return true;
   },
@@ -108,10 +113,11 @@ describe('Comments (E2E)', () => {
 
       const res = await request(app.getHttpServer()).get('/news/news-id/comments');
 
+      const body = res.body as { data: Array<{ id: string }> };
       expect(res.status).toBe(200);
-      expect(res.body.data).toHaveLength(2);
-      expect(res.body.data[0].id).toBe('c1');
-      expect(res.body.data[0]).toMatchObject({
+      expect(body.data).toHaveLength(2);
+      expect(body.data[0].id).toBe('c1');
+      expect(body.data[0]).toMatchObject({
         content: 'Great article!',
         newsId: 'news-id',
         author: { username: 'nikitin_dev', firstName: 'Ivan', lastName: 'Nikitin' },
@@ -119,7 +125,6 @@ describe('Comments (E2E)', () => {
     });
 
     it('T015-3: should return 401 without token', async () => {
-      const { UnauthorizedException } = require('@nestjs/common');
       await buildApp({
         canActivate: () => {
           throw new UnauthorizedException('No token provided');
@@ -132,7 +137,6 @@ describe('Comments (E2E)', () => {
     });
 
     it('T015-4: should return 401 for unapproved user (ApprovedGuard)', async () => {
-      const { UnauthorizedException } = require('@nestjs/common');
       await buildApp({
         canActivate: () => {
           throw new UnauthorizedException('Account is not approved');
@@ -166,9 +170,10 @@ describe('Comments (E2E)', () => {
         .post('/news/news-id/comments')
         .send({ content: 'Great article!' });
 
+      const body = res.body as { data: { id: string } };
       expect(res.status).toBe(201);
       expect(res.body).toMatchObject({ status: 201, message: 'Comment created' });
-      expect(res.body.data.id).toBe('comment-id');
+      expect(body.data.id).toBe('comment-id');
     });
 
     it('T019-2: should return 400 for empty content', async () => {
@@ -192,7 +197,6 @@ describe('Comments (E2E)', () => {
     });
 
     it('T019-4: should return 401 for unapproved user', async () => {
-      const { UnauthorizedException } = require('@nestjs/common');
       await buildApp({
         canActivate: () => {
           throw new UnauthorizedException('Account is not approved');
@@ -238,10 +242,14 @@ describe('Comments (E2E)', () => {
         .put('/comments/comment-id')
         .send({ content: 'Updated text.' });
 
+      const body = res.body as {
+        data: { content: string; editedAt: string | null };
+        message: string;
+      };
       expect(res.status).toBe(200);
-      expect(res.body.data.content).toBe('Updated text.');
-      expect(res.body.data.editedAt).not.toBeNull();
-      expect(res.body.message).toBe('Comment updated');
+      expect(body.data.content).toBe('Updated text.');
+      expect(body.data.editedAt).not.toBeNull();
+      expect(body.message).toBe('Comment updated');
     });
 
     it('T023-2: should return 400 for empty content', async () => {

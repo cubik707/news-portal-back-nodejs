@@ -64,7 +64,7 @@ describe('Users (E2E)', () => {
       .overrideGuard(JwtAuthGuard)
       .useValue({
         canActivate: (ctx: ExecutionContext) => {
-          const req = ctx.switchToHttp().getRequest();
+          const req = ctx.switchToHttp().getRequest<Record<string, unknown>>();
           req.user = {
             id: 'user-id',
             username: 'testuser',
@@ -99,9 +99,10 @@ describe('Users (E2E)', () => {
 
       const res = await request(app.getHttpServer()).get('/users');
 
+      const body = res.body as { data: unknown[] };
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({ status: 200, message: 'Users retrieved' });
-      expect(res.body.data).toHaveLength(2);
+      expect(body.data).toHaveLength(2);
     });
   });
 

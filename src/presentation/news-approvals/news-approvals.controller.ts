@@ -64,7 +64,7 @@ export class NewsApprovalsController {
   ): Promise<SuccessResponseDto<NewsApprovalResponseDto[]>> {
     const approvals = await this.getPendingApprovals.execute(user.id);
     return new SuccessResponseDto(
-      approvals.map(NewsApprovalResponseDto.fromDomain),
+      approvals.map((a) => NewsApprovalResponseDto.fromDomain(a)),
       'Pending approvals',
     );
   }
@@ -77,7 +77,7 @@ export class NewsApprovalsController {
   ): Promise<SuccessResponseDto<NewsApprovalResponseDto[]>> {
     const approvals = await this.getMyApprovalActivity.execute(user.id);
     return new SuccessResponseDto(
-      approvals.map(NewsApprovalResponseDto.fromDomain),
+      approvals.map((a) => NewsApprovalResponseDto.fromDomain(a)),
       'Activity retrieved',
     );
   }

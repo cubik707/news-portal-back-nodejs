@@ -50,7 +50,11 @@ export class AmendmentsController {
       userId: user.id,
       comment: dto.comment,
     });
-    return new SuccessResponseDto(AmendmentResponseDto.fromDomain(amendment), 'Amendment created', 201);
+    return new SuccessResponseDto(
+      AmendmentResponseDto.fromDomain(amendment),
+      'Amendment created',
+      201,
+    );
   }
 
   @Get()
@@ -58,7 +62,10 @@ export class AmendmentsController {
   @Roles(UserRole.ADMIN)
   async findAll(): Promise<SuccessResponseDto<AmendmentResponseDto[]>> {
     const amendments = await this.getAmendments.execute();
-    return new SuccessResponseDto(amendments.map(AmendmentResponseDto.fromDomain), 'Amendments retrieved');
+    return new SuccessResponseDto(
+      amendments.map((a) => AmendmentResponseDto.fromDomain(a)),
+      'Amendments retrieved',
+    );
   }
 
   @Get('my/unseen')

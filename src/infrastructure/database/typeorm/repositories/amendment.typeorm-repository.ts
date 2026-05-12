@@ -59,7 +59,7 @@ export class AmendmentTypeormRepository implements IAmendmentRepository {
       relations: this.relations,
       order: { createdAt: 'DESC' },
     });
-    return entities.map(AmendmentMapper.toDomain);
+    return entities.map((e) => AmendmentMapper.toDomain(e));
   }
 
   async findAll(): Promise<Amendment[]> {
@@ -68,13 +68,10 @@ export class AmendmentTypeormRepository implements IAmendmentRepository {
       .createQueryBuilder('amendment')
       .leftJoinAndSelect('amendment.user', 'user')
       .leftJoinAndSelect('user.userInfo', 'userInfo')
-      .orderBy(
-        `CASE WHEN amendment.status = '${AmendmentStatus.PENDING}' THEN 0 ELSE 1 END`,
-        'ASC',
-      )
+      .orderBy(`CASE WHEN amendment.status = '${AmendmentStatus.PENDING}' THEN 0 ELSE 1 END`, 'ASC')
       .addOrderBy('amendment.created_at', 'DESC')
       .getMany();
-    return entities.map(AmendmentMapper.toDomain);
+    return entities.map((e) => AmendmentMapper.toDomain(e));
   }
 
   async findUnseenResolvedByUserId(userId: string): Promise<Amendment | null> {

@@ -21,12 +21,8 @@ export class CreateAmendmentsTable1000000000006 implements MigrationInterface {
       )
     `);
 
-    await queryRunner.query(
-      `CREATE INDEX "idx_amendments_user_id" ON "amendments"("user_id")`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "idx_amendments_status" ON "amendments"("status")`,
-    );
+    await queryRunner.query(`CREATE INDEX "idx_amendments_user_id" ON "amendments"("user_id")`);
+    await queryRunner.query(`CREATE INDEX "idx_amendments_status" ON "amendments"("status")`);
     await queryRunner.query(
       `CREATE INDEX "idx_amendments_user_status" ON "amendments"("user_id", "status")`,
     );

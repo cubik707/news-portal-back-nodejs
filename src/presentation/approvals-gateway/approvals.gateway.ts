@@ -16,14 +16,14 @@ export class ApprovalsGateway implements OnGatewayConnection, OnGatewayDisconnec
 
   constructor(private readonly jwtService: JwtService) {}
 
-  async handleConnection(client: Socket): Promise<void> {
+  handleConnection(client: Socket): void {
     try {
-      const token =
-        client.handshake.auth?.token ||
-        client.handshake.headers?.authorization?.replace('Bearer ', '');
-      const payload = this.jwtService.verify(token);
-      client.data.userId = payload.id;
-      client.join(payload.id); // room = user ID
+      const auth = client.handshake.auth as Record<string, string>;
+      const token: string =
+        auth?.token ?? client.handshake.headers.authorization?.replace('Bearer ', '') ?? '';
+      const payload = this.jwtService.verify<{ id: string }>(token);
+      (client.data as { userId: string }).userId = payload.id;
+      void client.join(payload.id);
     } catch {
       client.disconnect();
     }

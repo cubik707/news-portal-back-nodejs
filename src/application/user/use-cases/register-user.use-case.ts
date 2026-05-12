@@ -73,7 +73,9 @@ export class RegisterUserUseCase {
         `<p>Hello ${command.firstName}, your account has been created. Please wait for admin approval.</p>`,
       );
     } catch (err) {
-      this.logger.warn(`Failed to send registration email to ${command.email}: ${(err as Error).message}`);
+      this.logger.warn(
+        `Failed to send registration email to ${command.email}: ${(err as Error).message}`,
+      );
     }
 
     const admins = await this.userRepository.findAllByRole(UserRole.ADMIN);

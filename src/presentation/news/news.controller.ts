@@ -121,8 +121,10 @@ export class NewsController {
     @Param('id') id: string,
     @CurrentUser() user: JwtUserPayload,
   ): Promise<SuccessResponseDto<NewsResponseDto>> {
-    const { news, commentCount, likeCount, isLikedByCurrentUser } =
-      await this.getNewsById.execute(id, user.id);
+    const { news, commentCount, likeCount, isLikedByCurrentUser } = await this.getNewsById.execute(
+      id,
+      user.id,
+    );
     return new SuccessResponseDto(
       NewsResponseDto.fromDomain(news, commentCount, likeCount, isLikedByCurrentUser),
       'News retrieved',

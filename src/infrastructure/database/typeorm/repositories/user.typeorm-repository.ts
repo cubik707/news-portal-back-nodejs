@@ -184,6 +184,6 @@ export class UserTypeormRepository implements IUserRepository {
       .leftJoinAndSelect('user.roles', 'roles')
       .leftJoinAndSelect('user.userInfo', 'userInfo')
       .getMany();
-    return entities.map(UserMapper.toDomain);
+    return entities.map((e) => UserMapper.toDomain(e));
   }
 }

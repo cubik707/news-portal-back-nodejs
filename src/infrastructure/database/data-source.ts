@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import * as dotenv from 'dotenv';
 import { UserOrmEntity } from './typeorm/entities/user.orm-entity';
 import { UserInfoOrmEntity } from './typeorm/entities/user-info.orm-entity';
 import { RoleOrmEntity } from './typeorm/entities/role.orm-entity';
@@ -12,8 +11,6 @@ import { LikeOrmEntity } from './typeorm/entities/like.orm-entity';
 import { NotificationOrmEntity } from './typeorm/entities/notification.orm-entity';
 import { UserNotificationOrmEntity } from './typeorm/entities/user-notification.orm-entity';
 import { NewsApprovalOrmEntity } from './typeorm/entities/news-approval.orm-entity';
-
-const envPath = require('path').resolve(process.cwd(), '.env');
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
