@@ -13,7 +13,7 @@ import { NotificationOrmEntity } from './typeorm/entities/notification.orm-entit
 import { UserNotificationOrmEntity } from './typeorm/entities/user-notification.orm-entity';
 import { NewsApprovalOrmEntity } from './typeorm/entities/news-approval.orm-entity';
 
-dotenv.config();
+const envPath = require('path').resolve(process.cwd(), '.env');
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
