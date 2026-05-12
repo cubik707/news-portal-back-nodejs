@@ -25,6 +25,7 @@ import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { UserRole } from '../../core/shared/enums/user-role.enum';
 import type { JwtUserPayload } from '../auth/jwt.strategy';
 import { ApprovalsGateway } from '../approvals-gateway/approvals.gateway';
+import { TrackNewsViewUseCase } from '../../application/news-view/use-cases/track-news-view.use-case';
 
 @UseGuards(JwtAuthGuard)
 @Controller('news')
@@ -42,6 +43,7 @@ export class NewsController {
     private readonly submitForApproval: SubmitNewsForApprovalUseCase,
     private readonly publishApprovedNews: PublishApprovedNewsUseCase,
     private readonly gateway: ApprovalsGateway,
+    private readonly trackNewsView: TrackNewsViewUseCase,
   ) {}
 
   @Get()
@@ -114,6 +116,16 @@ export class NewsController {
       ),
       'News retrieved',
     );
+  }
+
+  @Post(':id/view')
+  @UseGuards(ApprovedGuard)
+  async trackView(
+    @Param('id') id: string,
+    @CurrentUser() user: JwtUserPayload,
+  ): Promise<SuccessResponseDto<null>> {
+    await this.trackNewsView.execute(id, user.id);
+    return new SuccessResponseDto(null, 'View tracked');
   }
 
   @Get(':id')

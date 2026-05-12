@@ -41,6 +41,17 @@ export class NewsTypeormRepository implements INewsRepository {
     return entity ? NewsMapper.toDomain(entity) : null;
   }
 
+  async findByIds(ids: string[]): Promise<News[]> {
+    if (ids.length === 0) return [];
+    const entities = await this.repo.find({
+      where: { id: In(ids) },
+      relations: this.relations,
+    });
+    // Preserve order returned by the ML service
+    const map = new Map(entities.map((e) => [e.id, NewsMapper.toDomain(e)]));
+    return ids.map((id) => map.get(id)).filter((n): n is News => n !== undefined);
+  }
+
   async findByCategory(categoryId: string): Promise<News[]> {
     const entities = await this.repo.find({
       where: { category: { id: categoryId } },

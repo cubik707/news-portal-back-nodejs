@@ -19,6 +19,7 @@ import { CommentsModule } from './presentation/comments/comments.module';
 import { LikeModule } from './presentation/like/like.module';
 import { AmendmentsModule } from './presentation/amendments/amendments.module';
 import { ApprovalsGatewayModule } from './presentation/approvals-gateway/approvals-gateway.module';
+import { RecommendationsModule } from './presentation/recommendations/recommendations.module';
 import { GlobalExceptionFilter } from './presentation/shared/filters/global-exception.filter';
 
 @Module({
@@ -41,6 +42,7 @@ import { GlobalExceptionFilter } from './presentation/shared/filters/global-exce
     LikeModule,
     AmendmentsModule,
     ApprovalsGatewayModule,
+    RecommendationsModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: GlobalExceptionFilter },
