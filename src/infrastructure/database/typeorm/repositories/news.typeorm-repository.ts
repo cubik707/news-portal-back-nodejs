@@ -1,7 +1,10 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { NewsOrmEntity } from '../entities/news.orm-entity';
-import { INewsRepository } from '../../../../core/domain/news/repositories/news.repository.interface';
+import {
+  INewsRepository,
+  NewsPublishedFilter,
+} from '../../../../core/domain/news/repositories/news.repository.interface';
 import { News } from '../../../../core/domain/news/entities/news.domain';
 import { NewsStatus } from '../../../../core/shared/enums/news-status.enum';
 import { NewsMapper } from '../mappers/news.mapper';
@@ -78,6 +81,46 @@ export class NewsTypeormRepository implements INewsRepository {
       where: { category: { id: categoryId }, status },
       relations: this.relations,
     });
+    return entities.map((e) => NewsMapper.toDomain(e));
+  }
+
+  async findPublishedWithFilters(query: NewsPublishedFilter): Promise<News[]> {
+    const qb = this.repo
+      .createQueryBuilder('news')
+      .leftJoinAndSelect('news.author', 'author')
+      .leftJoinAndSelect('author.userInfo', 'userInfo')
+      .leftJoinAndSelect('author.roles', 'roles')
+      .leftJoinAndSelect('news.category', 'category')
+      .leftJoinAndSelect('news.tags', 'tag')
+      .where('news.status = :status', { status: NewsStatus.published });
+
+    if (query.search) {
+      qb.andWhere('LOWER(news.title) LIKE LOWER(:search)', {
+        search: `%${query.search}%`,
+      });
+    }
+
+    if (query.categoryId) {
+      qb.andWhere('category.id = :categoryId', { categoryId: query.categoryId });
+    }
+
+    if (query.tagIds && query.tagIds.length > 0) {
+      qb.andWhere('tag.id IN (:...tagIds)', { tagIds: query.tagIds });
+    }
+
+    const order = query.sortOrder ?? 'DESC';
+    if (query.sortBy === 'likeCount') {
+      qb.addSelect(
+        '(SELECT COUNT(*) FROM likes l WHERE l.news_id = news.id)',
+        'like_count_agg',
+      ).orderBy('like_count_agg', order);
+    } else if (query.sortBy === 'title') {
+      qb.orderBy('news.title', order);
+    } else {
+      qb.orderBy('news.published_at', order);
+    }
+
+    const entities = await qb.getMany();
     return entities.map((e) => NewsMapper.toDomain(e));
   }
 

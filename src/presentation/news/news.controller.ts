@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateNewsUseCase } from '../../application/news/use-cases/create-news.use-case';
 import { UpdateNewsUseCase } from '../../application/news/use-cases/update-news.use-case';
 import { DeleteNewsUseCase } from '../../application/news/use-cases/delete-news.use-case';
@@ -10,6 +20,8 @@ import { GetNewsByStatusAndAuthorUseCase } from '../../application/news/use-case
 import { GetNewsByCategoryAndStatusUseCase } from '../../application/news/use-cases/get-news-by-category-and-status.use-case';
 import { SubmitNewsForApprovalUseCase } from '../../application/news-approval/use-cases/submit-news-for-approval.use-case';
 import { PublishApprovedNewsUseCase } from '../../application/news/use-cases/publish-approved-news.use-case';
+import { GetPublishedNewsUseCase } from '../../application/news/use-cases/get-published-news.use-case';
+import { NewsPublishedFilterDto } from '../../application/news/dtos/news-published-filter.dto';
 import { NewsCreateDto } from '../../application/news/dtos/news-create.dto';
 import { NewsUpdateDto } from '../../application/news/dtos/news-update.dto';
 import { NewsResponseDto } from '../../application/news/dtos/news-response.dto';
@@ -25,6 +37,7 @@ import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { UserRole } from '../../core/shared/enums/user-role.enum';
 import type { JwtUserPayload } from '../auth/jwt.strategy';
 import { ApprovalsGateway } from '../approvals-gateway/approvals.gateway';
+import { Public } from '../shared/decorators/public.decorator';
 import { TrackNewsViewUseCase } from '../../application/news-view/use-cases/track-news-view.use-case';
 
 @UseGuards(JwtAuthGuard)
@@ -42,6 +55,7 @@ export class NewsController {
     private readonly deleteNews: DeleteNewsUseCase,
     private readonly submitForApproval: SubmitNewsForApprovalUseCase,
     private readonly publishApprovedNews: PublishApprovedNewsUseCase,
+    private readonly getPublishedNews: GetPublishedNewsUseCase,
     private readonly gateway: ApprovalsGateway,
     private readonly trackNewsView: TrackNewsViewUseCase,
   ) {}
@@ -51,6 +65,20 @@ export class NewsController {
     @CurrentUser() user: JwtUserPayload,
   ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
     const items = await this.getAllNews.execute(user.id);
+    return new SuccessResponseDto(
+      items.map(({ news, commentCount, likeCount, isLikedByCurrentUser }) =>
+        NewsResponseDto.fromDomain(news, commentCount, likeCount, isLikedByCurrentUser),
+      ),
+      'News retrieved',
+    );
+  }
+
+  @Public()
+  @Get('published')
+  async findPublished(
+    @Query() query: NewsPublishedFilterDto,
+  ): Promise<SuccessResponseDto<NewsResponseDto[]>> {
+    const items = await this.getPublishedNews.execute(query);
     return new SuccessResponseDto(
       items.map(({ news, commentCount, likeCount, isLikedByCurrentUser }) =>
         NewsResponseDto.fromDomain(news, commentCount, likeCount, isLikedByCurrentUser),
