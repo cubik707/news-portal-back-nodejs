@@ -11,6 +11,7 @@ import { LikeOrmEntity } from './typeorm/entities/like.orm-entity';
 import { NotificationOrmEntity } from './typeorm/entities/notification.orm-entity';
 import { UserNotificationOrmEntity } from './typeorm/entities/user-notification.orm-entity';
 import { NewsApprovalOrmEntity } from './typeorm/entities/news-approval.orm-entity';
+import { NewsViewOrmEntity } from './typeorm/entities/news-view.orm-entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -31,6 +32,7 @@ export const AppDataSource = new DataSource({
     NotificationOrmEntity,
     UserNotificationOrmEntity,
     NewsApprovalOrmEntity,
+    NewsViewOrmEntity,
   ],
   migrations: [__dirname + '/typeorm/migrations/*{.ts,.js}'],
   synchronize: false,

@@ -14,6 +14,7 @@ import { SubmitNewsForApprovalUseCase } from '../../application/news-approval/us
 import { PublishApprovedNewsUseCase } from '../../application/news/use-cases/publish-approved-news.use-case';
 import { GetPublishedNewsUseCase } from '../../application/news/use-cases/get-published-news.use-case';
 import { ApprovalsGatewayModule } from '../approvals-gateway/approvals-gateway.module';
+import { TrackNewsViewUseCase } from '../../application/news-view/use-cases/track-news-view.use-case';
 
 @Module({
   imports: [DatabaseModule, ApprovalsGatewayModule],
@@ -31,6 +32,7 @@ import { ApprovalsGatewayModule } from '../approvals-gateway/approvals-gateway.m
     SubmitNewsForApprovalUseCase,
     PublishApprovedNewsUseCase,
     GetPublishedNewsUseCase,
+    TrackNewsViewUseCase,
   ],
 })
 export class NewsModule {}
